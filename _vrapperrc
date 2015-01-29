@@ -1,0 +1,34 @@
+"indent
+set sw=4 " shift width, indent width
+set tabstop=4 " ts, tabstop width
+set et " extendtab
+
+" ignore case while search
+set ignorecase " noignorecase
+
+" hilight current line
+set cursorline
+" hilight column
+set cursorcolumn
+
+nmap cc <C-/>
+vmap cc 
+nmap CC 
+vmap CC 
+nmap cz 
+nmap cx 
+vmap cz 
+vmap cx 
+
+" redirect for ESC
+imap fds <ESC>
+" map fds <ESC>
+" omap fds <ESC>
+imap FDS <ESC>:echo "CAPS_LOCK!"<CR><ESC>
+" map FDS <ESC>:echo "CAPS_LOCK!"<CR><ESC>
+" omap FDS <ESC>:echo "CAPS_LOCK!"<CR><ESC>
+
+" deletion, use backspace as backspace key, using black hole register
+nmap <silent> <BS> h"_x
+vmap <silent> <BS> h"_x
+

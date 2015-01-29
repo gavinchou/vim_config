@@ -1,0 +1,11 @@
+" favorites files and direcotries
+let $ses="e:/temp/vimSession.vim"
+let $session="e:/temp/vimSession.vim"
+let $battest="D:/My_Documents/Knowledge/Computer/Bat/test/test.cmd"
+let $vbstest="D:/My_Documents/Knowledge/Computer/VBS/test/test.vbs"
+let $mybat="D:/My_Documents/Knowledge/Computer/Bat/my_bat"
+let $myvbs="D:/My_Documents/Knowledge/Computer/VBS/my_vbs"
+let $vim_exp="E:/Material/Linux/Vim/experience.txt"
+
+let g:favoritesList = {"session":$ses, "battest":$battest, "vbstest":$vbstest, "mybat":$mybat, "myvbs":$myvbs, "vimexp":$vim_exp}
+
