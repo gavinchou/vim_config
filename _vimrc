@@ -619,6 +619,15 @@ function! MakeSurround(mode, ...)
   if l:delim == ''
     return
   endif
+  let l:ldelim = l:delim
+  let l:delimDict = {"[":"]", "(":")", "/*":"*/", "{":"}", "<":">", "a":"a", "b":"a", "c":"a", "d":"a", "e":"a"}
+  for key in keys(l:delimDict)
+    if key == l:delim
+      let l:delim = l:delimDict[key]
+      break
+    endif
+  endfor
+  let l:rdelim = l:delim
 
   if a:mode == "visual"
     " go back to visual mode
@@ -640,7 +649,7 @@ function! MakeSurround(mode, ...)
     exe 'norm! "sdiw'
   endif
 
-  let l:str = l:delim . getreg('s') . l:delim
+  let l:str = l:ldelim . getreg('s') . l:rdelim
   call setreg('s', l:str, 'v')
 
   " if the cursor is at the end of line paste behined
