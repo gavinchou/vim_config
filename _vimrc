@@ -611,26 +611,20 @@ function! MakeSurround(mode, ...)
 
   let l:old = getreg('s')
 
-  if a:mode == "visual"
-    if a:0 < 2
-      let l:delim = input("surround with:")
-    else
-      let l:delim = a:1
-    endif
-    if l:delim == ''
-      return
-    endif
+  if a:0 < 2
+    let l:delim = input("surround with:")
+  else
+    let l:delim = a:1
+  endif
+  if l:delim == ''
+    return
+  endif
 
+  if a:mode == "visual"
+    " go back to visual mode
     exe "norm! gv"
     let l:isLastChar = IsLastChar()
     exe 'norm! "sx'
-    let l:str = l:delim . getreg('s') . l:delim
-    call setreg('s', l:str, 'v')
-    if l:isLastChar
-      exe 'norm! "sp'
-    else
-      exe 'norm! "sP'
-    endif
   else
     " normal mode
     if GetCurrentChar() == ' ' || GetCurrentChar() == '	'
@@ -644,26 +638,16 @@ function! MakeSurround(mode, ...)
     let l:isLastChar = IsLastChar()
     " echo l:isLastChar
     exe 'norm! "sdiw'
+  endif
 
-    if a:0 < 1
-      let l:delim = input("surround with:")
-    else
-      let l:delim = a:1
-    endif
-    if l:delim == ''
-      return
-    endif
-    let l:str = l:delim . getreg('s') . l:delim
-    call setreg('s', l:str, 'v')
+  let l:str = l:delim . getreg('s') . l:delim
+  call setreg('s', l:str, 'v')
 
-    " if the cursor is at the end of line paste behined
-    if l:isLastChar
-      " diwp
-      exe 'norm! "sp'
-    else
-      exe 'norm! "sP'
-      " diwP
-    endif
+  " if the cursor is at the end of line paste behined
+  if l:isLastChar
+    exe 'norm! "sp'
+  else
+    exe 'norm! "sP'
   endif
 
   call setreg('s', l:old)
