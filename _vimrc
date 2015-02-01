@@ -180,19 +180,19 @@ endfunction
 " %! means the things following it will be evaluated as expression
 set tabline=%!MyTabLine()
 
-" ============================== key maping ===================================
+" ============================== key mapping ===================================
 " tab mappings
-map! <M-1> <ESC>1gt
-map! <M-2> <ESC>2gt
-map! <M-3> <ESC>3gt
-map! <M-4> <ESC>4gt
-map! <M-5> <ESC>5gt
-map! <M-6> <ESC>6gt
-map! <M-7> <ESC>7gt
-map! <M-8> <ESC>8gt
-map! <M-9> <ESC>9gt
-map! <M-t> <ESC>:tabnew<CR>
-map! <M-w> <ESC>:tabclose<CR>
+nmap <M-1> <ESC>1gt
+nmap <M-2> <ESC>2gt
+nmap <M-3> <ESC>3gt
+nmap <M-4> <ESC>4gt
+nmap <M-5> <ESC>5gt
+nmap <M-6> <ESC>6gt
+nmap <M-7> <ESC>7gt
+nmap <M-8> <ESC>8gt
+nmap <M-9> <ESC>9gt
+nmap <M-t> <ESC>:tabnew<CR>
+nmap <M-w> <ESC>:tabclose<CR>
 map <C-Tab> <ESC>gt
 imap <C-Tab> <ESC>gt
 imap <C-F4> <ESC>:tabc<CR>
@@ -301,7 +301,7 @@ vmap <silent> cx :call Comment(UNCOMMENT)<CR>
 function! Run()
   if &ft == "vim"
     exe 'source %'
-    return ""
+    return "vim"
   endif
   for ext in ["cc", "cpp", "c", "cxx", "h", "hpp"]
     if &ft == ext
@@ -328,6 +328,11 @@ function! Run()
 endfunction
 
 map <F5> :silent call Run()<CR>
+
+
+nmap <F4> :call MakeSurround("normal")<CR>
+vmap <F4> :call MakeSurround("visual")<CR>
+
 
 " taglist, make tag file
 function! MakeTags()
@@ -402,14 +407,15 @@ function! AutoCompletionKeyMap()
     imap <C-space> <C-N><C-P>
   endif
 endfunc
-" php dictionary
-autocmd filetype php set dictionary-=E:/Material/Linux/Vim/config/php_function_list.txt
-autocmd filetype php set dictionary+=E:/Material/Linux/Vim/config/php_function_list.txt
 
 nnoremap j gj
 nnoremap k gk
 nnoremap gj j
 nnoremap gk k
+vnoremap j gj
+vnoremap k gk
+vnoremap gj j
+vnoremap gk k
 
 " ================================ misc =======================================
 " where the swap file stored
@@ -446,6 +452,11 @@ set autochdir
 let Tlist_Show_One_File = 1
 let Tlist_Exit_OnlyWindow = 1
 let Tlist_Use_Right_Window = 1
+let Tlist_Enable_Fold_Column = 0
+
+" php dictionary
+autocmd filetype php set dictionary-=E:/Material/Linux/Vim/config/php_function_list.txt
+autocmd filetype php set dictionary+=E:/Material/Linux/Vim/config/php_function_list.txt
 
 "let g:winManagerWindowLayout='FileExplorer|TagList'
 "nmap wm :WMToggle<cr>
@@ -492,50 +503,20 @@ command! -range TrimLeft <line1>,<line2>call RemoveBeginningWhitespace()
 command! -range Tl <line1>,<line2>call RemoveBeginningWhitespace()
 
 " --------- rename current file
-command! -nargs=1 -bang Rename call <bang>Rename(<f-args>)
-command! -nargs=1 -bang REName call <bang>REName(<f-args>)
+command! -nargs=+ -bang Rename let newName = "<args>"<BAR>
+  \let curExt = expand("%:e")<BAR>
+  \let oldFullPath = expand("%:p")<BAR>
+  \exe "saveas<bang> " . newName<BAR>
+  \echo "renamed current file to: " . expand("%:t")<BAR>
+  \if newName == expand("%:t")<BAR>
+    \echo "suceeded to save the file " . newName<BAR>
+    \let delResult =  delete(oldFullPath)<BAR>
+    \if delResult != 0<BAR>
+      \echo "fail to delete the old file: " . oldFullPath<BAR>
+    \endif<BAR>
+  \endif<BAR>
+
 nmap <F2> :Ren 
-function! Rename(newName)
-  echo a:newName
-  let curExt = expand("%:e")
-  let oldFullPath = expand("%:p")
-"   if filereadable(a:newName)
-  if "" != glob(a:newName)
-    echo "file existed, used REN to overwrite"
-    return "file existed!"
-  endif
-  exe "saveas " . a:newName
-  echo expand("%:t")
-  if a:newName == expand("%:t") " suceeded to save the file
-    if has("win32")
-      let oldFullPath = '"' . oldFullPath . '"'
-      exe "!del /f /q " . oldFullPath
-    else
-      " let oldFullPath = '"' . expand("%:pt") . '"'
-      let oldFullPath = '"' . oldFullPath . '"'
-      echo oldFullPath
-      exe "!rm -f " . oldFullPath
-    endif
-  endif
-endfunction
-" rename the file and overwrite if there is a file with the name exists
-function! REName(newName)
-  echo a:newName
-  let curExt = expand("%:e")
-  let oldFullPath = expand("%:p")
-  exe "saveas! " . a:newName
-  echo expand("%:t")
-  if a:newName == expand("%:t") " suceeded to save the file
-    if has("win32")
-      let oldFullPath = '"' . oldFullPath . '"'
-      exe "!del /f /q " . oldFullPath
-    else
-      let oldFullPath = '"' . expand("%:pt") . '"'
-      echo oldFullPath
-      exe "!rm -f " . oldFullPath
-    endif
-  endif
-endfunction
 
 " --------- make/load session
 " command! -nargs=? -bang Mks mks<bang> $ses
@@ -604,66 +585,6 @@ command! Spell silent echo "toggle spell"<BAR>
   \endif<BAR>
   \let g:spell_enabled=!g:spell_enabled
 
-nmap <F4> :call MakeSurround("normal")<CR>
-vmap <F4> :call MakeSurround("visual")<CR>
-
-function! MakeSurround(mode, ...)
-
-  let l:old = getreg('s')
-
-  if a:0 < 2
-    let l:delim = input("surround with:")
-  else
-    let l:delim = a:1
-  endif
-  if l:delim == ''
-    return
-  endif
-  let l:ldelim = l:delim
-  let l:delimDict = {"[":"]", "(":")", "/*":"*/", "{":"}", "<":">", "a":"a", "b":"a", "c":"a", "d":"a", "e":"a"}
-  for key in keys(l:delimDict)
-    if key == l:delim
-      let l:delim = l:delimDict[key]
-      break
-    endif
-  endfor
-  let l:rdelim = l:delim
-
-  if a:mode == "visual"
-    " go back to visual mode
-    exe "norm! gv"
-    let l:isLastChar = IsLastChar()
-    exe 'norm! "sx'
-  else
-    " normal mode
-    if GetCurrentChar() == ' ' || GetCurrentChar() == '	'
-      echo "no surround for white char"
-      return
-    endif
-    if IsFirstChar() == 0
-      " move backward and go to word end
-      exe 'norm! he'
-    endif
-    let l:isLastChar = IsLastChar()
-    " echo l:isLastChar
-    exe 'norm! "sdiw'
-  endif
-
-  let l:str = l:ldelim . getreg('s') . l:rdelim
-  call setreg('s', l:str, 'v')
-
-  " if the cursor is at the end of line paste behined
-  if l:isLastChar
-    exe 'norm! "sp'
-  else
-    exe 'norm! "sP'
-  endif
-
-  call setreg('s', l:old)
-endfunc
-
-command! -nargs=? Surround silent call MakeSurround(<arg>)<BAR>
-
 " ========================= file type =========================================
 autocmd BufNewFile,BufRead *.alipaylog setf alipaylog
 autocmd BufNewFile,BufRead *.md setf markdown
@@ -718,14 +639,76 @@ function! GetCurrentChar()
   return l:char
 endfunc
 
+function! MakeSurround(mode, ...)
+
+  let l:old = getreg('s')
+
+  if a:0 < 2
+    let l:delim = input("surround with:")
+  else
+    let l:delim = a:1
+  endif
+  if l:delim == ''
+    return
+  endif
+  let l:ldelim = l:delim
+  let l:delimDict = {"[":"]", "(":")", "/*":"*/", "{":"}", "<":">"}
+  for key in keys(l:delimDict)
+    if key == l:delim
+      let l:delim = l:delimDict[key]
+      break
+    endif
+  endfor
+  let l:rdelim = l:delim
+
+  if a:mode == "visual"
+    " go back to visual mode
+    exe "norm! gv"
+    let l:isLastChar = IsLastChar()
+    exe 'norm! "sx'
+  else
+    " normal mode
+    if GetCurrentChar() == ' ' || GetCurrentChar() == '	'
+      echo "no surround for white space"
+      return
+    endif
+    if IsFirstChar() == 0
+      " move backward and go to word end
+      exe 'norm! he'
+    endif
+    let l:isLastChar = IsLastChar()
+    " echo l:isLastChar
+    exe 'norm! "sdiw'
+  endif
+
+  let l:str = l:ldelim . getreg('s') . l:rdelim
+  call setreg('s', l:str, 'v')
+
+  " if the cursor is at the end of line paste behined
+  if l:isLastChar
+    exe 'norm! "sp'
+  else
+    exe 'norm! "sP'
+  endif
+
+  call setreg('s', l:old)
+endfunc
 
 " ============================ test ===========================================
 command! -nargs=* -bang TestCmd call <bang>TestFunc(<f-args>)
 function! TestFunc()
 "   exe "q"
-  echo "<bang>"
-  echo "test -bang function"
+  echo expand("<bang>") . "test -bang function"
 endfunction
+command! -nargs=* -bang TestCmd echo "test cmd"<BAR>
+  \if "<bang>" != ""<BAR>
+    \echo "test"<BAR>
+  \endif<BAR>
+  \echo "<lt>bang>" . "\n<bang>"<BAR>
+  \let arg = "<args>"<BAR>
+  \echo arg<BAR>
 
 " nohlsearch
 noh
+
+" vim:tw=80:ts=2:ft=vim

@@ -42,6 +42,7 @@ hi IncSearch ctermfg=235 ctermbg=186 cterm=NONE guifg=#272822 guibg=#e6db74 gui=
 hi Search ctermfg=15 ctermbg=40 cterm=NONE guifg=#ffffff guibg=#2c9026 gui=NONE
 hi Directory ctermfg=141 ctermbg=NONE cterm=NONE guifg=#ae81ff guibg=NONE gui=NONE
 hi Folded ctermfg=242 ctermbg=235 cterm=NONE guifg=#75715e guibg=#272822 gui=NONE
+hi FoldColumn ctermfg=102 ctermbg=237 cterm=NONE guifg=#90908a guibg=#3c3d37 gui=NONE
 
 hi Normal ctermfg=231 ctermbg=235 cterm=NONE guifg=#f8f8f2 guibg=#272822 gui=NONE
 hi Boolean ctermfg=141 ctermbg=NONE cterm=NONE guifg=#ae81ff guibg=NONE gui=NONE
@@ -192,9 +193,8 @@ hi StatusLine ctermfg=yellow ctermbg=darkgray cterm=bold guifg=#ffff00 guibg=#64
 hi StatusLineNC ctermfg=gray ctermbg=darkgray cterm=NONE guifg=#f8f8f2 guibg=#64645e gui=NONE
 hi VertSplit guifg=black guibg=darkgray gui=none ctermfg=black ctermbg=gray term=none cterm=none
 
-hi Folded guifg=#808080 guibg=#000040 ctermfg=darkgrey ctermbg=black cterm=bold term=bold
-hi FoldColumn guifg=#808080 guibg=#000040 ctermfg=darkgrey ctermbg=black cterm=bold term=bold
-" hi LineNr guifg=#90f020 ctermfg=darkyellow cterm=none
+hi Folded guifg=#90908a guibg=#3c3d37 gui=NONE ctermfg=darkgrey ctermbg=black cterm=bold term=bold
+hi FoldColumn guifg=#90908a guibg=#3c3d37 gui=NONE ctermfg=darkgrey ctermbg=black cterm=bold term=bold
 hi LineNr guifg=#90f020 ctermfg=darkyellow cterm=none
 
 hi DiffAdd guibg=darkblue ctermbg=darkblue term=none cterm=none
