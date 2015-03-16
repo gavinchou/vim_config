@@ -26,7 +26,7 @@ set fencs=utf8,gbk,gb2312,cp936,gb18030
 
 " --------- status line, command line
 set statusline=%<%F\ %y\ %m%r%=0x%B\ %l/%L,%c%V\ [%n]
-" always display status line, 0 never 1 2window 2 always
+" always display status line, 0 never, 1 more than 2 windows, 2 always
 set laststatus=2
 " ruler, command line appearance, if laststatus == 2, ruler is useless
 set noruler " ru
@@ -102,11 +102,27 @@ if has("gui")
 "       endif
 "     endfor
 
+    " do not change the tablabel when focus on tlist or netrw
     let t:TlistWinnr = bufwinnr(g:TagList_title)
-    " do not change the tablabel when focus on tlist
     if t:TlistWinnr > 1 && winnr() == t:TlistWinnr
       return t:label
     endif
+    let t:netrwWinnr = bufwinnr('NetrwTreeListing')
+    if t:netrwWinnr > 0 && winnr() == t:netrwWinnr
+      return t:label
+    endif
+    " original netrtreelisting using increasing netrw_treelistnum, reduce
+    " efficience
+"     for i in range(1, 20)
+"       let t:netrwWinnr = bufwinnr('NetrwTreeListing ' . i)
+"       if t:netrwWinnr > 0 && winnr() == t:netrwWinnr
+"         return t:label
+"       else
+"         if t:netrwWinnr > 0
+"           break
+"         endif
+"       endif
+"     endfor
 
     " add '*' if the current window(file) has been modified
     if getwinvar(winnr(), "&modified")
@@ -116,14 +132,15 @@ if has("gui")
     endif
 
     let t:name =  " " . expand("%:t")
-    let t:winNum = tabpagewinnr(tabpagenr(), '$')
-    if t:TlistWinnr > 1 | let t:winNum = t:winNum - 1 | endif
-    if t:winNum > 1
-      let t:winNum = " " . t:winNum
+    let t:winCount = tabpagewinnr(tabpagenr(), '$')
+    if t:TlistWinnr > 1 && t:winCount > 1 | let t:winCount = t:winCount - 1 | endif
+    if t:netrwWinnr > 0 && t:winCount > 1 | let t:winCount = t:winCount - 1 | endif
+    if t:winCount > 1
+      let t:winCount = " " . t:winCount
     else
-      let t:winNum = ''
+      let t:winCount = ''
     endif
-    let t:label = t:label . tabpagenr() . t:name . t:winNum
+    let t:label = t:label . tabpagenr() . t:name . t:winCount
     return t:label
   endfunction
 
@@ -132,7 +149,7 @@ if has("gui")
   " set guitablabel=%N\ %t
 endif
 
-" custom tabs for terminal version
+" ---------- custom tabs for terminal version
 function! MyTabLabel(n)
   let label = ''
   let bufnrlist = tabpagebuflist(a:n)
@@ -283,6 +300,13 @@ function! Comment(mode)
       return "xml"
     endif
   endfor
+
+  " comment string is %
+  if &ft == "matlab"
+    call CommentImpl("%", a:mode)
+    return "matlab"
+  endif
+
   echo "No comment command support for " . &ft . " --- Gavin"
 endfunction
 
@@ -331,7 +355,7 @@ map <F5> :silent call Run()<CR>
 
 
 nmap <F4> :call MakeSurround("normal")<CR>
-vmap <F4> :call MakeSurround("visual")<CR>
+vmap <F4> <ESC>:call MakeSurround1("visual")<CR>
 
 
 " taglist, make tag file
@@ -354,14 +378,14 @@ map <C-F12> :call MakeTags()<CR>
 nmap <C-A> ggVG
 
 " ---------- redirect for ESC
-imap fds <ESC>
-map fds <ESC>
-omap fds <ESC>
-imap FDS <ESC>:echo "CAPS_LOCK!"<CR><ESC>
-map FDS <ESC>:echo "CAPS_LOCK!"<CR><ESC>
-omap FDS <ESC>:echo "CAPS_LOCK!"<CR><ESC>
-cnoremap fds <C-U><ESC>
-cnoremap FDS <C-U><ESC>:echo "CAPS_LOCK!"<CR><ESC>
+" imap fds <ESC>
+" map fds <ESC>
+" omap fds <ESC>
+" imap FDS <ESC>:echo "CAPS_LOCK!"<CR><ESC>
+" map FDS <ESC>:echo "CAPS_LOCK!"<CR><ESC>
+" omap FDS <ESC>:echo "CAPS_LOCK!"<CR><ESC>
+" cnoremap fds <C-U><ESC>
+" cnoremap FDS <C-U><ESC>:echo "CAPS_LOCK!"<CR><ESC>
 
 " deletion, use backspace as backspace key, using black hole register
 nmap <silent> <BS> h"_x
@@ -611,12 +635,6 @@ function! IsLastChar(...)
     else
       exe 'norm! h'
     endif
-
-    " let l:isLastChar = 0
-    " if col('.') == col('$') - 1
-      " let l:isLastChar = 1
-    " endif
-    " return l:isLastChar
   endif
   return l:isLastChar
 
@@ -634,10 +652,75 @@ endfunc
 
 function! GetCurrentChar()
   let l:str = getline('.')
-  let l:pos = getpos('.')
-  let l:char = l:str[l:pos[2] - 1]
+  let l:pos = col('.')
+  let l:char = l:str[l:pos - 1]
   return l:char
 endfunc
+
+
+function! MakeSurround1(mode, ...)
+
+  let l:old = getreg('s')
+
+  if a:0 < 2
+    let l:delim = input("surround with:")
+  else
+    let l:delim = a:1
+  endif
+  if l:delim == ''
+    return
+  endif
+  let l:ldelim = l:delim
+  let l:delimDict = {"[":"]", "(":")", "/*":"*/", "{":"}", "<":">"}
+  for key in keys(l:delimDict)
+    if key == l:delim
+      let l:delim = l:delimDict[key]
+      break
+    endif
+  endfor
+  let l:rdelim = l:delim
+
+  if a:mode == "visual"
+    " go back to visual mode, calling this function will enter normal mode
+    norm! "<ESC>"
+    let l:startPos = getpos("'<")
+    let l:endPos = getpos("'>")
+    echo l:endPos
+    
+    return
+    echo getpos('.')
+    let l:isLastChar = IsLastChar()
+    echo getpos('.')
+    exe "norm! gv"
+    exe 'norm! "sx'
+  else
+    " normal mode
+    if GetCurrentChar() == ' ' || GetCurrentChar() == '	'
+      echo "no surround for white space"
+      return
+    endif
+    if !IsFirstChar()
+      " move backward and go to word end
+      exe 'norm! he'
+    endif
+    let l:isLastChar = IsLastChar()
+    " echo l:isLastChar
+    exe 'norm! "sdiw'
+  endif
+
+  let l:str = l:ldelim . getreg('s') . l:rdelim
+  call setreg('s', l:str, 'v')
+
+  " if the cursor is at the end of line paste behined
+  if l:isLastChar
+    exe 'norm! "sp'
+  else
+    exe 'norm! "sP'
+  endif
+
+  call setreg('s', l:old)
+endfunc
+
 
 function! MakeSurround(mode, ...)
 
@@ -662,7 +745,7 @@ function! MakeSurround(mode, ...)
   let l:rdelim = l:delim
 
   if a:mode == "visual"
-    " go back to visual mode
+    " go back to visual mode, calling this function will enter normal mode
     exe "norm! gv"
     let l:isLastChar = IsLastChar()
     exe 'norm! "sx'
@@ -694,6 +777,31 @@ function! MakeSurround(mode, ...)
   call setreg('s', l:old)
 endfunc
 
+" ----------
+let g:sCount = 0
+function! GetSelection()
+  " Why is this not a built-in Vim script function?!
+  let l:isVisual = 0
+  if mode() == 'v'
+    let l:isVisual = 1
+    norm! "<esc>"
+  endif
+  let [lnum1, col1] = getpos("'<")[1:2]
+  let [lnum2, col2] = getpos("'>")[1:2]
+  let lines = getline(lnum1, lnum2)
+  let lines[-1] = lines[-1][: col2 - (&selection == 'inclusive' ? 1 : 2)]
+  let lines[0] = lines[0][col1 - 1:]
+  let g:sCount = g:sCount + 1
+  let l:res =  join(lines, "\n")
+  echo l:res
+  if l:isVisual
+    norm! "gv"
+  endif
+  return l:res
+endfunction
+
+
+
 " ============================ test ===========================================
 command! -nargs=* -bang TestCmd call <bang>TestFunc(<f-args>)
 function! TestFunc()
@@ -711,4 +819,4 @@ command! -nargs=* -bang TestCmd echo "test cmd"<BAR>
 " nohlsearch
 noh
 
-" vim:tw=80:ts=2:ft=vim
+" vim:tw=80:ts=2:ft=vim:set noet
