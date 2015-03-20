@@ -7,8 +7,8 @@ if $favorites != ""
   so $favorites
 endif
 
-" ============================ appearence =====================================
-" ---------- indent
+" ============================ appearence =============================== {{{2
+" ---------- indent {{{3
 set autoindent " ai
 set sw=2 " shift width, indent width
 set tabstop=2 " ts, tabstop width
@@ -16,7 +16,7 @@ set et " extendtab
 autocmd BufEnter * set et
 autocmd BufEnter,BufRead *.txt,*.md set noet
 
-" display as more lines as possible, do not use @@
+" --------- display as more lines as possible, do not use @@ {{{3
 set display=lastline " dy=lastline
 
 set backspace=indent,eol,start
@@ -24,7 +24,14 @@ set number
 set encoding=utf-8
 set fencs=utf8,gbk,gb2312,cp936,gb18030
 
-" --------- status line, command line
+" ---------- folding option {{{3
+" marker manual indent
+set foldmethod=marker
+set foldenable
+" foldlevel
+" set fdl=3 
+
+" --------- status line, command line {{{3
 set statusline=%<%F\ %y\ %m%r%=0x%B\ %l/%L,%c%V\ [%n]
 " always display status line, 0 never, 1 more than 2 windows, 2 always
 set laststatus=2
@@ -32,7 +39,7 @@ set laststatus=2
 set noruler " ru
 set rulerformat =%30(%<%y\ %m%r%=0x%B\ %l,%c%V\ [%n]\ %P%)
 
-" using system clipboard
+" ---------- using system clipboard {{{3
 set clipboard+=unnamed
 " if has("win32")
 "   set ff=dos
@@ -89,7 +96,7 @@ syntax on
 set listchars=tab:>-,trail:-
 set list
 
-" set tablabel as 'number filename'
+" set tablabel as 'number filename' {{{3
 if has("gui")
   function! GuiTabLabel()
 
@@ -107,22 +114,14 @@ if has("gui")
     if t:TlistWinnr > 1 && winnr() == t:TlistWinnr
       return t:label
     endif
+    " change netrw_treelistnum in netrw.vim to non-increasing
     let t:netrwWinnr = bufwinnr('NetrwTreeListing')
     if t:netrwWinnr > 0 && winnr() == t:netrwWinnr
+      if tabpagewinnr(tabpagenr(), '$') == 1
+        let t:label = tabpagenr() . ' NetrwTreeListing'
+      endif
       return t:label
     endif
-    " original netrtreelisting using increasing netrw_treelistnum, reduce
-    " efficience
-"     for i in range(1, 20)
-"       let t:netrwWinnr = bufwinnr('NetrwTreeListing ' . i)
-"       if t:netrwWinnr > 0 && winnr() == t:netrwWinnr
-"         return t:label
-"       else
-"         if t:netrwWinnr > 0
-"           break
-"         endif
-"       endif
-"     endfor
 
     " add '*' if the current window(file) has been modified
     if getwinvar(winnr(), "&modified")
@@ -197,7 +196,7 @@ endfunction
 " %! means the things following it will be evaluated as expression
 set tabline=%!MyTabLine()
 
-" ============================== key mapping ===================================
+" ============================== key mapping ============================ {{{2
 " tab mappings
 nmap <M-1> <ESC>1gt
 nmap <M-2> <ESC>2gt
@@ -441,7 +440,7 @@ vnoremap k gk
 vnoremap gj j
 vnoremap gk k
 
-" ================================ misc =======================================
+" ================================ misc ================================ {{{2
 " where the swap file stored
 if has('win32')
   set dir=e:/temp/
@@ -505,7 +504,7 @@ au BufNewFile,BufRead,BufEnter *.cpp,*.hpp set omnifunc=omni#cpp#complete#Main
 set virtualedit=block
 
 
-" ================================ commands ===================================
+" ================================ commands ============================ {{{2
 " ---------- trim the heading/trailing whitespaces
 function! RemoveTrailingWhitespace()
   for lineNo in range(a:firstline, a:lastline)
@@ -609,11 +608,11 @@ command! Spell silent echo "toggle spell"<BAR>
   \endif<BAR>
   \let g:spell_enabled=!g:spell_enabled
 
-" ========================= file type =========================================
+" ========================= file type ================================== {{{2
 autocmd BufNewFile,BufRead *.alipaylog setf alipaylog
 autocmd BufNewFile,BufRead *.md setf markdown
 
-" ========================== functions ========================================
+" ========================== functions ================================= {{{2
 " ---------- judge if current char is the last char
 function! IsLastChar(...)
 
@@ -777,7 +776,7 @@ function! MakeSurround(mode, ...)
   call setreg('s', l:old)
 endfunc
 
-" ----------
+" ---------- GetSelection() {{{3
 let g:sCount = 0
 function! GetSelection()
   " Why is this not a built-in Vim script function?!
@@ -801,8 +800,7 @@ function! GetSelection()
 endfunction
 
 
-
-" ============================ test ===========================================
+" ============================ test ====================================== {{{2
 command! -nargs=* -bang TestCmd call <bang>TestFunc(<f-args>)
 function! TestFunc()
 "   exe "q"
