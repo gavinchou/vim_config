@@ -1,3 +1,3 @@
-gvim and vim configs
+### gvim and vim configs
 
 functions and commands
