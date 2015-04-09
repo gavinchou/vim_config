@@ -28,8 +28,8 @@ set fencs=utf8,gbk,gb2312,cp936,gb18030
 " marker manual indent
 set foldmethod=marker
 set foldenable
+set fdl=3
 " foldlevel
-" set fdl=3 
 
 " --------- status line, command line {{{3
 set statusline=%<%F\ %y\ %m%r%=0x%B\ %l/%L,%c%V\ [%n]
@@ -109,15 +109,18 @@ if has("gui")
 "       endif
 "     endfor
 
+    let t:winCount = tabpagewinnr(tabpagenr(), '$')
+
     " do not change the tablabel when focus on tlist or netrw
     let t:TlistWinnr = bufwinnr(g:TagList_title)
     if t:TlistWinnr > 1 && winnr() == t:TlistWinnr
       return t:label
     endif
     " change netrw_treelistnum in netrw.vim to non-increasing
+    " NetrwTreeListing, can match all netrw windows
     let t:netrwWinnr = bufwinnr('NetrwTreeListing')
     if t:netrwWinnr > 0 && winnr() == t:netrwWinnr
-      if tabpagewinnr(tabpagenr(), '$') == 1
+      if t:winCount == 1 || !exists('t:label')
         let t:label = tabpagenr() . ' NetrwTreeListing'
       endif
       return t:label
@@ -131,7 +134,9 @@ if has("gui")
     endif
 
     let t:name =  " " . expand("%:t")
-    let t:winCount = tabpagewinnr(tabpagenr(), '$')
+    if t:name == ' '
+      let t:name = ' [No Name]'
+    endif
     if t:TlistWinnr > 1 && t:winCount > 1 | let t:winCount = t:winCount - 1 | endif
     if t:netrwWinnr > 0 && t:winCount > 1 | let t:winCount = t:winCount - 1 | endif
     if t:winCount > 1
@@ -306,6 +311,12 @@ function! Comment(mode)
     return "matlab"
   endif
 
+  " comment string is --
+  if &ft == "lua"
+    call CommentImpl("--", a:mode)
+    return "lua"
+  endif
+
   echo "No comment command support for " . &ft . " --- Gavin"
 endfunction
 
@@ -354,7 +365,7 @@ map <F5> :silent call Run()<CR>
 
 
 nmap <F4> :call MakeSurround("normal")<CR>
-vmap <F4> <ESC>:call MakeSurround1("visual")<CR>
+vmap <F4> <ESC>:call MakeSurround("visual")<CR>
 
 
 " taglist, make tag file
@@ -559,7 +570,7 @@ command! -nargs=? -bang Loadsession silent echo "try to load session"<BAR>
   \else<BAR>
     \so $ses<BAR>
     \echo "loaded session from: ".$ses<BAR>
-  \endif
+  \endif<BAR>
 
 " --------- insert current time in the current position
 command! Time echo strftime("%Y-%m-%d-%a %H:%M:%S")<BAR>
@@ -591,7 +602,7 @@ command! AutoIme silent echo "toggle auto ime"<BAR>
 command! FilePath echo 'Get file full path'<BAR>
   \:!start cmd /c start get_current_file_full_path.lnk "%:p" "vim"<CR>
 
-" --------- view in markdown
+" --------- view in markdown previewer
 command! Markdown silent !start cmd /c start "markdown" markdown.lnk "%:p"
 
 "---------- spell
