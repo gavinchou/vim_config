@@ -24,6 +24,9 @@ set number
 set encoding=utf-8
 set fencs=utf8,gbk,gb2312,cp936,gb18030
 
+" scrolling {{{3
+set scrolloff=3 "margin of moving to top or bot of current screen
+
 " ---------- folding option {{{3
 " marker manual indent
 set foldmethod=marker
@@ -47,7 +50,7 @@ set clipboard+=unnamed
 "   set ff=unix
 " endif
 
-" set right margin, only > 704 the cc option is available
+" set right margin, only > 704 the cc option is available {{{3
 if version >= 704
   set cc=80 " colorcolumn=80 " cc=80
 endif
@@ -56,12 +59,13 @@ set cursorline
 " hilight column
 set cursorcolumn
 
-" netrw explorer
+" netrw explorer {{{3
 let g:netrw_winsize = 20
 let g:netrw_liststyle= 3 " archive
 let g:netrw_menu = 0 " no menu
 let g:netrw_preview = 1 " preview in vertical new window
 
+" menu bar {{{3
 if has("gui")
   " set window(gui) size
   if has("win32")
@@ -82,7 +86,7 @@ if has("gui")
   " set selectmode+=mouse
 endif
 
-" theme
+" theme {{{3
 if &term == 'vt100' || &term == 'xterm'
   set term=xterm-256color
 endif
@@ -92,7 +96,7 @@ set guifont=Consolas:h13
 syntax enable
 syntax on
 
-" show white spaces
+" show white spaces {{{3
 set listchars=tab:>-,trail:-
 set list
 
@@ -275,7 +279,7 @@ function! Comment(mode)
     endif
   endfor
   " comment string is ;
-  if &ft == "dosini" || &ft == "ini"
+  if &ft == "dosini" || &ft == "ini" || &ft == "autohotkey"
     call CommentImpl(";", a:mode)
     return "dosini"
   endif
@@ -472,6 +476,7 @@ set nocompatible
 set magic
 set nobackup
 set hlsearch
+set incsearch
 set showmatch
 filetype on
 filetype plugin on
