@@ -229,6 +229,9 @@ vnoremap <C-S> <C-C>:update<CR>
 inoremap <C-S> <C-O>:update<CR>
 
 " comment
+let g:COMMENT_1 = 1 " add comment string at the begin of the line
+let g:COMMENT_2 = 2 " add comment string before the first word of the line
+let g:UNCOMMENT = 3 " uncomment
 function! CommentImpl(commentStr, mode)
   " echo a:commentStr
   " execute "echo " . '"' . a:commentStr . '"'
@@ -244,15 +247,15 @@ function! CommentImpl(commentStr, mode)
   endif
 
   " comment
-  if a:mode == 1
+  if a:mode == g:COMMENT_1
     " comment codes, add commentStr at the begin of line
     " exe 's!^!' . l:cs . ' !'
     exe 's/\(^\s*\)\(.*\)/' . l:cs . ' \1\2' . l:cse . '/e'
-  elseif a:mode == 2
+  elseif a:mode == g:COMMENT_2
     " comment description, add commentStr before the first word
     exe 's/\(^\s*\)\(.*\)/\1' . l:cs . ' \2' . l:cse . '/e'
   " uncomment
-  elseif a:mode == 0
+  elseif a:mode == g:UNCOMMENT
     exe 's/^\(\s*\)' . l:cs . ' \{0,1\}\(.*\)' . l:cse . '/\1\2/e'
   endif
   exe 'noh'
@@ -283,16 +286,25 @@ function! Comment(mode)
     call CommentImpl(";", a:mode)
     return "dosini"
   endif
+  " comment string is REM
   if &ft == "dosbatch" || &ft == "cmd" || &ft == "bat"
-    let flag=0
+    let l:caseChanged = 0
+    let l:smartcaseChanged = 0
     if &ignorecase == 0
       set ignorecase
-      let flag=1
+      let l:caseChanged = 1
     endif
+    if &smartcase == 1
+      set nosmartcase
+      let l:smartcaseChanged = 1
+    end
     call CommentImpl("REM", a:mode)
-    if flag == 1
+    if l:caseChanged == 1
       set noignorecase
     endif
+    if l:smartcaseChanged == 1
+      set smartcase
+    end
     return "dosbatch"
   endif
   " comment string is '
@@ -324,9 +336,6 @@ function! Comment(mode)
   echo "No comment command support for " . &ft . " --- Gavin"
 endfunction
 
-let g:COMMENT_1 = 1 " add comment string at the begin of the line
-let g:COMMENT_2 = 2 " add comment string before the first word of the line
-let g:UNCOMMENT = 0 " uncomment
 nmap <silent> cc :call Comment(COMMENT_1)<CR>
 vmap <silent> cc :call Comment(COMMENT_1)<CR>
 nmap <silent> CC :call Comment(COMMENT_2)<CR>
@@ -455,6 +464,9 @@ vnoremap k gk
 vnoremap gj j
 vnoremap gk k
 
+" ---------- resize vertical explorer to width 30
+nmap <M-F2> :vertical resize 30<CR>
+
 " ================================ misc ================================ {{{2
 " where the swap file stored
 if has('win32')
@@ -465,6 +477,7 @@ endif
 
 " ignore case while search
 set ignorecase " noignorecase
+set smartcase " if upper case letters are typed, case sensitive
 
 " language
 if has('win32')
@@ -476,7 +489,7 @@ set nocompatible
 set magic
 set nobackup
 set hlsearch
-set incsearch
+set incsearch "increase search, search when typing a pattern
 set showmatch
 filetype on
 filetype plugin on
@@ -610,7 +623,7 @@ command! FilePath echo 'Get file full path'<BAR>
 " --------- view in markdown previewer
 command! Markdown silent !start cmd /c start "markdown" markdown.lnk "%:p"
 
-"---------- spell
+" --------- spell
 " spell default off, default language is en_US, using spf to change spell
 " language
 let g:spell_enabled=0
@@ -623,6 +636,7 @@ command! Spell silent echo "toggle spell"<BAR>
     \echo "spell enabled"<BAR>
   \endif<BAR>
   \let g:spell_enabled=!g:spell_enabled
+
 
 " ========================= file type ================================== {{{2
 autocmd BufNewFile,BufRead *.alipaylog setf alipaylog
