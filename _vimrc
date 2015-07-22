@@ -472,17 +472,7 @@ nmap <M-F2> :vertical resize 30<CR>
 if has('win32')
   set dir=e:/temp/
 elseif has('unix')
-  " let s:tmpDir="~/temp/"
-
-  " if !isdirectory("~/temp/") && !isdirectory("~/tmp/")
-    " " call mkdir("~/temp/", "p")
-    " !mkdir "~/temp/"
-  " endif
-  " if isdirectory("~/tmp/") && !isdirectory("~/temp/")
-    " let s:tmpDir="~/tmp/"
-  " endif
-  " exe "set dir=".s:tempDir
-  set dir=~/temp,~/tmp
+  set dir=~/temp/,~/tmp/
 endif
 
 " ignore case while search
