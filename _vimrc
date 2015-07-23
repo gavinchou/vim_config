@@ -621,7 +621,12 @@ command! FilePath echo 'Get file full path'<BAR>
   \:!start cmd /c start get_current_file_full_path.lnk "%:p" "vim"<CR>
 
 " --------- view in markdown previewer
-command! Markdown silent !start cmd /c start "markdown" markdown.lnk "%:p"
+if has('win32')
+  command! Markdown silent !start cmd /c start "markdown" markdown.lnk "%:p"
+elseif has('unix')
+  " command! Markdown silent !open -a Mou "%:p"
+  command! Markdown silent !mou "%:p"
+endif
 
 " --------- spell
 " spell default off, default language is en_US, using spf to change spell
