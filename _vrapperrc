@@ -1,24 +1,29 @@
 "indent
-set sw=4 " shift width, indent width
-set tabstop=4 " ts, tabstop width
-set et " extendtab
+" shift width, indent width
+set sw=2
+" ts, tabstop width
+set tabstop=2
+" extendtab
+set et
 
 " ignore case while search
-set ignorecase " noignorecase
+set ignorecase
+set smartcase
+set clipboard=unnamedplus
 
 " hilight current line
 set cursorline
 " hilight column
 set cursorcolumn
 
-nmap cc <C-/>
-vmap cc 
-nmap CC 
-vmap CC 
-nmap cz 
-nmap cx 
-vmap cz 
-vmap cx 
+" nmap cc <M-z>
+" vmap cc <M-z>
+" nmap CC <M-z>
+" vmap CC <M-z>
+" nmap cz <M-z>
+" nmap cx <M-z>
+" vmap cz <M-z>
+" vmap cx <M-z>
 
 " redirect for ESC
 imap fds <ESC>
@@ -28,7 +33,10 @@ imap FDS <ESC>:echo "CAPS_LOCK!"<CR><ESC>
 " map FDS <ESC>:echo "CAPS_LOCK!"<CR><ESC>
 " omap FDS <ESC>:echo "CAPS_LOCK!"<CR><ESC>
 
+set hls
+
 " deletion, use backspace as backspace key, using black hole register
 nmap <silent> <BS> h"_x
 vmap <silent> <BS> h"_x
 
+" vim: ft=vim tw=80 sw=2 ts=2 et
