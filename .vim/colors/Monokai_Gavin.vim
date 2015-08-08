@@ -20,7 +20,7 @@ endif
 
 if s:t_Co > 255
 
-hi Cursor ctermfg=235 ctermbg=231 cterm=NONE guifg=#272822 guibg=#f8f8f0 gui=NONE
+hi Cursor ctermfg=232 ctermbg=15 cterm=NONE guifg=#272822 guibg=#f8f8f0 gui=NONE
 hi Visual ctermfg=NONE ctermbg=59 cterm=NONE guifg=NONE guibg=#49483e gui=NONE
 hi CursorLine ctermfg=NONE ctermbg=237 cterm=NONE guifg=NONE guibg=#3c3d37 gui=NONE
 hi CursorColumn ctermfg=NONE ctermbg=237 cterm=NONE guifg=NONE guibg=#3c3d37 gui=NONE
@@ -29,22 +29,22 @@ hi LineNr ctermfg=102 ctermbg=237 cterm=NONE guifg=#90908a guibg=#3c3d37 gui=NON
 hi VertSplit ctermfg=241 ctermbg=241 cterm=NONE guifg=#64645e guibg=#64645e gui=NONE
 " hi MatchParen ctermfg=197 ctermbg=NONE cterm=underline guifg=#f92672 guibg=NONE gui=underline
 hi MatchParen ctermfg=197 ctermbg=NONE cterm=NONE guifg=#f92672 guibg=NONE gui=NONE
-" hi StatusLine ctermfg=231 ctermbg=241 cterm=bold guifg=#f8f8f2 guibg=#64645e gui=bold
+" hi StatusLine ctermfg=15 ctermbg=241 cterm=bold guifg=#f8f8f2 guibg=#64645e gui=bold
 " current file status line
 hi StatusLine ctermfg=226 ctermbg=241 cterm=bold guifg=#ffff00 guibg=#64645e gui=bold
 " not current(NC) status line
-hi StatusLineNC ctermfg=231 ctermbg=241 cterm=NONE guifg=#f8f8f2 guibg=#64645e gui=NONE
+hi StatusLineNC ctermfg=15 ctermbg=241 cterm=NONE guifg=#f8f8f2 guibg=#64645e gui=NONE
 hi Pmenu ctermfg=NONE ctermbg=59 cterm=NONE guifg=NONE guibg=#49483e gui=NONE
 hi PmenuSel ctermfg=NONE ctermbg=197 cterm=NONE guifg=NONE guibg=#f92672 gui=NONE
 hi PmenuSbar ctermfg=NONE ctermbg=7 guifg=NONE guibg=#c0c0c0
 hi PmenuThumb ctermfg=46 ctermbg=46 guifg=#00ff00 guibg=#00ff00
-hi IncSearch ctermfg=235 ctermbg=186 cterm=NONE guifg=#272822 guibg=#e6db74 gui=NONE
+hi IncSearch ctermfg=232 ctermbg=186 cterm=NONE guifg=#272822 guibg=#e6db74 gui=NONE
 hi Search ctermfg=15 ctermbg=40 cterm=NONE guifg=#ffffff guibg=#2c9026 gui=NONE
 hi Directory ctermfg=141 ctermbg=NONE cterm=NONE guifg=#ae81ff guibg=NONE gui=NONE
-hi Folded ctermfg=242 ctermbg=235 cterm=NONE guifg=#75715e guibg=#272822 gui=NONE
+hi Folded ctermfg=242 ctermbg=232 cterm=NONE guifg=#75715e guibg=#272822 gui=NONE
 hi FoldColumn ctermfg=102 ctermbg=237 cterm=NONE guifg=#90908a guibg=#3c3d37 gui=NONE
 
-hi Normal ctermfg=231 ctermbg=235 cterm=NONE guifg=#f8f8f2 guibg=#272822 gui=NONE
+hi Normal ctermfg=15 ctermbg=232 cterm=NONE guifg=#f8f8f2 guibg=#272822 gui=NONE
 hi Boolean ctermfg=141 ctermbg=NONE cterm=NONE guifg=#ae81ff guibg=NONE gui=NONE
 hi Character ctermfg=141 ctermbg=NONE cterm=NONE guifg=#ae81ff guibg=NONE gui=NONE
 " hi Comment ctermfg=242 ctermbg=NONE cterm=NONE guifg=#75715e guibg=NONE gui=NONE
@@ -52,12 +52,12 @@ hi Comment ctermfg=40 ctermbg=NONE cterm=NONE guifg=#00e000 guibg=NONE gui=NONE
 hi Conditional ctermfg=197 ctermbg=NONE cterm=NONE guifg=#f92672 guibg=NONE gui=NONE
 hi Constant ctermfg=197 ctermbg=NONE cterm=NONE guifg=#f92672 guibg=NONE gui=NONE
 hi Define ctermfg=197 ctermbg=NONE cterm=NONE guifg=#f92672 guibg=NONE gui=NONE
-hi DiffAdd ctermfg=231 ctermbg=64 cterm=bold guifg=#f8f8f2 guibg=#46830c gui=bold
+hi DiffAdd ctermfg=15 ctermbg=64 cterm=bold guifg=#f8f8f2 guibg=#46830c gui=bold
 hi DiffDelete ctermfg=88 ctermbg=NONE cterm=NONE guifg=#8b0807 guibg=NONE gui=NONE
-hi DiffChange ctermfg=231 ctermbg=23 cterm=NONE guifg=#f8f8f2 guibg=#243955 gui=NONE
-hi DiffText ctermfg=231 ctermbg=24 cterm=bold guifg=#f8f8f2 guibg=#204a87 gui=bold
-hi ErrorMsg ctermfg=231 ctermbg=197 cterm=NONE guifg=#f8f8f0 guibg=#f92672 gui=NONE
-hi WarningMsg ctermfg=231 ctermbg=197 cterm=NONE guifg=#f8f8f0 guibg=#f92672 gui=NONE
+hi DiffChange ctermfg=15 ctermbg=23 cterm=NONE guifg=#f8f8f2 guibg=#243955 gui=NONE
+hi DiffText ctermfg=15 ctermbg=24 cterm=bold guifg=#f8f8f2 guibg=#204a87 gui=bold
+hi ErrorMsg ctermfg=15 ctermbg=197 cterm=NONE guifg=#f8f8f0 guibg=#f92672 gui=NONE
+hi WarningMsg ctermfg=15 ctermbg=197 cterm=NONE guifg=#f8f8f0 guibg=#f92672 gui=NONE
 hi Float ctermfg=141 ctermbg=NONE cterm=NONE guifg=#ae81ff guibg=NONE gui=NONE
 hi Function ctermfg=148 ctermbg=NONE cterm=NONE guifg=#a6e22e guibg=NONE gui=NONE
 hi Identifier ctermfg=81 ctermbg=NONE cterm=NONE guifg=#66d9ef guibg=NONE gui=italic
@@ -68,14 +68,14 @@ hi Number ctermfg=141 ctermbg=NONE cterm=NONE guifg=#ae81ff guibg=NONE gui=NONE
 "hi Operator ctermfg=197 ctermbg=NONE cterm=NONE guifg=#d8d8d8 guibg=NONE gui=NONE
 hi Operator ctermfg=197 ctermbg=NONE cterm=NONE guifg=#f92672 guibg=NONE gui=NONE
 hi PreProc ctermfg=197 ctermbg=NONE cterm=NONE guifg=#f92672 guibg=NONE gui=NONE
-hi Special ctermfg=231 ctermbg=NONE cterm=NONE guifg=#f8f8f2 guibg=NONE gui=NONE
+hi Special ctermfg=15 ctermbg=NONE cterm=NONE guifg=#f8f8f2 guibg=NONE gui=NONE
 "hi SpecialKey ctermfg=59 ctermbg=237 cterm=NONE guifg=#49483e guibg=#3c3d37 gui=NONE
 hi SpecialKey ctermfg=59 ctermbg=NONE cterm=NONE guifg=#49483e guibg=NONE gui=NONE
 hi Statement ctermfg=197 ctermbg=NONE cterm=NONE guifg=#f92672 guibg=NONE gui=NONE
 hi StorageClass ctermfg=81 ctermbg=NONE cterm=NONE guifg=#66d9ef guibg=NONE gui=italic
 hi String ctermfg=186 ctermbg=NONE cterm=NONE guifg=#e6db74 guibg=NONE gui=NONE
 hi Tag ctermfg=197 ctermbg=NONE cterm=NONE guifg=#f92672 guibg=NONE gui=NONE
-hi Title ctermfg=231 ctermbg=NONE cterm=bold guifg=#f8f8f2 guibg=NONE gui=bold
+hi Title ctermfg=15 ctermbg=NONE cterm=bold guifg=#f8f8f2 guibg=NONE gui=bold
 hi Todo ctermfg=95 ctermbg=NONE cterm=inverse,bold guifg=#75715e guibg=NONE gui=inverse,bold
 " hi Type ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE
 " hi Type ctermfg=27 ctermbg=NONE cterm=NONE guifg=#66d9ef guibg=NONE gui=NONE
@@ -133,13 +133,13 @@ hi cssCommonAttr ctermfg=81 ctermbg=NONE cterm=NONE guifg=#66d9ef guibg=NONE gui
 hi cssBraces ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE
 
 " customized colors for future use
-hi PureRed ctermfg=231 ctermbg=NONE cterm=NONE guifg=#ff0000 guibg=NONE gui=NONE
-hi PureGreen ctermfg=231 ctermbg=NONE cterm=NONE guifg=#00ff00 guibg=NONE gui=NONE
-hi PureBlue ctermfg=231 ctermbg=NONE cterm=NONE guifg=#0000ff guibg=NONE gui=NONE
-hi PureYellow ctermfg=231 ctermbg=NONE cterm=NONE guifg=#ffff00 guibg=NONE gui=NONE
-hi PureCyan ctermfg=231 ctermbg=NONE cterm=NONE guifg=#00ffff guibg=NONE gui=NONE
-hi PurePurple ctermfg=231 ctermbg=NONE cterm=NONE guifg=#ff00ff guibg=NONE gui=NONE
-hi PureGray ctermfg=231 ctermbg=NONE cterm=NONE guifg=#888888 guibg=NONE gui=NONE
+hi PureRed ctermfg=15 ctermbg=NONE cterm=NONE guifg=#ff0000 guibg=NONE gui=NONE
+hi PureGreen ctermfg=15 ctermbg=NONE cterm=NONE guifg=#00ff00 guibg=NONE gui=NONE
+hi PureBlue ctermfg=15 ctermbg=NONE cterm=NONE guifg=#0000ff guibg=NONE gui=NONE
+hi PureYellow ctermfg=15 ctermbg=NONE cterm=NONE guifg=#ffff00 guibg=NONE gui=NONE
+hi PureCyan ctermfg=15 ctermbg=NONE cterm=NONE guifg=#00ffff guibg=NONE gui=NONE
+hi PurePurple ctermfg=15 ctermbg=NONE cterm=NONE guifg=#ff00ff guibg=NONE gui=NONE
+hi PureGray ctermfg=15 ctermbg=NONE cterm=NONE guifg=#888888 guibg=NONE gui=NONE
 
 hi Red ctermfg=197 ctermbg=NONE cterm=NONE guifg=#f92672 guibg=NONE gui=NONE
 hi Green ctermfg=40 ctermbg=NONE cterm=NONE guifg=#00e000 guibg=NONE gui=NONE
@@ -150,14 +150,14 @@ hi YellowGreen ctermfg=148 ctermbg=NONE cterm=NONE guifg=#a6e22e guibg=NONE gui=
 hi Purple ctermfg=141 ctermbg=NONE cterm=NONE guifg=#ae81ff guibg=NONE gui=NONE
 hi Gray ctermfg=59 ctermbg=NONE cterm=NONE guifg=#49483e guibg=NONE gui=NONE
 
-hi ErrorColor ctermfg=231 ctermbg=197 cterm=NONE guifg=#f8f8f0 guibg=#f92672 gui=NONE
-hi ErrorColor ctermfg=231 ctermbg=197 cterm=NONE guifg=#f8f8f0 guibg=#f92672 gui=NONE
+hi ErrorColor ctermfg=15 ctermbg=197 cterm=NONE guifg=#f8f8f0 guibg=#f92672 gui=NONE
+hi ErrorColor ctermfg=15 ctermbg=197 cterm=NONE guifg=#f8f8f0 guibg=#f92672 gui=NONE
 hi Url ctermfg=27 ctermbg=NONE cterm=underline guifg=#409fff guibg=NONE gui=underline
 hi def link UrlLink Url
 hi def link HttpLink UrlLink
 
-hi Bold ctermfg=231 ctermbg=235 cterm=bold guifg=#f8f8f2 guibg=#272822 gui=Bold
-hi Italic ctermfg=231 ctermbg=235 cterm=bold guifg=#f8f8f2 guibg=#272822 gui=italic
+hi Bold ctermfg=15 ctermbg=232 cterm=bold guifg=#f8f8f2 guibg=#272822 gui=Bold
+hi Italic ctermfg=15 ctermbg=232 cterm=bold guifg=#f8f8f2 guibg=#272822 gui=italic
 
 endif " 256 colors 
 
