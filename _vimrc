@@ -12,6 +12,7 @@ endif
 set autoindent " ai
 set sw=2 " shift width, indent width
 set tabstop=2 " ts, tabstop width
+set tw=80
 set et " extendtab
 autocmd BufEnter * set et
 autocmd BufEnter,BufRead *.txt,*.md set noet
@@ -84,6 +85,11 @@ if has("gui")
   set go-=L " left
   set go-=l
   " set selectmode+=mouse
+endif
+
+" ---------- disable mouse under unix system
+if has("unix")
+  set mouse=
 endif
 
 " theme {{{3
@@ -232,9 +238,6 @@ noremap <C-S> :update<CR>
 vnoremap <C-S> <C-C>:update<CR>
 inoremap <C-S> <C-O>:update<CR>
 
-" refresh from executing external command
-nmap <S-F5> :!echo "fresh vim"<CR><CR>
-
 " comment
 let g:COMMENT_1 = 1 " add comment string at the begin of the line
 let g:COMMENT_2 = 2 " add comment string before the first word of the line
@@ -282,7 +285,7 @@ function! Comment(mode)
     return "vim"
   endif
   " comment string is #
-  for tmp in ["python","sed","apache","bash","conf", "sh", "make"]
+  for tmp in ["python","sed","apache","bash","conf", "sh", "make", "cfg"]
     if &ft == tmp
       call CommentImpl("#", a:mode)
       return tmp
@@ -394,7 +397,7 @@ vmap <F4> <ESC>:call MakeSurround("visual")<CR>
 function! MakeTags()
   if &ft == "cpp"
 "     exe '!ctags -R --langmap=.h.inl.cxx.cc --c++-kinds=+p --fields=+iaSK --extra=+q --languages=c++'
-    exe '!ctags -R --language-force=c++ --langmap=c++:+.inl+.cc+.h+.cxx -h +.inl --c++-kinds=+p --fields=+iaSK --extra=+q --languages=c++'
+    exe '!ctags -R --language-force=c++ --exclude=.git --exclude=.svn --langmap=c++:+.inl+.cc+.h+.cxx -h +.inl --c++-kinds=+p --fields=+iaSK --extra=+q --languages=c++'
   elseif &ft == "java"
     exe '!ctags -R --java-kinds=+p --fields=+iaS --extra=+q --languages=java'
   elseif &ft == "php"
@@ -476,6 +479,8 @@ vnoremap gk k
 " ---------- resize vertical explorer to width 30
 nmap <F3> :vertical resize 20<BAR>
   \Tlist<CR>
+" ---------- build project
+nmap <F7> :!make clean; make -j7<CR>
 
 " ================================ misc ================================ {{{2
 " where the swap file stored
@@ -537,7 +542,7 @@ let g:OmniCpp_SelectFirstItem = 2 " select first popup item (without inserting i
 " au CursorMovedI,InsertLeave * if pumvisible() == 0|silent! pclose|endif
 " set completeopt=menuone,menu,longest,preview
 set completeopt=menuone,menu
-au BufNewFile,BufRead,BufEnter *.cpp,*.hpp set omnifunc=omni#cpp#complete#Main
+au BufNewFile,BufRead,BufEnter *.cpp,*.hpp,*.h,*.cc set omnifunc=omni#cpp#complete#Main
 
 " ---------- virtual edit
 set virtualedit=block
@@ -600,7 +605,7 @@ command! -nargs=? -bang Loadsession silent echo "try to load session"<BAR>
     \echo "loaded session from: ".$ses<BAR>
   \endif<BAR>
 
-" --------- insert current time in the current position, after the box
+" --------- insert current time in the current position, after the cursor box
 command! Time echo strftime("%Y-%m-%d-%a %H:%M:%S")<BAR>
 "   \"=strftime("%Y-%m-%d %H:%M:%S")<CR><BAR>
 "   \gP
@@ -653,6 +658,9 @@ command! Spell silent echo "toggle spell"<BAR>
   \endif<BAR>
   \let g:spell_enabled=!g:spell_enabled
 
+" ---------- set vim format footer fo baidu cpp
+command! Baiducpp echo "added baidu cpp vim format footer"<BAR>
+  \silent call append('$',  '// vim: tw=100 ts=4 sw=4 cc=100')
 
 " ========================= file type ================================== {{{2
 autocmd BufNewFile,BufRead *.alipaylog setf alipaylog
