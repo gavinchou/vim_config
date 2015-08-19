@@ -171,6 +171,10 @@ function! MyTabLabel(n)
   " get all file names
   let winnr = tabpagewinnr(a:n)
   let fileName = bufname(bufnrlist[winnr - 1])
+  let lastOccur = strridx(fileName, "/")
+  if (lastOccur > 0)
+    let fileName = strpart(fileName, lastOccur + 1, strlen(fileName))
+  endif
   let label = label . a:n . " " . fileName
   return label
 endfunction
@@ -189,7 +193,7 @@ function! MyTabLine()
     let s .= '%' . (i + 1) . 'T'
 
     " the label is made by MyTabLabel()
-    let s .= ' %{MyTabLabel(' . (i + 1) . ')} '
+    let s .= ' %{MyTabLabel(' . (i + 1) . ')} |'
   endfor
 
   " after the last tab fill with TabLineFill and reset tab page nr
@@ -227,6 +231,9 @@ map <C-F4> <ESC>:tabc<CR>
 noremap <C-S> :update<CR>
 vnoremap <C-S> <C-C>:update<CR>
 inoremap <C-S> <C-O>:update<CR>
+
+" refresh from executing external command
+nmap <S-F5> :!echo "fresh vim"<CR><CR>
 
 " comment
 let g:COMMENT_1 = 1 " add comment string at the begin of the line
@@ -355,11 +362,13 @@ function! Run()
       if has("win32")
         exe '!start cmd /c start "vim run cpp" g++.lnk "%:p"'
       elseif has("unix")
-        exe '!g++ -Wall -std=c++11 "%:p" -o ~/tmp/vim.out;~/tmp/vim.out;read -n1 -p "Press any key to continue...";echo'
+        exe '!rm ~/tmp/vim.out 2>/dev/null; g++ -Wall -std=c++11 "%:p" -o ~/tmp/vim.out && ~/tmp/vim.out;read -n1 -p "Press any key to continue...";echo'
         " refresh the current tab
         exe 'tabnew'
         exe 'tabc'
-        " exe 'tabp'
+        if tabpagenr('$') > 1
+          exe 'tabp'
+        endif
       endif
       return ""
     endif
@@ -395,7 +404,7 @@ function! MakeTags()
   endif
 endfunction
 
-map <C-F12> :call MakeTags()<CR>
+map <F12> :call MakeTags()<CR>
 
 " select all
 nmap <C-A> ggVG
@@ -451,7 +460,7 @@ function! AutoCompletionKeyMap()
   if &ft == "cpp"
     imap <C-space> <C-x><C-o><C-p>
   else
-    imap <C-space> <C-N><C-P>
+    imap <C-space> <C-n><C-p>
   endif
 endfunc
 
@@ -465,7 +474,8 @@ vnoremap gj j
 vnoremap gk k
 
 " ---------- resize vertical explorer to width 30
-nmap <M-F2> :vertical resize 30<CR>
+nmap <F3> :vertical resize 20<BAR>
+  \Tlist<CR>
 
 " ================================ misc ================================ {{{2
 " where the swap file stored
@@ -590,13 +600,14 @@ command! -nargs=? -bang Loadsession silent echo "try to load session"<BAR>
     \echo "loaded session from: ".$ses<BAR>
   \endif<BAR>
 
-" --------- insert current time in the current position
+" --------- insert current time in the current position, after the box
 command! Time echo strftime("%Y-%m-%d-%a %H:%M:%S")<BAR>
 "   \"=strftime("%Y-%m-%d %H:%M:%S")<CR><BAR>
 "   \gP
 " = register is the expression output register, 6. Expression register "= can only be used onece
 " normal mode insert current time, and enter insert mode
 nnoremap time "=strftime("%Y-%m-%d-%a %H:%M:%S")<CR>pa
+nnoremap timelog "="\n##" . strftime("%Y-%m-%d-%a %H:%M:%S") . "\ntag: \n"<CR>PjjA
 
 " --------- auto change IME to en
 " for some type of files auto ime is needed
@@ -625,7 +636,7 @@ if has('win32')
   command! Markdown silent !start cmd /c start "markdown" markdown.lnk "%:p"
 elseif has('unix')
   " command! Markdown silent !open -a Mou "%:p"
-  command! Markdown silent !mou "%:p"
+  command! Markdown silent !killall Mou;mou "%:p"
 endif
 
 " --------- spell
