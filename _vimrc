@@ -366,16 +366,22 @@ function! Run()
         exe '!start cmd /c start "vim run cpp" g++.lnk "%:p"'
       elseif has("unix")
         exe '!rm ~/tmp/vim.out 2>/dev/null; g++ -Wall -std=c++11 "%:p" -o ~/tmp/vim.out && ~/tmp/vim.out;read -n1 -p "Press any key to continue...";echo'
-        " refresh the current tab
-        exe 'tabnew'
-        exe 'tabc'
-        if tabpagenr('$') > 1
-          exe 'tabp'
-        endif
+        " refresh when return from external command
+        call RefreshCurrentTab()
       endif
       return ""
     endif
   endfor
+  if (&ft == 'sh')
+    exe "!source %; read -n1 -p 'Press any key to continue...'"
+    call RefreshCurrentTab()
+    return "bash"
+  endif
+  if (&ft == 'markdown')
+    if (has('unix'))
+      exe '!killall Mou; mou %:p'
+    endif
+  endif
   if has("win32")
     exe '!start cmd /c start "vim run" nppCompileAndRun.lnk "%:p"'
   elseif has("unix")
@@ -644,19 +650,17 @@ elseif has('unix')
   command! Markdown silent !killall Mou;mou "%:p"
 endif
 
-" --------- spell
+" --------- spell {{{3
 " spell default off, default language is en_US, using spf to change spell
 " language
-let g:spell_enabled=0
 command! Spell silent echo "toggle spell"<BAR>
-  \if g:spell_enabled<BAR>
+  \if &spell<BAR>
     \setlocal nospell<BAR>
-    \echo "spell disabled"<BAR>
+    \echo "spell check disabled"<BAR>
   \else<BAR>
     \setlocal spell<BAR>
-    \echo "spell enabled"<BAR>
-  \endif<BAR>
-  \let g:spell_enabled=!g:spell_enabled
+    \echo "spell check enabled"<BAR>
+  \endif
 
 " ---------- set vim format footer fo baidu cpp
 command! Baiducpp echo "added baidu cpp vim format footer"<BAR>
@@ -853,6 +857,18 @@ function! GetSelection()
   return l:res
 endfunction
 
+" ---------- RefreshCurrentTab()
+function! RefreshCurrentTab()
+  " refresh the current tab
+  " tabnew and tabc will make the next tab active if there are more than 1 tabs
+  " save the current tabpage number
+  let curTabNum = tabpagenr()
+  exe 'tabnew'
+  exe 'tabc'
+  if tabpagenr('$') != curTabNum
+    exe 'tabp'
+  endif
+endfunction
 
 " ============================ test ====================================== {{{2
 command! -nargs=* -bang TestCmd call <bang>TestFunc(<f-args>)
