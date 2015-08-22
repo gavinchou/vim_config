@@ -547,6 +547,9 @@ let s:tlist_def_vim_settings =
 " yacc language
 let s:tlist_def_yacc_settings = 'yacc;l:label'
 
+" markdown language
+let s:tlist_def_markdown_settings = 'markdown;h:heading'
+
 "------------------- end of language specific options --------------------
 
 " Vim window size is changed by the taglist plugin or not
