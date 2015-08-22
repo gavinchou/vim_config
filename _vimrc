@@ -273,7 +273,7 @@ endfunction
 
 function! Comment(mode)
   " comment string is //
-  for tmp in ["cpp", "java", "php", "javascript"]
+  for tmp in ["cpp", "c", "java", "php", "javascript"]
     if &ft == tmp
       call CommentImpl("\\/\\/", a:mode)
       return "//"
