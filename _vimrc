@@ -175,13 +175,14 @@ function! MyTabLabel(n)
     endif
   endfor
   " get all file names
+  let winCount = tabpagewinnr(a:n, '$')
   let winnr = tabpagewinnr(a:n)
   let fileName = bufname(bufnrlist[winnr - 1])
   let lastOccur = strridx(fileName, "/")
   if (lastOccur > 0)
     let fileName = strpart(fileName, lastOccur + 1, strlen(fileName))
   endif
-  let label = label . a:n . " " . fileName
+  let label = label . a:n . " " . fileName . " ". winCount
   return label
 endfunction
 
