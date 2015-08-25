@@ -12,6 +12,7 @@ endif
 set autoindent " ai
 set sw=2 " shift width, indent width
 set tabstop=2 " ts, tabstop width
+set tw=80
 set et " extendtab
 autocmd BufEnter * set et
 autocmd BufEnter,BufRead *.txt,*.md set noet
@@ -84,6 +85,11 @@ if has("gui")
   set go-=L " left
   set go-=l
   " set selectmode+=mouse
+endif
+
+" ---------- disable mouse under unix system
+if has("unix")
+  set mouse=
 endif
 
 " theme {{{3
@@ -171,6 +177,10 @@ function! MyTabLabel(n)
   " get all file names
   let winnr = tabpagewinnr(a:n)
   let fileName = bufname(bufnrlist[winnr - 1])
+  let lastOccur = strridx(fileName, "/")
+  if (lastOccur > 0)
+    let fileName = strpart(fileName, lastOccur + 1, strlen(fileName))
+  endif
   let label = label . a:n . " " . fileName
   return label
 endfunction
@@ -189,7 +199,7 @@ function! MyTabLine()
     let s .= '%' . (i + 1) . 'T'
 
     " the label is made by MyTabLabel()
-    let s .= ' %{MyTabLabel(' . (i + 1) . ')} '
+    let s .= ' %{MyTabLabel(' . (i + 1) . ')} |'
   endfor
 
   " after the last tab fill with TabLineFill and reset tab page nr
@@ -275,7 +285,7 @@ function! Comment(mode)
     return "vim"
   endif
   " comment string is #
-  for tmp in ["python","sed","apache","bash","conf", "sh", "make"]
+  for tmp in ["python","sed","apache","bash","conf", "sh", "make", "cfg"]
     if &ft == tmp
       call CommentImpl("#", a:mode)
       return tmp
@@ -355,11 +365,13 @@ function! Run()
       if has("win32")
         exe '!start cmd /c start "vim run cpp" g++.lnk "%:p"'
       elseif has("unix")
-        exe '!g++ -Wall -std=c++11 "%:p" -o ~/tmp/vim.out;~/tmp/vim.out;read -n1 -p "Press any key to continue...";echo'
+        exe '!rm ~/tmp/vim.out 2>/dev/null; g++ -Wall -std=c++11 "%:p" -o ~/tmp/vim.out && ~/tmp/vim.out;read -n1 -p "Press any key to continue...";echo'
         " refresh the current tab
         exe 'tabnew'
         exe 'tabc'
-        " exe 'tabp'
+        if tabpagenr('$') > 1
+          exe 'tabp'
+        endif
       endif
       return ""
     endif
@@ -385,7 +397,7 @@ vmap <F4> <ESC>:call MakeSurround("visual")<CR>
 function! MakeTags()
   if &ft == "cpp"
 "     exe '!ctags -R --langmap=.h.inl.cxx.cc --c++-kinds=+p --fields=+iaSK --extra=+q --languages=c++'
-    exe '!ctags -R --language-force=c++ --langmap=c++:+.inl+.cc+.h+.cxx -h +.inl --c++-kinds=+p --fields=+iaSK --extra=+q --languages=c++'
+    exe '!ctags -R --language-force=c++ --exclude=.git --exclude=.svn --langmap=c++:+.inl+.cc+.h+.cxx -h +.inl --c++-kinds=+p --fields=+iaSK --extra=+q --languages=c++'
   elseif &ft == "java"
     exe '!ctags -R --java-kinds=+p --fields=+iaS --extra=+q --languages=java'
   elseif &ft == "php"
@@ -395,7 +407,7 @@ function! MakeTags()
   endif
 endfunction
 
-map <C-F12> :call MakeTags()<CR>
+map <F12> :call MakeTags()<CR>
 
 " select all
 nmap <C-A> ggVG
@@ -451,7 +463,7 @@ function! AutoCompletionKeyMap()
   if &ft == "cpp"
     imap <C-space> <C-x><C-o><C-p>
   else
-    imap <C-space> <C-N><C-P>
+    imap <C-space> <C-n><C-p>
   endif
 endfunc
 
@@ -465,7 +477,10 @@ vnoremap gj j
 vnoremap gk k
 
 " ---------- resize vertical explorer to width 30
-nmap <M-F2> :vertical resize 30<CR>
+nmap <F3> :vertical resize 20<BAR>
+  \Tlist<CR>
+" ---------- build project
+nmap <F7> :!make clean; make -j7<CR>
 
 " ================================ misc ================================ {{{2
 " where the swap file stored
@@ -527,7 +542,7 @@ let g:OmniCpp_SelectFirstItem = 2 " select first popup item (without inserting i
 " au CursorMovedI,InsertLeave * if pumvisible() == 0|silent! pclose|endif
 " set completeopt=menuone,menu,longest,preview
 set completeopt=menuone,menu
-au BufNewFile,BufRead,BufEnter *.cpp,*.hpp set omnifunc=omni#cpp#complete#Main
+au BufNewFile,BufRead,BufEnter *.cpp,*.hpp,*.h,*.cc set omnifunc=omni#cpp#complete#Main
 
 " ---------- virtual edit
 set virtualedit=block
@@ -590,13 +605,14 @@ command! -nargs=? -bang Loadsession silent echo "try to load session"<BAR>
     \echo "loaded session from: ".$ses<BAR>
   \endif<BAR>
 
-" --------- insert current time in the current position
+" --------- insert current time in the current position, after the cursor box
 command! Time echo strftime("%Y-%m-%d-%a %H:%M:%S")<BAR>
 "   \"=strftime("%Y-%m-%d %H:%M:%S")<CR><BAR>
 "   \gP
 " = register is the expression output register, 6. Expression register "= can only be used onece
 " normal mode insert current time, and enter insert mode
 nnoremap time "=strftime("%Y-%m-%d-%a %H:%M:%S")<CR>pa
+nnoremap timelog "="\n##" . strftime("%Y-%m-%d-%a %H:%M:%S") . "\ntag: \n"<CR>PjjA
 
 " --------- auto change IME to en
 " for some type of files auto ime is needed
@@ -625,7 +641,7 @@ if has('win32')
   command! Markdown silent !start cmd /c start "markdown" markdown.lnk "%:p"
 elseif has('unix')
   " command! Markdown silent !open -a Mou "%:p"
-  command! Markdown silent !mou "%:p"
+  command! Markdown silent !killall Mou;mou "%:p"
 endif
 
 " --------- spell
@@ -642,6 +658,9 @@ command! Spell silent echo "toggle spell"<BAR>
   \endif<BAR>
   \let g:spell_enabled=!g:spell_enabled
 
+" ---------- set vim format footer fo baidu cpp
+command! Baiducpp echo "added baidu cpp vim format footer"<BAR>
+  \silent call append('$',  '// vim: tw=100 ts=4 sw=4 cc=100')
 
 " ========================= file type ================================== {{{2
 autocmd BufNewFile,BufRead *.alipaylog setf alipaylog
