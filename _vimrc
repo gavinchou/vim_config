@@ -36,7 +36,7 @@ set fdl=3
 " foldlevel
 
 " --------- status line, command line {{{3
-set statusline=%<%F\ %y\ %m%r%=0x%B\ %l/%L,%c%V\ [%n]
+set statusline=%<%F\ %y\ %m%r%=0x%B\ %l/%L,%c%V\ [b%nw%{winnr()}]
 " always display status line, 0 never, 1 more than 2 windows, 2 always
 set laststatus=2
 " ruler, command line appearance, if laststatus == 2, ruler is useless
@@ -555,7 +555,7 @@ set virtualedit=block
 
 
 " ================================ commands ============================ {{{2
-" ---------- trim the heading/trailing whitespaces
+" ---------- trim the heading/trailing whitespaces {{{3
 function! RemoveTrailingWhitespace()
   for lineNo in range(a:firstline, a:lastline)
     let line = getline(lineNo)
@@ -575,7 +575,7 @@ command! -range T <line1>,<line2>call RemoveTrailingWhitespace()
 command! -range TrimLeft <line1>,<line2>call RemoveBeginningWhitespace()
 command! -range Tl <line1>,<line2>call RemoveBeginningWhitespace()
 
-" --------- rename current file
+" --------- rename current file {{{3
 command! -nargs=+ -bang Rename let newName = "<args>"<BAR>
   \let curExt = expand("%:e")<BAR>
   \let oldFullPath = expand("%:p")<BAR>
@@ -591,7 +591,7 @@ command! -nargs=+ -bang Rename let newName = "<args>"<BAR>
 
 nmap <F2> :Ren 
 
-" --------- make/load session
+" --------- make/load session {{{3
 " command! -nargs=? -bang Mks mks<bang> $ses
 command! -nargs=? -bang Mks silent echo "try to make session"<BAR>
   \if "<args>" != ""<BAR>
@@ -611,7 +611,7 @@ command! -nargs=? -bang Loadsession silent echo "try to load session"<BAR>
     \echo "loaded session from: ".$ses<BAR>
   \endif<BAR>
 
-" --------- insert current time in the current position, after the cursor box
+" --------- insert current time in the current position, after the cursor box {{{3
 command! Time echo strftime("%Y-%m-%d-%a %H:%M:%S")<BAR>
 "   \"=strftime("%Y-%m-%d %H:%M:%S")<CR><BAR>
 "   \gP
@@ -620,7 +620,7 @@ command! Time echo strftime("%Y-%m-%d-%a %H:%M:%S")<BAR>
 nnoremap time "=strftime("%Y-%m-%d-%a %H:%M:%S")<CR>pa
 nnoremap timelog "="\n##" . strftime("%Y-%m-%d-%a %H:%M:%S") . "\ntag: \n"<CR>PjjA
 
-" --------- auto change IME to en
+" --------- auto change IME to en {{{3
 " for some type of files auto ime is needed
 autocmd! InsertLeave *.txt,*.md call ChangeIme(g:autoChangeIme)
 let g:autoChangeIme = 1
@@ -638,11 +638,11 @@ command! AutoIme silent echo "toggle auto ime"<BAR>
   \endif<BAR>
   \let g:autoChangeIme=!g:autoChangeIme
 
-" --------- get file path into the system's clipboard
+" --------- get file path into the system's clipboard {{{3
 command! FilePath echo 'Get file full path'<BAR>
   \:!start cmd /c start get_current_file_full_path.lnk "%:p" "vim"<CR>
 
-" --------- view in markdown previewer
+" --------- view in markdown previewer {{{3
 if has('win32')
   command! Markdown silent !start cmd /c start "markdown" markdown.lnk "%:p"
 elseif has('unix')
@@ -662,7 +662,12 @@ command! Spell silent echo "toggle spell"<BAR>
     \echo "spell check enabled"<BAR>
   \endif
 
-" ---------- set vim format footer fo baidu cpp
+" ---------- focus certain window {{{3
+" this also can be done with "number <c-w> w" under normal mode
+" the win number is assending from top-down left-right seqeunce
+command! -count=1 W <count> winc w
+
+" ---------- set vim format footer fo baidu cpp {{{3
 command! Baiducpp echo "added baidu cpp vim format footer"<BAR>
   \silent call append('$',  '// vim: tw=100 ts=4 sw=4 cc=100')
 
