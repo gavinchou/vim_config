@@ -554,6 +554,9 @@ au BufNewFile,BufRead,BufEnter *.cpp,*.hpp,*.h,*.cc set omnifunc=omni#cpp#comple
 " ---------- virtual edit
 set virtualedit=block
 
+" ---------- format option
+" for multibyte text width line break, for text block: select lines, press Jgqgq
+set formatoptions+=m 
 
 " ================================ commands ============================ {{{2
 " ---------- trim the heading/trailing whitespaces {{{3
