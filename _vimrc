@@ -518,7 +518,7 @@ filetype plugin on
 filetype indent on
 
 " -------- tags, taglist, file explorer
-set tags=tags,./tags
+set tags=tags,./tags,~/dev/baidu-root/baidu_tags
 set tags+=E:/Material/C++/SOURCE/cygwin_gcc_c++_tags
 set tags+=E:/Material/C++/SOURCE/linux_systags
 set tags+=~/cpp_stdlib.tags
