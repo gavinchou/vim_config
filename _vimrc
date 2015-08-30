@@ -7,7 +7,7 @@ if $favorites != ""
   so $favorites
 endif
 
-" ============================ appearence =============================== {{{2
+" ============================ appearance =============================== {{{2
 " ---------- indent {{{3
 set autoindent " ai
 set sw=2 " shift width, indent width
@@ -87,7 +87,7 @@ if has("gui")
   " set selectmode+=mouse
 endif
 
-" ---------- disable mouse under unix system
+" ---------- disable mouse under unix system {{{3
 if has("unix")
   set mouse=
 endif
@@ -106,7 +106,7 @@ syntax on
 set listchars=tab:>-,trail:-
 set list
 
-" set tablabel as 'number filename' {{{3
+" set tablabel as 'number filename' for gui{{{3
 if has("gui")
   function! GuiTabLabel()
 
@@ -163,7 +163,7 @@ if has("gui")
   " set guitablabel=%N\ %t
 endif
 
-" ---------- custom tabs for terminal version
+" ---------- custom tabs for terminal version {{{3
 function! MyTabLabel(n)
   let label = ''
   let bufnrlist = tabpagebuflist(a:n)
@@ -217,7 +217,7 @@ endfunction
 set tabline=%!MyTabLine()
 
 " ============================== key mapping ============================ {{{2
-" tab mappings
+" tab mappings {{{3
 nmap <M-1> <ESC>1gt
 nmap <M-2> <ESC>2gt
 nmap <M-3> <ESC>3gt
@@ -234,12 +234,12 @@ imap <C-Tab> <ESC>gt
 imap <C-F4> <ESC>:tabc<CR>
 map <C-F4> <ESC>:tabc<CR>
 
-" Use CTRL-S for saving, also in Insert mode
+" Use CTRL-S for saving, also in Insert mode {{{3
 noremap <C-S> :update<CR>
 vnoremap <C-S> <C-C>:update<CR>
 inoremap <C-S> <C-O>:update<CR>
 
-" comment
+" comment {{{3
 let g:COMMENT_1 = 1 " add comment string at the begin of the line
 let g:COMMENT_2 = 2 " add comment string before the first word of the line
 let g:UNCOMMENT = 3 " uncomment
@@ -395,12 +395,10 @@ endfunction
 
 map <F5> :silent call Run()<CR>
 
-
 nmap <F4> :call MakeSurround("normal")<CR>
 vmap <F4> <ESC>:call MakeSurround("visual")<CR>
 
-
-" taglist, make tag file
+" taglist, make tag file {{{3
 function! MakeTags()
   if &ft == "cpp"
 "     exe '!ctags -R --langmap=.h.inl.cxx.cc --c++-kinds=+p --fields=+iaSK --extra=+q --languages=c++'
@@ -419,7 +417,7 @@ map <F12> :call MakeTags()<CR>
 " select all
 nmap <C-A> ggVG
 
-" ---------- redirect for ESC
+" ---------- redirect for ESC {{{3
 " imap fds <ESC>
 " map fds <ESC>
 " omap fds <ESC>
@@ -429,15 +427,15 @@ nmap <C-A> ggVG
 " cnoremap fds <C-U><ESC>
 " cnoremap FDS <C-U><ESC>:echo "CAPS_LOCK!"<CR><ESC>
 
-" deletion, use backspace as backspace key, using black hole register
+" deletion, use backspace as backspace key, using black hole register {{{3
 nmap <silent> <BS> h"_x
 vmap <silent> <BS> h"_x
 
-" ---------- open selected file
+" ---------- open selected file {{{3
 vnoremap <M-g> "zy:!start cmd /c start npp_open_document.lnk "<C-R>z" "%:p" "vim"<CR>
 vmap <M-g> "zy:!start cmd /c start npp_open_document.lnk "<C-R>z" "%:p" "vim"<CR>
 
-" --------- using * and # search for selected content in visual mode
+" ---------- using * and # search for selected content in visual mode {{{3
 vnoremap <silent> * :<C-U>
   \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
   \gvy/<C-R><C-R>=substitute(
@@ -449,7 +447,7 @@ vnoremap <silent> # :<C-U>
     \escape(@", '?\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
   \gV:call setreg('"', old_reg, old_regtype)<CR>
 
-" adjust the window size
+" ---------- adjust the window size {{{3
 " :resize n or :vertical resize n, where n is the size in height/width
 " horizontal size, height
 nmap <M-]> :resize +1<CR>
@@ -460,11 +458,11 @@ nmap <M--> :vertical resize -1<CR>
 " maximize window
 nmap <F11> :simalt ~x<CR>
 
-" ----------append ";" at the end of line, for cpp,php,js
+" ---------- append ";" at the end of line, for cpp,php,js {{{3
 " imap ;; <ESC>A;
 " nmap ;; <ESC>A;<ESC>
 
-" ---------- auto complete key map
+" ---------- auto complete key map {{{3
 autocmd BufRead,BufEnter * call AutoCompletionKeyMap()
 function! AutoCompletionKeyMap()
   if &ft == "cpp"
@@ -474,6 +472,7 @@ function! AutoCompletionKeyMap()
   endif
 endfunc
 
+" ---------- hjkl remap {{{3
 nnoremap j gj
 nnoremap k gk
 nnoremap gj j
@@ -483,21 +482,22 @@ vnoremap k gk
 vnoremap gj j
 vnoremap gk k
 
-" ---------- resize vertical explorer to width 30
+" ---------- resize vertical explorer to width 30 {{{3
 nmap <F3> :vertical resize 20<BAR>
   \Tlist<CR>
-" ---------- build project
+
+" ---------- build project {{{3
 nmap <F7> :!make clean; make -j7<CR>
 
 " ================================ misc ================================ {{{2
-" where the swap file stored
+" where the swap file stored {{{3
 if has('win32')
   set dir=e:/temp/
 elseif has('unix')
   set dir=~/temp/,~/tmp/
 endif
 
-" ignore case while search
+" ignore case while search {{{3
 set ignorecase " noignorecase
 set smartcase " if upper case letters are typed, case sensitive
 
@@ -517,11 +517,12 @@ filetype on
 filetype plugin on
 filetype indent on
 
-" -------- tags, taglist, file explorer
-set tags=tags,./tags,~/dev/baidu-root/baidu_tags
+" ---------- tags, taglist, file explorer {{{3
+set tags=tags,./tags
 set tags+=E:/Material/C++/SOURCE/cygwin_gcc_c++_tags
 set tags+=E:/Material/C++/SOURCE/linux_systags
 set tags+=~/cpp_stdlib.tags
+set tags+=~/dev/baidu-root/baidu_tags
 set autochdir
 let Tlist_Show_One_File = 1
 let Tlist_Exit_OnlyWindow = 1
@@ -535,7 +536,7 @@ autocmd filetype php set dictionary+=E:/Material/Linux/Vim/config/php_function_l
 "let g:winManagerWindowLayout='FileExplorer|TagList'
 "nmap wm :WMToggle<cr>
 
-" ---------- OmniCppComplete
+" ---------- OmniCppComplete {{{3
 " let g:OmniCpp_NamespaceSearch = 1
 " let g:OmniCpp_GlobalScopeSearch = 1
 " let g:OmniCpp_ShowAccess = 1
@@ -551,10 +552,10 @@ let g:OmniCpp_SelectFirstItem = 2 " select first popup item (without inserting i
 set completeopt=menuone,menu
 au BufNewFile,BufRead,BufEnter *.cpp,*.hpp,*.h,*.cc set omnifunc=omni#cpp#complete#Main
 
-" ---------- virtual edit
+" ---------- virtual edit {{{3
 set virtualedit=block
 
-" ---------- format option
+" ---------- text formatting option {{{3
 " for multibyte text width line break, for text block: select lines, press Jgqgq
 set formatoptions+=m 
 
@@ -579,7 +580,7 @@ command! -range T <line1>,<line2>call RemoveTrailingWhitespace()
 command! -range TrimLeft <line1>,<line2>call RemoveBeginningWhitespace()
 command! -range Tl <line1>,<line2>call RemoveBeginningWhitespace()
 
-" --------- rename current file {{{3
+" ---------- rename current file {{{3
 command! -nargs=+ -bang Rename let newName = "<args>"<BAR>
   \let curExt = expand("%:e")<BAR>
   \let oldFullPath = expand("%:p")<BAR>
@@ -595,7 +596,7 @@ command! -nargs=+ -bang Rename let newName = "<args>"<BAR>
 
 nmap <F2> :Ren 
 
-" --------- make/load session {{{3
+" ---------- make/load session {{{3
 " command! -nargs=? -bang Mks mks<bang> $ses
 command! -nargs=? -bang Mks silent echo "try to make session"<BAR>
   \if "<args>" != ""<BAR>
@@ -615,7 +616,7 @@ command! -nargs=? -bang Loadsession silent echo "try to load session"<BAR>
     \echo "loaded session from: ".$ses<BAR>
   \endif<BAR>
 
-" --------- insert current time in the current position, after the cursor box {{{3
+" ---------- insert current time in the current position, after the cursor box {{{3
 command! Time echo strftime("%Y-%m-%d-%a %H:%M:%S")<BAR>
 "   \"=strftime("%Y-%m-%d %H:%M:%S")<CR><BAR>
 "   \gP
@@ -624,7 +625,7 @@ command! Time echo strftime("%Y-%m-%d-%a %H:%M:%S")<BAR>
 nnoremap time "=strftime("%Y-%m-%d-%a %H:%M:%S")<CR>pa
 nnoremap timelog "="\n##" . strftime("%Y-%m-%d-%a %H:%M:%S") . "\ntag: \n"<CR>PjjA
 
-" --------- auto change IME to en {{{3
+" ---------- auto change IME to en {{{3
 " for some type of files auto ime is needed
 autocmd! InsertLeave *.txt,*.md call ChangeIme(g:autoChangeIme)
 let g:autoChangeIme = 1
@@ -642,11 +643,11 @@ command! AutoIme silent echo "toggle auto ime"<BAR>
   \endif<BAR>
   \let g:autoChangeIme=!g:autoChangeIme
 
-" --------- get file path into the system's clipboard {{{3
+" ---------- get file path into the system's clipboard {{{3
 command! FilePath echo 'Get file full path'<BAR>
   \:!start cmd /c start get_current_file_full_path.lnk "%:p" "vim"<CR>
 
-" --------- view in markdown previewer {{{3
+" ---------- view in markdown previewer {{{3
 if has('win32')
   command! Markdown silent !start cmd /c start "markdown" markdown.lnk "%:p"
 elseif has('unix')
@@ -654,7 +655,7 @@ elseif has('unix')
   command! Markdown silent !killall Mou;mou "%:p"
 endif
 
-" --------- spell {{{3
+" ---------- spell {{{3
 " spell default off, default language is en_US, using spf to change spell
 " language
 command! Spell silent echo "toggle spell"<BAR>
@@ -680,7 +681,7 @@ autocmd BufNewFile,BufRead *.alipaylog setf alipaylog
 autocmd BufNewFile,BufRead *.md setf markdown
 
 " ========================== functions ================================= {{{2
-" ---------- judge if current char is the last char
+" ---------- judge if current char is the last char {{{3
 function! IsLastChar(...)
 
   let l:isLastChar = 0
@@ -706,7 +707,7 @@ function! IsLastChar(...)
 
 endfunc
 
-" ---------- judge if current char is the first char
+" ---------- judge if current char is the first char {{{3
 function! IsFirstChar()
   let l:pos = col('.')
   let l:isFirstChar = 0
@@ -866,7 +867,7 @@ function! GetSelection()
   return l:res
 endfunction
 
-" ---------- RefreshCurrentTab()
+" ---------- RefreshCurrentTab() {{{3
 function! RefreshCurrentTab()
   " refresh the current tab
   " tabnew and tabc will make the next tab active if there are more than 1 tabs
@@ -878,6 +879,40 @@ function! RefreshCurrentTab()
     exe 'tabp'
   endif
 endfunction
+
+" ============================ tagbar ==================================== {{{2
+let g:tagbar_type_asciidoc = {
+    \ 'ctagstype' : 'asciidoc',
+    \ 'kinds' : [
+      \ 'h:table of contents',
+      \ 'a:anchors:1',
+      \ 't:titles:1',
+      \ 'n:includes:1',
+      \ 'i:images:1',
+      \ 'I:inline images:1'
+    \ ],
+    \ 'sort' : 0
+\ }
+
+let g:tagbar_type_markdown = {
+    \ 'ctagstype' : 'markdown',
+    \ 'kinds' : [
+      \ 'h:heading',
+    \ ],
+    \ 'sort' : 0
+\ }
+
+let g:tagbar_type_go = {
+    \ 'ctagstype' : 'go',
+    \ 'kinds' : [
+      \ 'f:function',
+      \ 'p:package',
+      \ 'v:variable',
+      \ 't:type',
+      \ 'c:const',
+    \ ],
+    \ 'sort' : 0
+\ }
 
 " ============================ test ====================================== {{{2
 command! -nargs=* -bang TestCmd call <bang>TestFunc(<f-args>)
@@ -896,4 +931,4 @@ command! -nargs=* -bang TestCmd echo "test cmd"<BAR>
 " nohlsearch
 noh
 
-" vim:tw=80:ts=2:ft=vim:set noet
+" vim:tw=80:ts=2:ft=vim:noet:foldcolumn=2:foldenable:fdl=2
