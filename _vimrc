@@ -256,6 +256,7 @@ function! CommentImpl(commentStr, mode)
   else
     let l:cs .= a:commentStr
   endif
+  let l:cs = escape(l:cs, '/\')
 
   " comment
   if a:mode == g:COMMENT_1
@@ -276,7 +277,7 @@ function! Comment(mode)
   " comment string is //
   for tmp in ["cpp", "c", "java", "php", "javascript"]
     if &ft == tmp
-      call CommentImpl("\\/\\/", a:mode)
+      call CommentImpl("//", a:mode)
       return "//"
     endif
   endfor
@@ -286,7 +287,8 @@ function! Comment(mode)
     return "vim"
   endif
   " comment string is #
-  for tmp in ["python","sed","apache","bash","conf", "sh", "make", "cfg"]
+  for tmp in ["python","sed","apache","bash","conf", "sh", "make", "cfg",
+      \ "gitignore"]
     if &ft == tmp
       call CommentImpl("#", a:mode)
       return tmp
@@ -678,6 +680,7 @@ command! Baiducpp echo "added baidu cpp vim format footer"<BAR>
 " ========================= file type ================================== {{{2
 autocmd BufNewFile,BufRead *.alipaylog setf alipaylog
 autocmd BufNewFile,BufRead *.md setf markdown
+autocmd BufNewFile,BufRead *.gitignore setf gitignore
 
 " ========================== functions ================================= {{{2
 " ---------- judge if current char is the last char {{{3
