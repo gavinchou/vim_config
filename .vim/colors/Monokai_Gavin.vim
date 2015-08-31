@@ -31,7 +31,8 @@ hi VertSplit ctermfg=241 ctermbg=241 cterm=NONE guifg=#64645e guibg=#64645e gui=
 hi MatchParen ctermfg=197 ctermbg=NONE cterm=NONE guifg=#f92672 guibg=NONE gui=NONE
 " hi StatusLine ctermfg=15 ctermbg=241 cterm=bold guifg=#f8f8f2 guibg=#64645e gui=bold
 " current file status line
-hi StatusLine ctermfg=226 ctermbg=241 cterm=bold guifg=#ffff00 guibg=#64645e gui=bold
+" hi StatusLine ctermfg=226 ctermbg=241 cterm=bold guifg=#ffff00 guibg=#64645e gui=bold
+hi StatusLine ctermfg=16 ctermbg=227 cterm=NONE guifg=#000000 guibg=#ffff5f gui=bold
 " not current(NC) status line
 hi StatusLineNC ctermfg=15 ctermbg=241 cterm=NONE guifg=#f8f8f2 guibg=#64645e gui=NONE
 hi Pmenu ctermfg=NONE ctermbg=59 cterm=NONE guifg=NONE guibg=#49483e gui=NONE
@@ -140,6 +141,8 @@ hi PureYellow ctermfg=15 ctermbg=NONE cterm=NONE guifg=#ffff00 guibg=NONE gui=NO
 hi PureCyan ctermfg=15 ctermbg=NONE cterm=NONE guifg=#00ffff guibg=NONE gui=NONE
 hi PurePurple ctermfg=15 ctermbg=NONE cterm=NONE guifg=#ff00ff guibg=NONE gui=NONE
 hi PureGray ctermfg=15 ctermbg=NONE cterm=NONE guifg=#888888 guibg=NONE gui=NONE
+
+hi BlackOnYellow ctermfg=16 ctermbg=227 cterm=NONE guifg=#000000 guibg=#ffff5f gui=bold
 
 hi Red ctermfg=197 ctermbg=NONE cterm=NONE guifg=#f92672 guibg=NONE gui=NONE
 hi Green ctermfg=40 ctermbg=NONE cterm=NONE guifg=#00e000 guibg=NONE gui=NONE
