@@ -3905,6 +3905,7 @@ function! s:SetStatusLine(current)
             let flagstr = '[' . flagstr . '] '
         endif
         let text = colour . '[' . sort . '] ' . flagstr . fname
+        let text .= "%= B%nW%{winnr()}"
         let &l:statusline = text
     endif
 
