@@ -485,11 +485,13 @@ vnoremap gj j
 vnoremap gk k
 
 " ---------- resize vertical explorer to width 30 {{{3
-nmap <F3> :vertical resize 20<BAR>
-  \Tlist<CR>
+nmap <F3> :vert res 20<CR>
 
 " ---------- build project {{{3
 nmap <F7> :!make clean; make -j7<CR>
+
+" ---------- trim
+nmap T :T<CR>
 
 " ================================ misc ================================ {{{2
 " where the swap file stored {{{3
@@ -635,6 +637,8 @@ function! ChangeIme(autoChangeIme)
   if has('win32') && a:autoChangeIme
     exe '!start /MIN cmd /c start "change ime" /MIN changeVimIme2En.lnk'
     exe 'echo "back to normal mode by calling changeVimIme2En.lnk"'
+  elseif has('mac') && a:autoChangeIme
+    silent exe '!xkbswitch -se US'
   endif
 endfunc
 command! AutoIme silent echo "toggle auto ime"<BAR>
@@ -934,4 +938,4 @@ command! -nargs=* -bang TestCmd echo "test cmd"<BAR>
 " nohlsearch
 noh
 
-" vim:tw=80:ts=2:ft=vim:noet:foldcolumn=2:foldenable:fdl=2
+" vim:tw=80:ts=2:ft=vim:et:foldcolumn=2:foldenable:fdl=2
