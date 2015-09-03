@@ -86,7 +86,7 @@ function! Statusline#Mode()
     endif
 endfunc
 
-function! Statusline#ModeChange(mode)
+function! statusline#ModeChange(mode)
     let stl = &stl
     let stl = strpart(stl, 5)
     if     a:mode ==# "normal"  | let stl="%1* N".stl
@@ -100,8 +100,8 @@ endfunc
 
 if has('statusline')
 
-    au InsertEnter * call Statusline#ModeChange("insert")
-    au InsertLeave * call Statusline#ModeChange("normal")
+    au InsertEnter * call statusline#ModeChange("insert")
+    au InsertLeave * call statusline#ModeChange("normal")
 
     " set up color scheme now
     call SetNeatstatusColorscheme()
