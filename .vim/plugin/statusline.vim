@@ -72,7 +72,7 @@ function! SetNeatstatusColorscheme()
 endfunc
 
 " pretty mode display - converts the one letter status notifiers to words
-function! Mode()
+function! Statusline#Mode()
     redraw
     let l:mode = mode()
     " exec 'hi Test guifg=#000000 guibg=#7dcc7d gui=NONE ctermfg=0 ctermbg=2 cterm=NONE'
@@ -86,7 +86,22 @@ function! Mode()
     endif
 endfunc
 
+function! Statusline#ModeChange(mode)
+    let stl = &stl
+    let stl = strpart(stl, 5)
+    if     a:mode ==# "normal"  | let stl="%1* N".stl
+    elseif a:mode ==# "insert"  | let stl="%3* I".stl
+    else | return
+    endif
+    let stl = escape(stl, ' ')
+    " echo stl
+    exec "setlocal stl=".stl
+endfunc
+
 if has('statusline')
+
+    au InsertEnter * call Statusline#ModeChange("insert")
+    au InsertLeave * call Statusline#ModeChange("normal")
 
     " set up color scheme now
     call SetNeatstatusColorscheme()
@@ -132,7 +147,8 @@ if has('statusline')
 
         let stl=""
         " mode (changes color)
-        let stl.="%1*\ %{Mode()} %0*"
+        " let stl.="%1* %{Mode()} %0*"
+        let stl.="%1* N %0*"
         " file path
         let stl.=" %<%F "
         " read only, modified, modifiable flags in brackets
