@@ -72,7 +72,7 @@ function! SetNeatstatusColorscheme()
 endfunc
 
 " pretty mode display - converts the one letter status notifiers to words
-function! Statusline#Mode()
+function! statusline#Mode()
     redraw
     let l:mode = mode()
     " exec 'hi Test guifg=#000000 guibg=#7dcc7d gui=NONE ctermfg=0 ctermbg=2 cterm=NONE'
