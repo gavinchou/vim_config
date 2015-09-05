@@ -174,15 +174,60 @@ function! MyTabLabel(n)
       break
     endif
   endfor
-  " get all file names
+  " define some "useless" window whose title should not display in tablable
+  let uselessWindow = ["__Tagbar__", "NetrwTreeListing", "__Tag_List__"]
+  " get window count of tabpage n
   let winCount = tabpagewinnr(a:n, '$')
+  " dont count the "useless" window
+  for i in range(1, winCount)
+    for j in uselessWindow
+      let fileName = bufname(bufnrlist[i - 1])
+      let pos = stridx(fileName, j)
+      if pos >= 0
+        let winCount = winCount - 1
+      endif
+    endfor
+  endfor
+  " current window (winnr) of tab page n, get filename from winnr
   let winnr = tabpagewinnr(a:n)
   let fileName = bufname(bufnrlist[winnr - 1])
+  " filter "useless" filename, use other file name instead
+  let realWinCount = tabpagewinnr(a:n, '$')
+  for i in uselessWindow
+    if realWinCount < 2
+      break
+    endif
+    let pos = stridx(fileName, i)
+    if pos >= 0
+      for j in range(0, realWinCount - 1)
+        let tmpFileName = bufname(bufnrlist[j])
+        let foundProperName = 1
+        for k in uselessWindow
+          let pos = stridx(tmpFileName, k)
+          if pos >= 0
+            let foundProperName = 0
+            break
+          endif
+        endfor
+        if foundProperName
+          let fileName = tmpFileName
+          break
+        endif
+      endfor
+      break
+    endif
+  endfor
+  " get the filename, not the full path
   let lastOccur = strridx(fileName, "/")
   if (lastOccur > 0)
     let fileName = strpart(fileName, lastOccur + 1, strlen(fileName))
   endif
-  let label = label . a:n . " " . fileName . " ". winCount
+  " if the current filename is netrw, delete the number in it, that's ugly
+  let pos = stridx(fileName, "NetrwTreeListing")
+  if pos >= 0
+    let fileName = "NetrwTreeListing"
+  endif
+  let label = label . a:n . " " . fileName . (winCount > 1 ? " ".winCount : "")
   return label
 endfunction
 
