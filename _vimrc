@@ -404,7 +404,7 @@ vmap <F4> <ESC>:call MakeSurround("visual")<CR>
 function! MakeTags()
   if &ft == "cpp"
 "     exe '!ctags -R --langmap=.h.inl.cxx.cc --c++-kinds=+p --fields=+iaSK --extra=+q --languages=c++'
-    exe '!ctags -R --language-force=c++ --exclude=.git --exclude=.svn --langmap=c++:+.inl+.cc+.h+.cxx -h +.inl --c++-kinds=+p --fields=+iaSK --extra=+q --languages=c++'
+    exe '!ctags -R --exclude=.git --exclude=.svn --langmap=c++:+.inl+.cc+.h+.cxx -h +.inl --c++-kinds=+p --fields=+iaSK --extra=+q --languages=c++'
   elseif &ft == "java"
     exe '!ctags -R --java-kinds=+p --fields=+iaS --extra=+q --languages=java'
   elseif &ft == "php"
@@ -561,7 +561,10 @@ set virtualedit=block
 
 " ---------- text formatting option {{{3
 " for multibyte text width line break, for text block: select lines, press Jgqgq
-set formatoptions+=m 
+set formatoptions+=m
+
+" ---------- set updatetime shorter, this may cause frequently disk writing
+set updatetime=300
 
 " ================================ commands ============================ {{{2
 " ---------- trim the heading/trailing whitespaces {{{3
