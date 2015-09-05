@@ -26,10 +26,10 @@ set cursorcolumn
 " vmap cx <M-z>
 
 " redirect for ESC
-imap fds <ESC>
+" imap fds <ESC>
 " map fds <ESC>
 " omap fds <ESC>
-imap FDS <ESC>:echo "CAPS_LOCK!"<CR><ESC>
+" imap FDS <ESC>:echo "CAPS_LOCK!"<CR><ESC>
 " map FDS <ESC>:echo "CAPS_LOCK!"<CR><ESC>
 " omap FDS <ESC>:echo "CAPS_LOCK!"<CR><ESC>
 
