@@ -32,7 +32,7 @@ hi MatchParen ctermfg=197 ctermbg=NONE cterm=NONE guifg=#f92672 guibg=NONE gui=N
 " hi StatusLine ctermfg=15 ctermbg=241 cterm=bold guifg=#f8f8f2 guibg=#64645e gui=bold
 " current file status line
 " hi StatusLine ctermfg=226 ctermbg=241 cterm=bold guifg=#ffff00 guibg=#64645e gui=bold
-hi StatusLine ctermfg=16 ctermbg=227 cterm=NONE guifg=#000000 guibg=#ffff5f gui=bold
+hi StatusLine ctermfg=16 ctermbg=227 cterm=NONE guifg=#000000 guibg=#ffff5f gui=NONE
 hi TabLineSel ctermfg=16 ctermbg=227 cterm=NONE guifg=#000000 guibg=#ffff5a gui=NONE
 " hi TabLine ctermfg=16 ctermbg=227 cterm=NONE guifg=#000000 guibg=#ffff5a gui=NONE
 " not current(NC) status line
@@ -77,7 +77,7 @@ hi SpecialKey ctermfg=59 ctermbg=NONE cterm=NONE guifg=#49483e guibg=NONE gui=NO
 hi Statement ctermfg=197 ctermbg=NONE cterm=NONE guifg=#f92672 guibg=NONE gui=NONE
 hi StorageClass ctermfg=81 ctermbg=NONE cterm=NONE guifg=#66d9ef guibg=NONE gui=italic
 " hi String ctermfg=186 ctermbg=NONE cterm=NONE guifg=#e6db74 guibg=NONE gui=NONE
-hi String ctermfg=166 ctermbg=NONE cterm=NONE guifg=##5f0000 guibg=NONE gui=NONE
+hi String ctermfg=166 ctermbg=NONE cterm=NONE guifg=#df5f00 guibg=NONE gui=NONE
 hi Tag ctermfg=197 ctermbg=NONE cterm=NONE guifg=#f92672 guibg=NONE gui=NONE
 hi Title ctermfg=15 ctermbg=NONE cterm=bold guifg=#f8f8f2 guibg=NONE gui=bold
 hi Todo ctermfg=95 ctermbg=NONE cterm=inverse,bold guifg=#75715e guibg=NONE gui=inverse,bold
