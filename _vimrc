@@ -119,21 +119,34 @@ if has("gui")
 "       endif
 "     endfor
 
-    let t:winCount = tabpagewinnr(tabpagenr(), '$')
-
-    " do not change the tablabel when focus on tlist or netrw
-    let t:TlistWinnr = bufwinnr(g:TagList_title)
-    if t:TlistWinnr > 1 && winnr() == t:TlistWinnr
-      return t:label
-    endif
-    " change netrw_treelistnum in netrw.vim to non-increasing
-    " NetrwTreeListing, can match all netrw windows
-    let t:netrwWinnr = bufwinnr('NetrwTreeListing')
-    if t:netrwWinnr > 0 && winnr() == t:netrwWinnr
-      if t:winCount == 1 || !exists('t:label')
-        let t:label = tabpagenr() . ' NetrwTreeListing'
+    let bufnrlist = tabpagebuflist(tabpagenr())
+    " define some "useless" window whose title should not display in tablable
+    let uselessWindow = ["__Tagbar__", "NetrwTreeListing", "__Tag_List__"]
+    let fileName = bufname(bufnrlist[winnr() - 1])
+    for each in uselessWindow
+      let pos = stridx(fileName, each)
+      if pos >= 0
+        if !exists('t:label')
+          let t:label = tabpagenr() . ' '
+        endif
+        return t:label
       endif
-      return t:label
+    endfor
+
+    let t:winCount = tabpagewinnr(tabpagenr(), '$')
+    for i in range(0, t:winCount - 1)
+      for each in uselessWindow
+        let eachFileName = bufname(bufnrlist[i])
+        let pos = stridx(eachFileName, each)
+        if pos >= 0
+          let t:winCount = t:winCount - 1
+        endif
+      endfor
+    endfor
+    if t:winCount > 1
+      let t:winCount = " " . t:winCount
+    else
+      let t:winCount = ''
     endif
 
     " add '*' if the current window(file) has been modified
@@ -146,13 +159,6 @@ if has("gui")
     let t:name =  " " . expand("%:t")
     if t:name == ' '
       let t:name = ' [No Name]'
-    endif
-    if t:TlistWinnr > 1 && t:winCount > 1 | let t:winCount = t:winCount - 1 | endif
-    if t:netrwWinnr > 0 && t:winCount > 1 | let t:winCount = t:winCount - 1 | endif
-    if t:winCount > 1
-      let t:winCount = " " . t:winCount
-    else
-      let t:winCount = ''
     endif
     let t:label = t:label . tabpagenr() . t:name . t:winCount
     return t:label
