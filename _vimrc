@@ -124,8 +124,7 @@ if has("gui")
     let uselessWindow = ["__Tagbar__", "NetrwTreeListing", "__Tag_List__"]
     let fileName = bufname(bufnrlist[winnr() - 1])
     for each in uselessWindow
-      let pos = stridx(fileName, each)
-      if pos >= 0
+      if fileName =~ each
         if !exists('t:label')
           let t:label = tabpagenr() . ' '
         endif
@@ -137,8 +136,7 @@ if has("gui")
     for i in range(0, t:winCount - 1)
       for each in uselessWindow
         let eachFileName = bufname(bufnrlist[i])
-        let pos = stridx(eachFileName, each)
-        if pos >= 0
+        if eachFileName =~ each
           let t:winCount = t:winCount - 1
         endif
       endfor
@@ -188,8 +186,7 @@ function! MyTabLabel(n)
   for i in range(1, winCount)
     for j in uselessWindow
       let fileName = bufname(bufnrlist[i - 1])
-      let pos = stridx(fileName, j)
-      if pos >= 0
+      if fileName =~ j
         let winCount = winCount - 1
       endif
     endfor
@@ -203,14 +200,12 @@ function! MyTabLabel(n)
     if realWinCount < 2
       break
     endif
-    let pos = stridx(fileName, i)
-    if pos >= 0
+    if fileName =~ i
       for j in range(0, realWinCount - 1)
         let tmpFileName = bufname(bufnrlist[j])
         let foundProperName = 1
         for k in uselessWindow
-          let pos = stridx(tmpFileName, k)
-          if pos >= 0
+          if tmpFileName =~ k
             let foundProperName = 0
             break
           endif
@@ -229,8 +224,7 @@ function! MyTabLabel(n)
     let fileName = strpart(fileName, lastOccur + 1, strlen(fileName))
   endif
   " if the current filename is netrw, delete the number in it, that's ugly
-  let pos = stridx(fileName, "NetrwTreeListing")
-  if pos >= 0
+  if fileName =~ "NetrwTreeListing"
     let fileName = "NetrwTreeListing"
   endif
   let label = label . a:n . " " . fileName . (winCount > 1 ? " ".winCount : "")
