@@ -520,10 +520,14 @@ autocmd BufRead,BufEnter * call AutoCompletionKeyMap()
 function! AutoCompletionKeyMap()
   if &ft == "cpp"
     imap <C-space> <C-x><C-o><C-p>
+    imap <C-l> <C-x><C-o><C-p>
   else
     imap <C-space> <C-n><C-p>
+    imap <C-l> <C-n><C-p>
   endif
 endfunc
+imap <C-j> <C-n>
+imap <C-k> <C-p>
 
 " ---------- hjkl remap {{{3
 nnoremap j gj
@@ -577,7 +581,7 @@ set tags=tags,./tags
 set tags+=E:/Material/C++/SOURCE/cygwin_gcc_c++_tags
 set tags+=E:/Material/C++/SOURCE/linux_systags
 set tags+=~/cpp_stdlib.tags
-set tags+=~/dev/baidu-root/baidu_tags
+set tags+=~/dev/baidu-root/bd_tags
 set autochdir
 let Tlist_Show_One_File = 1
 let Tlist_Exit_OnlyWindow = 1
