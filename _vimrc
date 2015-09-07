@@ -617,6 +617,9 @@ set formatoptions+=m
 " ---------- set updatetime shorter, this may cause frequently disk writing
 set updatetime=300
 
+" ---------- set updatetime shorter, this may cause frequently disk writing
+set nowrapscan
+
 " ================================ commands ============================ {{{2
 " ---------- trim the heading/trailing whitespaces {{{3
 function! RemoveTrailingWhitespace()
