@@ -539,7 +539,7 @@ vnoremap gk k
 nmap <F3> :vert res 20<CR>
 
 " ---------- build project {{{3
-nmap <F7> :!make clean; make -j7<CR>
+nmap <F7> :make clean; make -j7<CR>
 
 " ---------- trim
 nmap T :T<CR>
