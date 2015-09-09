@@ -740,6 +740,7 @@ command! Baiducpp echo "added baidu cpp vim format footer"<BAR>
 " ========================= file type ================================== {{{2
 autocmd BufNewFile,BufRead *.alipaylog setf alipaylog
 autocmd BufNewFile,BufRead *.md setf markdown
+autocmd BufNewFile,BufRead *.md set foldexpr=MarkdownFoldExpr(v:lnum) fdm=expr
 autocmd BufNewFile,BufRead *.gitignore setf gitignore
 
 " ========================== functions ================================= {{{2
@@ -940,6 +941,16 @@ function! RefreshCurrentTab()
   if tabpagenr('$') != curTabNum
     exe 'tabp'
   endif
+endfunction
+
+" ---------- MarkdownFoldExpr() {{{3
+function! MarkdownFoldExpr(lnum)
+  let headingLvl = strlen(substitute(getline(a:lnum), '^\(#*\).*', '\1', ''))
+  if headingLvl < 1
+    " return foldlevel(v:lnum - 1)
+    return '='
+  else
+    return '>'.headingLvl
 endfunction
 
 " ============================ tagbar ==================================== {{{2
