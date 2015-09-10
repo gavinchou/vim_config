@@ -565,7 +565,6 @@ set magic
 set nobackup
 set hlsearch
 set incsearch "increase search, search when typing a pattern
-set showmatch
 filetype on
 filetype plugin on
 filetype indent on
