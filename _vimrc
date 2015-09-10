@@ -413,7 +413,7 @@ function! Run()
       if has("win32")
         exe '!start cmd /c start "vim run cpp" g++.lnk "%:p"'
       elseif has("unix")
-        exe '!rm ~/tmp/vim.out 2>/dev/null; g++ -Wall -std=c++11 "%:p" -o ~/tmp/vim.out && ~/tmp/vim.out;read -n1 -p "Press any key to continue...";echo'
+        exe '!rm ~/tmp/vim.out 2>/dev/null; g++ -g -Wall -std=c++11 "%:p" -o ~/tmp/vim.out && ~/tmp/vim.out;read -n1 -p "Press any key to continue...";echo'
         " refresh when return from external command
         call RefreshCurrentTab()
       endif
