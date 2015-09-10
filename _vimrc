@@ -624,6 +624,9 @@ set updatetime=300
 " ---------- set updatetime shorter, this may cause frequently disk writing
 set nowrapscan
 
+" ---------- show match () {} [] when typing them
+set showmatch
+
 " ================================ commands ============================ {{{2
 " ---------- trim the heading/trailing whitespaces {{{3
 function! RemoveTrailingWhitespace()
