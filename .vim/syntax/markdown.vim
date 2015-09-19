@@ -142,4 +142,4 @@ if main_syntax ==# 'markdown'
   unlet main_syntax
 endif
 
-" vim:set sw=2:
+" vim:set sw=2 tw=80 cc=80
