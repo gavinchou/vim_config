@@ -3916,6 +3916,12 @@ endfunction
 
 " s:QuitIfOnlyWindow() {{{2
 function! s:QuitIfOnlyWindow() abort
+
+    if bufwinnr('__Tagbar__') == winnr() && tabpagewinnr(tabpagenr(), '$') == 1
+        exe "q"
+    endif
+    return
+
     let tagbarwinnr = bufwinnr('__Tagbar__')
     if tagbarwinnr == -1
         return
