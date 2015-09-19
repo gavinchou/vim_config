@@ -3917,7 +3917,7 @@ endfunction
 " s:QuitIfOnlyWindow() {{{2
 function! s:QuitIfOnlyWindow() abort
 
-    if bufwinnr('__Tagbar__') == winnr() && tabpagenr('$') == 1
+    if bufwinnr('__Tagbar__') == winnr() && tabpagewinnr(tabpagenr(), '$') == 1
         exe "q"
     endif
     return
