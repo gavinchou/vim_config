@@ -1,4 +1,4 @@
-" favorite files and direcotries
+" ============================ favorite files and direcotries {{{2
 let $favorites=''
 if has("win32")
   let $favorites='E:/Material/Linux/Vim/config/favorites.vim'
@@ -747,7 +747,7 @@ command! Baiducpp echo "added baidu cpp vim format footer"<BAR>
 " ========================= file type ================================== {{{2
 autocmd BufNewFile,BufRead *.alipaylog setf alipaylog
 autocmd BufNewFile,BufRead *.md setf markdown
-autocmd BufNewFile,BufRead *.md set foldexpr=MarkdownFoldExpr(v:lnum) fdm=expr
+autocmd BufNewFile,BufRead *.md setlocal foldexpr=MarkdownFoldExpr(v:lnum) fdm=expr
 autocmd BufNewFile,BufRead *.gitignore setf gitignore
 
 " ========================== functions ================================= {{{2
