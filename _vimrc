@@ -336,7 +336,7 @@ function! Comment(mode)
   endif
   " comment string is #
   for tmp in ["python","sed","apache","bash","conf", "sh", "make", "cfg",
-      \ "gitignore"]
+      \ "gitignore", "zsh"]
     if &ft == tmp
       call CommentImpl("#", a:mode)
       return tmp
@@ -612,6 +612,9 @@ let g:OmniCpp_SelectFirstItem = 2 " select first popup item (without inserting i
 set completeopt=menuone,menu
 au BufNewFile,BufRead,BufEnter *.cpp,*.hpp,*.h,*.cc set omnifunc=omni#cpp#complete#Main
 
+" ---------- YouCompleteMe
+let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
+
 " ---------- virtual edit {{{3
 set virtualedit=block
 
@@ -650,7 +653,7 @@ command! -range TrimLeft <line1>,<line2>call RemoveBeginningWhitespace()
 command! -range Tl <line1>,<line2>call RemoveBeginningWhitespace()
 
 " ---------- rename current file {{{3
-command! -nargs=+ -bang Rename let newName = "<args>"<BAR>
+command! -nargs=+ -bang -complete=file Rename let newName = "<args>"<BAR>
   \let curExt = expand("%:e")<BAR>
   \let oldFullPath = expand("%:p")<BAR>
   \exe "saveas<bang> " . newName<BAR>
@@ -663,7 +666,7 @@ command! -nargs=+ -bang Rename let newName = "<args>"<BAR>
     \endif<BAR>
   \endif<BAR>
 
-nmap <F2> :Ren 
+nmap <F2> :Rename 
 
 " ---------- make/load session {{{3
 " command! -nargs=? -bang Mks mks<bang> $ses
