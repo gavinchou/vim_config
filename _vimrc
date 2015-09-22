@@ -433,10 +433,13 @@ function! Run()
     call RefreshCurrentTab()
     return "bash"
   endif
-  if (&ft == 'markdown')
-    if (has('unix'))
+  if (&ft == 'markdown') " view in markdown previewer
+    if has('mac')
       exe '!killall Mou; mou %:p'
+    elseif has('win32')
+      exe 'silent !start cmd /c start "markdown" markdown.lnk "%:p"'
     endif
+    return "markdown"
   endif
   if has("win32")
     exe '!start cmd /c start "vim run" nppCompileAndRun.lnk "%:p"'
@@ -721,13 +724,6 @@ command! AutoIme silent echo "toggle auto ime"<BAR>
 command! FilePath echo 'Get file full path'<BAR>
   \:!start cmd /c start get_current_file_full_path.lnk "%:p" "vim"<CR>
 
-" ---------- view in markdown previewer {{{3
-if has('win32')
-  command! Markdown silent !start cmd /c start "markdown" markdown.lnk "%:p"
-elseif has('unix')
-  " command! Markdown silent !open -a Mou "%:p"
-  command! Markdown silent !killall Mou;mou "%:p"
-endif
 
 " ---------- spell {{{3
 " spell default off, default language is en_US, using spf to change spell
