@@ -418,7 +418,7 @@ function! Run()
       elseif has("unix")
         exe '!clear; rm ~/tmp/vim.out 2>/dev/null;' .
            \ 'g++ -g -Wall -std=c++11 "%:p" -o ~/tmp/vim.out && '
-           \ '(isGdb="n";read -t 3 -p "use gdb[yn]?" isGdb;' .
+           \ '(isGdb="n";read -n1 -t 3 -p "use gdb[yn]?" isGdb; echo "";' .
            \ 'if [ "x$isGdb" = "xy" ]; then ' .
            \ 'gdb ~/tmp/vim.out;else ~/tmp/vim.out;fi;' .
            \ 'read -n1 -p "Press any key to continue...";)'
