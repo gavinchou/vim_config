@@ -634,6 +634,9 @@ set nowrapscan
 " ---------- show match () {} [] when typing them
 set showmatch
 
+" ---------- enter normal mode delay
+set timeoutlen=1000 ttimeoutlen=5
+
 " ================================ commands ============================ {{{2
 " ---------- trim the heading/trailing whitespaces {{{3
 function! RemoveTrailingWhitespace()
