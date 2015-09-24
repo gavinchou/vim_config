@@ -33,7 +33,7 @@ hi MatchParen ctermfg=197 ctermbg=NONE cterm=NONE guifg=#f92672 guibg=NONE gui=N
 " current file status line
 " hi StatusLine ctermfg=226 ctermbg=241 cterm=bold guifg=#ffff00 guibg=#64645e gui=bold
 hi StatusLine ctermfg=16 ctermbg=227 cterm=NONE guifg=#000000 guibg=#ffff5f gui=NONE
-hi TabLineSel ctermfg=16 ctermbg=227 cterm=NONE guifg=#000000 guibg=#ffff5a gui=NONE
+hi TabLineSel ctermfg=16 ctermbg=154 cterm=NONE guifg=#000000 guibg=#afff00 gui=NONE
 " hi TabLine ctermfg=16 ctermbg=227 cterm=NONE guifg=#000000 guibg=#ffff5a gui=NONE
 " not current(NC) status line
 hi StatusLineNC ctermfg=15 ctermbg=241 cterm=NONE guifg=#f8f8f2 guibg=#64645e gui=NONE
