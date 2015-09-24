@@ -701,7 +701,7 @@ command! Time echo strftime("%Y-%m-%d-%a %H:%M:%S")<BAR>
 " = register is the expression output register, 6. Expression register "= can only be used onece
 " normal mode insert current time, and enter insert mode
 nnoremap time "=strftime("%Y-%m-%d-%a %H:%M:%S")<CR>pa
-nnoremap timelog "="\n##" . strftime("%Y-%m-%d-%a %H:%M:%S") . "\ntag: \n"<CR>PjjA
+nnoremap timelog "="\n## " . strftime("%Y-%m-%d-%a %H:%M:%S") . "\ntag: \n"<CR>PjjA
 
 " ---------- auto change IME to en {{{3
 " for some type of files auto ime is needed
