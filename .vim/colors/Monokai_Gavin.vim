@@ -42,7 +42,8 @@ hi PmenuSel ctermfg=NONE ctermbg=197 cterm=NONE guifg=NONE guibg=#f92672 gui=NON
 hi PmenuSbar ctermfg=NONE ctermbg=7 guifg=NONE guibg=#c0c0c0
 hi PmenuThumb ctermfg=46 ctermbg=46 guifg=#00ff00 guibg=#00ff00
 hi IncSearch ctermfg=232 ctermbg=186 cterm=NONE guifg=#272822 guibg=#e6db74 gui=NONE
-hi Search ctermfg=15 ctermbg=40 cterm=NONE guifg=#ffffff guibg=#2c9026 gui=NONE
+" hi Search ctermfg=15 ctermbg=40 cterm=NONE guifg=#ffffff guibg=#2c9026 gui=NONE
+hi Search ctermfg=0 ctermbg=228 cterm=NONE guifg=#000000 guibg=#ffff00 gui=NONE
 hi Directory ctermfg=141 ctermbg=NONE cterm=NONE guifg=#ae81ff guibg=NONE gui=NONE
 hi Folded ctermfg=242 ctermbg=232 cterm=NONE guifg=#75715e guibg=#272822 gui=NONE
 hi FoldColumn ctermfg=102 ctermbg=237 cterm=NONE guifg=#90908a guibg=#3c3d37 gui=NONE
