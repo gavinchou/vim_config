@@ -33,8 +33,8 @@ if !exists('g:NeatStatusLine_color_position') | let g:NeatStatusLine_color_posit
 if !exists('g:NeatStatusLine_color_modified') | let g:NeatStatusLine_color_modified = 'guifg=#ffffff guibg=#ff00ff ctermfg=15 ctermbg=5'                       | endif
 " Pink on Black
 if !exists('g:NeatStatusLine_color_line')     | let g:NeatStatusLine_color_line     = 'guifg=#ff00ff guibg=#000000 gui=NONE ctermfg=207 ctermbg=0 cterm=NONE'  | endif
-" Black on Cyan
-if !exists('g:NeatStatusLine_color_filetype') | let g:NeatStatusLine_color_filetype = 'guifg=#000000 guibg=#00ffff gui=NONE ctermfg=0 ctermbg=51 cterm=NONE'   | endif
+" Black on dark Cyan
+if !exists('g:NeatStatusLine_color_filetype') | let g:NeatStatusLine_color_filetype = 'guifg=#000000 guibg=#5fafdf gui=NONE ctermfg=0 ctermbg=74 cterm=NONE'   | endif
 
 "==============================================================================
 
