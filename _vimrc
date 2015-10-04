@@ -548,7 +548,7 @@ vnoremap gj j
 vnoremap gk k
 
 " ---------- resize vertical explorer to width 30 {{{3
-nmap <F3> :vert res 20<CR>
+nmap <F3> :vert res 30<CR>
 
 " ---------- build project {{{3
 nmap <F7> :make clean; make -j7<CR>
