@@ -65,6 +65,9 @@ let g:netrw_winsize = 20
 let g:netrw_liststyle= 3 " archive
 let g:netrw_menu = 0 " no menu
 let g:netrw_preview = 1 " preview in vertical new window
+let g:netrw_banner = 0 " no banner
+let g:netrw_browse_split = 4 " when browsing, <cr> will open the file as "P"
+let g:netrw_cursor = "ctags"
 
 " menu bar {{{3
 if has("gui")
