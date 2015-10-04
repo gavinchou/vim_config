@@ -7355,7 +7355,6 @@ endfun
 " (full path directory with trailing slash returned)
 fun! s:NetrwTreeDir()
 "  call Dfunc("NetrwTreeDir() curline#".line(".")."<".getline('.')."> b:netrw_curdir<".b:netrw_curdir."> tab#".tabpagenr()." win#".winnr()." buf#".bufnr("%")."<".bufname("%").">")
-
   let treedir= b:netrw_curdir
 "  call Decho("(NetrwTreeDir) set initial treedir<".treedir.">")
   let s:treecurpos= netrw#NetrwSavePosn()
@@ -9011,6 +9010,13 @@ endfun
 " Support Functions: {{{1
 
 " ---------------------------------------------------------------------
+augroup netrw
+  au WinEnter NetrwTreeListing* setl stl=%=B%nW%{winnr()}
+  au BufNew NetrwTreeListing* setl stl=%=B%nW%{winnr()}
+  au! CursorHold NetrwTreeListing* echo s:NetrwTreeDir() . "/" . s:NetrwGetWord()
+augroup end
+
+" ---------------------------------------------------------------------
 " netrw#WinPath: tries to insure that the path is windows-acceptable, whether cygwin is used or not {{{2
 fun! netrw#WinPath(path)
 "  call Dfunc("netrw#WinPath(path<".a:path.">)")
@@ -9859,4 +9865,4 @@ unlet s:keepcpo
 
 " ------------------------------------------------------------------------
 " Modelines: {{{1
-" vim:ts=8 fdm=marker
+" vim:ts=2 sw=2 fdm=marker
