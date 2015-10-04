@@ -66,8 +66,10 @@ let g:netrw_liststyle= 3 " archive
 let g:netrw_menu = 0 " no menu
 let g:netrw_preview = 1 " preview in vertical new window
 let g:netrw_banner = 0 " no banner
-let g:netrw_browse_split = 4 " when browsing, <cr> will open the file as "P"
+let g:netrw_browse_split = 5 " when browsing, <cr> will open the file as "p"
 let g:netrw_cursor = "ctags"
+let g:netrw_chgwin = 2 " specifies a window number where file edits will take place
+let g:netrw_use_errorwindow = 0 " dont use an extra window for errors
 
 " menu bar {{{3
 if has("gui")
