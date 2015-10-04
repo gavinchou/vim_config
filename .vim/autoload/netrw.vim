@@ -4382,6 +4382,9 @@ fun! s:NetrwBrowseChgDir(islocal,newdir,...)
 "       call Dret("s:NetrwBrowseChgDir")
        return
       endif
+     elseif g:netrw_browse_split == 5 " Gavin defines option, act as 'p', preview
+      call s:NetrwPreview(s:NetrwBrowseChgDir(1,s:NetrwGetWord(),1))
+      return
      else
       " handling a file, didn't split, so remove menu
 "      call Decho("(NetrwBrowseChgDir:edit-a-file) handling a file+didn't split, so remove menu")
