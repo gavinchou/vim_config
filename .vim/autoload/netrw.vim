@@ -7391,12 +7391,14 @@ fun! s:NetrwTreeDir()
 
    " construct treedir by searching backwards at correct depth
 "   call Decho("(NetrwTreeDir) constructing treedir<".treedir."> depth<".depth.">")
+  let savedPos = getpos('.')
    while depth != "" && search('^'.depth.'[^|].\{-}/$','bW')
     let dirname= substitute(getline('.'),'^\(| \)*','','e')
     let treedir= dirname.treedir
     let depth  = substitute(depth,'^| ','','')
 "    call Decho("(NetrwTreeDir) constructing treedir<".treedir.">: dirname<".dirname."> while depth<".depth.">")
    endwhile
+   call setpos('.', savedPos)
    if w:netrw_treetop =~ '/$'
     let treedir= w:netrw_treetop.treedir
    else
@@ -9013,7 +9015,15 @@ endfun
 augroup netrw
   au WinEnter NetrwTreeListing* setl stl=%=B%nW%{winnr()}
   au BufNew NetrwTreeListing* setl stl=%=B%nW%{winnr()}
-  au! CursorHold NetrwTreeListing* echo s:NetrwTreeDir() . "/" . s:NetrwGetWord()
+  au! CursorHold NetrwTreeListing* let savedPos = getpos('.') |
+      \let curDir = s:NetrwTreeDir() |
+      \let curFile = s:NetrwGetWord() |
+      \if curFile =~ '/' |
+      \  echo curDir |
+      \else |
+      \  echo curDir . curFile |
+      \endif |
+      \call setpos('.', savedPos)
 augroup end
 
 " ---------------------------------------------------------------------
