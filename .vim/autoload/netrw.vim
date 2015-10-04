@@ -9012,21 +9012,6 @@ endfun
 " Support Functions: {{{1
 
 " ---------------------------------------------------------------------
-augroup netrw
-  au WinEnter NetrwTreeListing* setl stl=%=B%nW%{winnr()}
-  au BufNew NetrwTreeListing* setl stl=%=B%nW%{winnr()}
-  au! CursorHold NetrwTreeListing* let savedPos = getpos('.') |
-      \let curDir = s:NetrwTreeDir() |
-      \let curFile = s:NetrwGetWord() |
-      \if curFile =~ '/' |
-      \  echo curDir |
-      \else |
-      \  echo curDir . curFile |
-      \endif |
-      \call setpos('.', savedPos)
-augroup end
-
-" ---------------------------------------------------------------------
 " netrw#WinPath: tries to insure that the path is windows-acceptable, whether cygwin is used or not {{{2
 fun! netrw#WinPath(path)
 "  call Dfunc("netrw#WinPath(path<".a:path.">)")
@@ -9867,6 +9852,24 @@ fun! s:UseBufWinVars()
   if exists("b:netrw_explore_list")    && !exists("w:netrw_explore_list")   |let w:netrw_explore_list    = b:netrw_explore_list   |endif
 "  call Dret("s:UseBufWinVars")
 endfun
+
+" ---------------------------------------------------------------------
+" Auto Commands: {{{1
+
+" ---------------------------------------------------------------------
+augroup netrw
+  au WinEnter NetrwTreeListing* setl stl=%=B%nW%{winnr()}
+  au BufNew NetrwTreeListing* setl stl=%=B%nW%{winnr()}
+  au! CursorHold NetrwTreeListing* let savedPos = getpos('.') |
+      \let curDir = s:NetrwTreeDir() |
+      \let curFile = s:NetrwGetWord() |
+      \if curFile =~ '/' |
+      \  echo curDir |
+      \else |
+      \  echo curDir . curFile |
+      \endif |
+      \call setpos('.', savedPos)
+augroup end
 
 " ---------------------------------------------------------------------
 " Settings Restoration: {{{1
