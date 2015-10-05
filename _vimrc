@@ -760,6 +760,18 @@ autocmd BufNewFile,BufRead *.md setf markdown
 autocmd BufNewFile,BufRead *.md setlocal foldexpr=MarkdownFoldExpr(v:lnum) fdm=expr
 autocmd BufNewFile,BufRead *.gitignore setf gitignore
 
+" ========================= autocmd ================================== {{{2
+augroup netrw " ---------- {{{3
+  autocmd WinEnter * let bufnrlist = tabpagebuflist() |
+      \if bufname(bufnrlist[0]) =~ "NetrwTreeListing" |
+      \  let curWinnr = winnr() |
+      \  let winsz = 30 |
+      \  exe "1wincmd w" |
+      \  exe winsz . "wincmd |" |
+      \  exe curWinnr . "wincmd w" |
+      \endif
+augroup end
+
 " ========================== functions ================================= {{{2
 " ---------- judge if current char is the last char {{{3
 function! IsLastChar(...)
@@ -925,7 +937,6 @@ function! MakeSurround(mode, ...)
 endfunc
 
 " ---------- GetSelection() {{{3
-let g:sCount = 0
 function! GetSelection()
   " Why is this not a built-in Vim script function?!
   let l:isVisual = 0
@@ -938,7 +949,6 @@ function! GetSelection()
   let lines = getline(lnum1, lnum2)
   let lines[-1] = lines[-1][: col2 - (&selection == 'inclusive' ? 1 : 2)]
   let lines[0] = lines[0][col1 - 1:]
-  let g:sCount = g:sCount + 1
   let l:res =  join(lines, "\n")
   echo l:res
   if l:isVisual
