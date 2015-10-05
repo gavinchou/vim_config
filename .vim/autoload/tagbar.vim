@@ -3768,15 +3768,18 @@ function! s:GetFileWinnr(fileinfo) abort
     let filewinnr = 0
     let prevwinnr = winnr("#")
 
-    if winbufnr(prevwinnr) == a:fileinfo.bufnr &&
-     \ !getwinvar(prevwinnr, '&previewwindow')
+    " Gavin comment, why skip previewwindow?
+"     if winbufnr(prevwinnr) == a:fileinfo.bufnr &&
+"      \ !getwinvar(prevwinnr, '&previewwindow')
+    if winbufnr(prevwinnr) == a:fileinfo.bufnr
         let filewinnr = prevwinnr
     else
         " Search for the first real window that has the correct buffer loaded
         " in it. Similar to bufwinnr() but skips the previewwindow.
         for i in range(1, winnr('$'))
             call s:goto_win(i, 1)
-            if bufnr('%') == a:fileinfo.bufnr && !&previewwindow
+"             if bufnr('%') == a:fileinfo.bufnr && !&previewwindow
+            if bufnr('%') == a:fileinfo.bufnr
                 let filewinnr = winnr()
                 break
             endif
@@ -3801,7 +3804,8 @@ function! s:GotoFileWindow(fileinfo, ...) abort
     if filewinnr == 0
         for i in range(1, winnr('$'))
             call s:goto_win(i, 1)
-            if &buftype == '' && !&previewwindow
+"             if &buftype == '' && !&previewwindow
+            if &buftype == ''
                 execute 'buffer ' . a:fileinfo.bufnr
                 break
             endif
@@ -3812,8 +3816,8 @@ function! s:GotoFileWindow(fileinfo, ...) abort
 
     " To make ctrl-w_p work we switch between the Tagbar window and the
     " correct window once
-    call s:goto_tagbar(noauto)
-    call s:goto_win('p', noauto)
+"     call s:goto_tagbar(noauto)
+"     call s:goto_win('p', noauto)
 endfunction
 
 " s:ToggleHideNonPublicTags() {{{2
@@ -3850,7 +3854,7 @@ function! s:IsValidFile(fname, ftype) abort
 
     if &previewwindow
         call s:debug('In preview window')
-        return 0
+"         return 0
     endif
 
     if !has_key(s:known_types, a:ftype)
@@ -3969,7 +3973,7 @@ function! s:NextNormalWindow() abort
 
         " skip the preview window
         if getwinvar(i, '&previewwindow')
-            continue
+"             continue
         endif
 
         " skip current window
