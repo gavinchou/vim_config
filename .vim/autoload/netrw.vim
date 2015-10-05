@@ -4382,8 +4382,20 @@ fun! s:NetrwBrowseChgDir(islocal,newdir,...)
 "       call Dret("s:NetrwBrowseChgDir")
        return
       endif
-     elseif g:netrw_browse_split == 5 " Gavin defines option, act as 'p', preview
+     elseif g:netrw_browse_split == 5
+      " new feature designed by Gavin , act as 'p', open file in preview window
+      " and move cursor to that window
       call s:NetrwPreview(s:NetrwBrowseChgDir(1,s:NetrwGetWord(),1))
+      let previewWin = -1
+      for win in range(1, winnr('$'))
+          if getwinvar(win, '&previewwindow')
+              let previewWin = win
+              break
+          endif
+      endfor
+      if previewWin > 0
+        exe previewWin . "wincmd w"
+      endif
       return
      else
       " handling a file, didn't split, so remove menu
@@ -7006,6 +7018,7 @@ endfun
 " s:NetrwPreview: {{{2
 fun! s:NetrwPreview(path) range
 "  call Dfunc("NetrwPreview(path<".a:path.">)")
+  call s:SetPreviewWin()
   let ykeep= @@
   keepj call s:NetrwOptionSave("s:")
   keepj call s:NetrwSafeOptions()
@@ -9854,6 +9867,20 @@ fun! s:UseBufWinVars()
   if exists("b:netrw_explore_line")    && !exists("w:netrw_explore_line")   |let w:netrw_explore_line    = b:netrw_explore_line   |endif
   if exists("b:netrw_explore_list")    && !exists("w:netrw_explore_list")   |let w:netrw_explore_list    = b:netrw_explore_list   |endif
 "  call Dret("s:UseBufWinVars")
+endfun
+
+" s:SetPreviewWin: (used by NetrwPreview() and LocalBrowseCheck() {{{2
+"                  set existed windows as preview window
+" author: Gavin
+fun! s:SetPreviewWin()
+  let winCount = winnr('$')
+  if winCount >= 2
+    let bufnrlist = tabpagebuflist()
+    let bufName = bufname(bufnrlist[1])
+    if !(bufName =~ "__Tagbar__" || bufName =~ "NetrwTreeListing")
+      call setwinvar(2, "&previewwindow", "1")
+    endif
+  endif
 endfun
 
 " ---------------------------------------------------------------------
