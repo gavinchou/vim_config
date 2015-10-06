@@ -161,7 +161,7 @@ if has('statusline')
         " file type (eg. python, ruby, etc..)
         let stl.="%8*%( %{&filetype} %)%0*"
         " file format (eg. unix, dos, etc..) file encoding (eg. utf8, latin1, etc..)
-        let stl.="%2* %{&fileformat} "
+        let stl.="%2* %{statusline#GetFileFormat()} "
         let stl.="%(%{(&fenc!=''?&fenc:&enc)} %)%0*"
 
         " right-aligh everything past this point
@@ -203,6 +203,16 @@ if has('statusline')
     endif
 
 endif
+
+function! statusline#GetFileFormat()
+  if &fileformat == 'unix'
+    return '\n'
+  elseif &fileformat == 'dos'
+    return '\r\n'
+  elseif &fileformat == 'mac'
+    return '\r'
+  endif
+endfunc
 
 " ====== future use, fix the problem all the mode display change when change
 " mode in only one window
