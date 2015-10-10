@@ -759,6 +759,7 @@ autocmd BufNewFile,BufRead *.alipaylog setf alipaylog
 autocmd BufNewFile,BufRead *.md setf markdown
 autocmd BufNewFile,BufRead *.md setlocal foldexpr=MarkdownFoldExpr(v:lnum) fdm=expr
 autocmd BufNewFile,BufRead *.gitignore setf gitignore
+autocmd BufNewFile,BufRead BCLOUD setf conf
 
 " ========================= autocmd ================================== {{{2
 augroup netrw " ---------- {{{3
