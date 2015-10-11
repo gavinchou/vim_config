@@ -17,27 +17,8 @@
 " CALLS: stridx() strridx() toupper() tolower()
 
 " remap all the `f` `F` key
-for i in ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','r',
-      \'s','t','u','v','w','x','y','z']
-  exe "nmap f" . i . " :call findchar#FindChar(\"" . i . "\", 'forward')<CR>"
-  exe "nmap F" . i . " :call findchar#FindChar(\"" . i . "\", 'backward')<CR>"
-endfor
-for i in ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','R',
-      \'S','T','U','V','W','X','Y','Z']
-  exe "nmap f" . i . " :call findchar#FindChar(\"" . i . "\", 'forward')<CR>"
-  exe "nmap F" . i . " :call findchar#FindChar(\"" . i . "\", 'backward')<CR>"
-endfor
-for i in ['~','!','@','#','$','%','^','&','*','(',')','_','+','-','=','`','{',
-      \'}','\|','[',']','\',';',':','"',',','.','/','<','>','?']
-  exe "nmap f" . i . " :call findchar#FindChar('" . i . "', 'forward')<CR>"
-  exe "nmap F" . i . " :call findchar#FindChar('" . i . "', 'backward')<CR>"
-endfor
-nmap f' :call findchar#FindChar("'", 'forward')<CR>
-nmap F' :call findchar#FindChar("'", 'backward')<CR>
-nmap f<space> :call findchar#FindChar(" ", 'forward')<CR>
-nmap F<space> :call findchar#FindChar(" ", 'backward')<CR>
-nmap f<tab> :call findchar#FindChar("	", 'forward')<CR>
-nmap F<tab> :call findchar#FindChar("	", 'backward')<CR>
+nmap f :call findchar#FindChar(nr2char(getchar()), 'forward')<CR>
+nmap F :call findchar#FindChar(nr2char(getchar()), 'backward')<CR>
 
 
 " this global var keeps the char last used by FindChar()
@@ -73,7 +54,9 @@ function! findchar#FindChar(char, direction)
     if idxFound >= 0
       echo a:direction . " found: " . char . " @col " . (idxFound + 1)
     else
+      echohl WarningMsg
       echo a:direction . " not found: " . char
+      echohl None
     endif
     return
   endif
@@ -113,7 +96,9 @@ function! findchar#FindChar(char, direction)
   " echo idxLower . " " . idxUpper . " isupper: " . isUpper
   if (idxLower < 0 && idxUpper < 0) || (isUpper && idxUpper < 0)
     " not found, do nothing
+    echohl WarningMsg
     echo caseStatus . ", " . a:direction . " not found: " . a:char
+    echohl None
     return
   endif
 
