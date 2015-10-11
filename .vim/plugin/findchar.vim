@@ -27,6 +27,9 @@ nmap ; :call findchar#RepeatFind('forward')<CR>
 nmap , :call findchar#RepeatFind('backward')<CR>
 function! findchar#RepeatFind(dir)
   if g:findchar_lastFoundChar == ''
+    echohl WarningMsg
+    echo "nothing for repeat find, find a char first"
+    echohl None
     return
   endif
   call findchar#FindChar(g:findchar_lastFoundChar, a:dir)
@@ -37,7 +40,9 @@ function! findchar#FindChar(char, direction)
   let curline = getline('.')
   let curcolnum = getpos('.')[2]
   " find non-letter char
+  " or case-sensitive is on, act as original 'f'
   if !(a:char >= 'a' && a:char <= 'z') && !(a:char >= 'A' && a:char <= 'Z')
+        \|| !&ignorecase
     if a:direction == 'forward'
       let idxFound = stridx(curline, a:char, curcolnum)
       exe 'normal! f' . a:char
@@ -58,17 +63,6 @@ function! findchar#FindChar(char, direction)
       echo a:direction . " not found: " . char
       echohl None
     endif
-    return
-  endif
-
-  " case-sensitive is on, act as original 'f'
-  if !&ignorecase
-    if a:direction == 'backward'
-      exe 'normal! F' . a:char
-    else
-      exe 'normal! f' . a:char
-    endif
-    echo "case sensitive, " . a:direction . " found: " . a:char
     return
   endif
 
