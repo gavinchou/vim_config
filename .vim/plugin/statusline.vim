@@ -100,8 +100,10 @@ endfunc
 
 if has('statusline')
 
+  augroup statusline
     au InsertEnter * call statusline#ModeChange("insert")
     au InsertLeave * call statusline#ModeChange("normal")
+  augroup end
 
     let g:StatusLineNormal = 'ctermfg=16 ctermbg=154 cterm=NONE guifg=#000000 guibg=#afff00 gui=NONE'
     let g:StatusLineInsert = 'ctermfg=16 ctermbg=202 cterm=NONE guifg=#000000 guibg=#ff4a2f gui=NONE'
