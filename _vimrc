@@ -268,6 +268,14 @@ function! MyTabLine()
 endfunction
 " %! means the things following it will be evaluated as expression
 set tabline=%!MyTabLine()
+augroup tabline
+  autocmd InsertEnter * if exists("g:StatusLineInsert") |
+        \  exe "hi TabLineSel " . g:StatusLineInsert |
+        \endif
+  autocmd InsertLeave * if exists("g:StatusLineNormal") |
+        \  exe "hi TabLineSel " . g:StatusLineNormal |
+        \endif
+augroup end
 
 " ============================== key mapping ============================ {{{2
 " tab mappings {{{3
