@@ -752,7 +752,7 @@ command! -count=1 W <count> winc w
 
 " ---------- set vim format footer fo baidu cpp {{{3
 command! Baiducpp echo "added baidu cpp vim format footer"<BAR>
-  \silent call append('$',  '// vim: tw=100 ts=4 sw=4 cc=100')
+  \silent call append('$',  '// vim: tw=80 ts=4 sw=4 cc=80')
 
 " ========================= file type ================================== {{{2
 autocmd BufNewFile,BufRead *.alipaylog setf alipaylog
