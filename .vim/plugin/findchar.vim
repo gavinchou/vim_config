@@ -1,4 +1,4 @@
-" extend case insensetive search when use key 'f', 'F', ';' and ',' in normal
+" extend case insensitive search when use key 'f', 'F', ';' and ',' in normal
 " mode, 
 " AUTHOR: Gavin Chou, gavineaglechou@gmail.com
 " DATE: 2015-10-11-Sun
