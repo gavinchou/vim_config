@@ -998,6 +998,7 @@ function! s:CreateAutocommands() abort
         autocmd WinEnter   __Tagbar__ call s:SetStatusLine('current')
         autocmd WinLeave   __Tagbar__ call s:SetStatusLine('noncurrent')
         autocmd WinEnter   __Tagbar__ setl nocursorcolumn
+        autocmd WinEnter   __Tagbar__ setl updatetime=100
 
         if g:tagbar_autopreview
             autocmd CursorMoved __Tagbar__ nested call s:ShowInPreviewWin()

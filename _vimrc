@@ -639,9 +639,9 @@ set virtualedit=block
 set formatoptions+=m
 
 " ---------- set updatetime shorter, this may cause frequently disk writing
-set updatetime=300
+set updatetime=3000
 
-" ---------- set updatetime shorter, this may cause frequently disk writing
+" ---------- don't search cyclically
 set nowrapscan
 
 " ---------- show match () {} [] when typing them
@@ -761,6 +761,10 @@ command! -count=1 W <count> winc w
 " ---------- set vim format footer fo baidu cpp {{{3
 command! Baiducpp echo "added baidu cpp vim format footer"<BAR>
   \silent call append('$',  '// vim: tw=80 ts=4 sw=4 cc=80')
+
+" ---------- insert file header {{{3
+command! FileHeader echo "insert file Header"<BAR>
+  \silent call <CR>
 
 " ========================= file type ================================== {{{2
 autocmd BufNewFile,BufRead *.alipaylog setf alipaylog

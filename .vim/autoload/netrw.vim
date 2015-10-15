@@ -9899,6 +9899,7 @@ augroup netrw
       \  echo curDir . curFile |
       \endif |
       \call setpos('.', savedPos)
+  au WinEnter NetrwTreeListing* setl updatetime=100
 augroup end
 
 " ---------------------------------------------------------------------
