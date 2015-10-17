@@ -2917,6 +2917,7 @@ fun! s:NetrwMaps(islocal)
    nnoremap <buffer> <silent> <cr>	:call netrw#LocalBrowseCheck(<SID>NetrwBrowseChgDir(1,<SID>NetrwGetWord()))<cr>
    nnoremap <buffer> <silent> d		:call <SID>NetrwMakeDir("")<cr>
    nnoremap <buffer> <silent> -		:exe "norm! 0"<bar>call netrw#LocalBrowseCheck(<SID>NetrwBrowseChgDir(1,'../'))<cr>
+   nnoremap <buffer> <silent> f		:call netrw#CreateFile()<cr>
    nnoremap <buffer> <silent> gb	:<c-u>call <SID>NetrwBookHistHandler(1,b:netrw_curdir)<cr>
    nnoremap <buffer> <silent> gd	:<c-u>call <SID>NetrwForceChgDir(1,<SID>NetrwGetWord())<cr>
    nnoremap <buffer> <silent> gf	:<c-u>call <SID>NetrwForceFile(1,<SID>NetrwGetWord())<cr>
@@ -9871,7 +9872,7 @@ endfun
 
 " s:SetPreviewWin: (used by NetrwPreview() and LocalBrowseCheck() {{{2
 "                  set existed windows as preview window
-" author: Gavin
+" Author: Gavin
 fun! s:SetPreviewWin()
   let winCount = winnr('$')
   if winCount >= 2
@@ -9883,6 +9884,68 @@ fun! s:SetPreviewWin()
   endif
 endfun
 
+" s:CreateFile: used by 'f' {{{2
+"               create file under cursor foler, requires a file name
+" Author: Gavin
+fun! netrw#CreateFile()
+  let fileName = input("file name: ", "", "file")
+  " cannot use parent path for building fullpath due to canot get
+  " parent folder for empty folder
+  " let curDir = netrw#GetParentPath()
+  let curDir = s:NetrwTreeDir()
+  let fileFullName = curDir . fileName
+  if fileName != "" && filewritable(fileFullName) == 2 " is a folder, do nothing
+    echohl ErrorMsg
+    echo fileFullName . " is a folder!"
+    echo ""
+    echohl None
+    return
+  endif
+  let winCount = winnr('$')
+  if winCount < 2
+    " create a new window for new file
+    exe "rightbelow vertical new"
+  else
+    " move cursor to #2 window
+    exe "2 wincmd w"
+  endif
+  exe "cd " . curDir
+  if fileName != ""
+    exe "edit " . fileFullName
+  endif
+endfun
+
+" GetFullPath:  (used by CursorHold and CreateFile) {{{2
+"               get full path under cursor
+" Author: Gavin
+fun! netrw#GetFullPath()
+  let savedPos = getpos('.')
+  let curDir = s:NetrwTreeDir()
+  let curFile = s:NetrwGetWord()
+  if curFile =~ '/'
+    let fullPath = curDir
+  else
+    let fullPath = curDir . curFile
+  endif
+  call setpos('.', savedPos)
+  return fullPath
+endfunc
+
+" GetParentPath: (used by CursorHold and CreateFile) {{{2
+"               get parent path under cursor
+" author: Gavin
+fun! netrw#GetParentPath()
+  let fullPath = netrw#GetFullPath()
+  if fullPath[strlen(fullPath) - 1] == "/"
+    " folder full path
+    let pos = strridx(fullPath, "/", strlen(fullPath) - 2)
+  else
+    " file full path
+    let pos = strridx(fullPath, "/")
+  endif
+  return strpart(fullPath, 0, pos + 1)
+endfunc
+
 " ---------------------------------------------------------------------
 " Auto Commands: {{{1
 
@@ -9890,16 +9953,10 @@ endfun
 augroup netrw
   au WinEnter NetrwTreeListing* setl stl=%=B%nW%{winnr()}
   au BufNew NetrwTreeListing* setl stl=%=B%nW%{winnr()}
-  au! CursorHold NetrwTreeListing* let savedPos = getpos('.') |
-      \let curDir = s:NetrwTreeDir() |
-      \let curFile = s:NetrwGetWord() |
-      \if curFile =~ '/' |
-      \  echo curDir |
-      \else |
-      \  echo curDir . curFile |
-      \endif |
-      \call setpos('.', savedPos)
+  au! CursorHold NetrwTreeListing* echo netrw#GetFullPath() |
+    \exe "cd " . netrw#GetParentPath()
   au WinEnter NetrwTreeListing* setl updatetime=100
+  au BufNew NetrwTreeListing* setl updatetime=100
 augroup end
 
 " ---------------------------------------------------------------------
