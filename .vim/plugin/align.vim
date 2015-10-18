@@ -1,5 +1,10 @@
-" this plugin formats the selected text table written in markdown syntax, say:
-" the original table text is:
+" @file align.vim
+" @brief  this plugin can align text with gevin delimiter
+" @author zhoufei
+" @email  gavineaglechou@gmail.com
+" @date   2015-10-18-Sun
+
+" say, in markdown the original table text is:
 "
 " header1|header2|header3
 " -----|-----|-----
@@ -13,26 +18,62 @@
 " aaa    |b\|bb  |cc
 " dd     |eeeee  |ffffff
 "
-" note: this plugin has capability with '\|'
-"
 " usage:
 " 1. select the table
-" 2. type the command 'Table'
+" 2. type the command 'Table' or 'Align', and indicate the delimiter, and what
+"    to skip, default is | and \|
 "
-" author: Gavin chou
-" email: gavineaglechou@gmail.com
+" example:
+"   1. default, for markdown, delim is '|' and skip '\|'
+"
+"     :'<,'>Align
+"
+"   2. align with '#' do not skip
+"
+"     :'<,'>Align #
+"   3. align with ' '(space) with skip
+"
+"     :'<,'>Align space \space
+"
 
 " this plugin format the table with the following steps:
 " 1 find the longest element of each collumn
-" 2 move '|' to the end of the element
+" 2 move delim to the end of the element
 " 3 <, > get the start and end line, and replace it with formatted mdTable
 " 4 delete it and append new table
 
 " change this to define your own command
-command! -range Table <line1>, <line2> call FormatMarkdownTable()
+command! -range -nargs=* Align call Align(<f-args>)
+command! -range -nargs=* Table call Align(<f-args>)
 
-" implementation
-function! FormatMarkdownTable()
+function! Align(...)
+  if a:0 == 1
+    let delim = a:1
+    let skip = "__non_exsits_skip__"
+  elseif a:0 == 2
+    let delim = a:1
+    let skip = a:2
+  else
+    " default designed for markdown
+    let delim = '|'
+    let skip = '\|'
+  endif
+
+  " echo delim . " " . skip
+
+  if delim == "space"
+    let delim = ' '
+  endif
+  if skip == '\space'
+    let skip = '\ '
+  endif
+  if delim == "tab"
+    let delim = "	"
+  endif
+  if skip == '\tab'
+    let skip = '\	'
+  endif
+
   " dubug switch, reading the whole code before switching this on after
   let isDebug = 0
   if (isDebug)
@@ -96,8 +137,8 @@ function! FormatMarkdownTable()
   while (1)
 
     " find a proper bar for table delimiter
-    let fakeBarPos = stridx(mdTable[0], '\|')
-    let barPos = stridx(mdTable[0], "|")
+    let fakeBarPos = stridx(mdTable[0], skip)
+    let barPos = stridx(mdTable[0], delim)
     while (1)
       " there is escaped bar
       if (fakeBarPos > -1) 
@@ -107,7 +148,7 @@ function! FormatMarkdownTable()
 
         " continue to find a proper bar
         else
-          let barPos = stridx(mdTable[0], "|", fakeBarPos + 2)
+          let barPos = stridx(mdTable[0], delim, fakeBarPos + 2)
         endif
       else
         break
@@ -132,8 +173,8 @@ function! FormatMarkdownTable()
       while (i < lineCount)
 
         " find a proper bar for table delimiter
-        let fakeBarPos = stridx(mdTable[i], '\|')
-        let barPos = stridx(mdTable[i], "|")
+        let fakeBarPos = stridx(mdTable[i], skip)
+        let barPos = stridx(mdTable[i], delim)
         while (1)
           " there is escaped bar
           if (fakeBarPos > -1) 
@@ -142,7 +183,7 @@ function! FormatMarkdownTable()
               break
             " find a proper bar
             else
-              let barPos = stridx(mdTable[i], "|", fakeBarPos + 2)
+              let barPos = stridx(mdTable[i], delim, fakeBarPos + 2)
             endif
           else
             break
@@ -194,7 +235,7 @@ function! FormatMarkdownTable()
   endwhile
 
   " make each collumn in the new 2-d md table to the max length, and append
-  " "|" to the end of it
+  " delim to the end of it
   let i = 0
   let outputTable = ""
   while (i < lineCount)
@@ -210,7 +251,7 @@ function! FormatMarkdownTable()
         let spaces = spaces . " "
         let k = k + 1
       endwhile
-      let line = line . newMdTable[i][j][0] . spaces . "|"
+      let line = line . newMdTable[i][j][0] . spaces . delim
       let j = j + 1
     endwhile
     let line = line . newMdTable[i][j][0]
