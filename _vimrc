@@ -638,8 +638,9 @@ set virtualedit=block
 " for multibyte text width line break, for text block: select lines, press Jgqgq
 set formatoptions+=m
 
-" ---------- set updatetime shorter, this may cause frequently disk writing
-set updatetime=3000
+" ---------- set updatetime shorter, this may cause frequently disk writing,
+"  this opation is global only, may be changed by other plugins
+set updatetime=200
 
 " ---------- don't search cyclically
 set nowrapscan
@@ -740,7 +741,6 @@ command! AutoIme silent echo "toggle auto ime"<BAR>
 command! FilePath echo 'Get file full path'<BAR>
   \:!start cmd /c start get_current_file_full_path.lnk "%:p" "vim"<CR>
 
-
 " ---------- spell {{{3
 " spell default off, default language is en_US, using spf to change spell
 " language
@@ -761,10 +761,6 @@ command! -count=1 W <count> winc w
 " ---------- set vim format footer fo baidu cpp {{{3
 command! Baiducpp echo "added baidu cpp vim format footer"<BAR>
   \silent call append('$',  '// vim: tw=80 ts=4 sw=4 cc=80')
-
-" ---------- insert file header {{{3
-command! FileHeader echo "insert file Header"<BAR>
-  \silent call <CR>
 
 " ========================= file type ================================== {{{2
 autocmd BufNewFile,BufRead *.alipaylog setf alipaylog
@@ -994,6 +990,7 @@ function! MarkdownFoldExpr(lnum)
 endfunction
 
 " ============================ tagbar ==================================== {{{2
+let g:tagbar_sort = 0 " do not sort tags by name
 let g:tagbar_type_asciidoc = {
     \ 'ctagstype' : 'asciidoc',
     \ 'kinds' : [
