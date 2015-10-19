@@ -9888,11 +9888,11 @@ endfun
 "               create file under cursor foler, requires a file name
 " Author: Gavin
 fun! netrw#CreateFile()
-  let fileName = input("file name: ", "", "file")
+  let curDir = s:NetrwTreeDir()
+  let fileName = input(curDir . "\nnew file name: ", "", "file")
   " cannot use parent path for building fullpath due to canot get
   " parent folder for empty folder
   " let curDir = netrw#GetParentPath()
-  let curDir = s:NetrwTreeDir()
   let fileFullName = curDir . fileName
   if fileName != "" && filewritable(fileFullName) == 2 " is a folder, do nothing
     echohl ErrorMsg
@@ -9946,6 +9946,30 @@ fun! netrw#GetParentPath()
   return strpart(fullPath, 0, pos + 1)
 endfunc
 
+" UpdateCursorPos: (used by CursorHold and CreateFile) {{{2
+"                  update cursor to corresponding pos
+" author: Gavin
+fun! netrw#UpdateCursorPos()
+  let lineCount = line('$')
+  let line = 2 " first line is empty
+  let curFile = expand('%:p')
+  let netrwBufNum = tabpagebuflist()[0]
+  if !(bufname(netrwBufNum) =~ "NetrwTreeListing")
+    return
+  endif
+  return
+  while line <= lineCount
+    call setpos('.', [netrwBufNum, line, 0, 0])
+    let fullPath = netrw#GetFullPath()
+    if fullPath =~ curFile
+      return
+    endif
+    let line += 1
+  endwhile
+  call setpos('.', [netrwBufNum, 1, 0, 0])
+  " a better solution is full name match -> parent folder -> parent folder
+endfunc
+
 " ---------------------------------------------------------------------
 " Auto Commands: {{{1
 
@@ -9957,6 +9981,7 @@ augroup netrw
     \exe "cd " . netrw#GetParentPath()
   au WinEnter NetrwTreeListing* setl updatetime=100
   au BufNew NetrwTreeListing* setl updatetime=100
+  au WinEnter * call netrw#UpdateCursorPos()
 augroup end
 
 " ---------------------------------------------------------------------
