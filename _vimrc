@@ -336,7 +336,7 @@ endfunction
 
 function! Comment(mode)
   " comment string is //
-  for tmp in ["cpp", "c", "java", "php", "javascript"]
+  for tmp in ["cpp", "c", "java", "php", "javascript", "go"]
     if &ft == tmp
       call CommentImpl("//", a:mode)
       return "//"
@@ -453,6 +453,14 @@ function! Run()
       exe 'silent !start cmd /c start "markdown" markdown.lnk "%:p"'
     endif
     return "markdown"
+  endif
+  if (&ft == 'go')
+    if has('mac')
+      exe '!clear; rm ~/tmp/go.out 2>/dev/null;' .
+            \ 'go build -o ~/tmp/go.out "%:p" && ~/tmp/go.out;' .
+            \ 'read -n1 -p "Press any key to continue...";'
+      call RefreshCurrentTab()
+    endif
   endif
   if has("win32")
     exe '!start cmd /c start "vim run" nppCompileAndRun.lnk "%:p"'
@@ -1021,6 +1029,15 @@ let g:tagbar_type_go = {
       \ 't:type',
       \ 'c:const',
     \ ],
+					\ 'sro' : '.',
+					\ 'kind2scope' : {
+					\ 't' : 'ctype',
+					\ 'n' : 'ntype'
+					\ },
+					\ 'scope2kind' : {
+					\ 'ctype' : 't',
+					\ 'ntype' : 'n'
+					\ },
     \ 'sort' : 0
 \ }
 
