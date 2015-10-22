@@ -460,7 +460,12 @@ function! Run()
             \ 'go build -o ~/tmp/go.out "%:p" && ~/tmp/go.out;' .
             \ 'read -n1 -p "Press any key to continue...";'
       call RefreshCurrentTab()
+    elseif has("win32")
+      exe '!cls & del e:/temp/go.out 2>nul & ' .
+            \'go build -o e:/temp/go.out ' . expand("%:p") . ' && ' .
+            \'e:/temp/go.out & pause'
     endif
+    return "go"
   endif
   if has("win32")
     exe '!start cmd /c start "vim run" nppCompileAndRun.lnk "%:p"'
