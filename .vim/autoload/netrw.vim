@@ -3,6 +3,7 @@
 " Date:		May 18, 2013
 " Version:	149
 " Maintainer:	Charles E Campbell <NdrOchip@ScampbellPfamily.AbizM-NOSPAM>
+" Updated: 2015-10-24-Sat by Gavin <gavineaglechou@gmail.com>
 " GetLatestVimScripts: 1075 1 :AutoInstall: netrw.vim
 " Copyright:    Copyright (C) 1999-2012 Charles E. Campbell {{{1
 "               Permission is hereby granted to use and distribute this code,
@@ -9948,26 +9949,71 @@ endfunc
 
 " UpdateCursorPos: (used by CursorHold and CreateFile) {{{2
 "                  update cursor to corresponding pos
-" author: Gavin
+" Author: Gavin
 fun! netrw#UpdateCursorPos()
-  let lineCount = line('$')
-  let line = 2 " first line is empty
   let curFile = expand('%:p')
-  let netrwBufNum = tabpagebuflist()[0]
-  if !(bufname(netrwBufNum) =~ "NetrwTreeListing")
+  let curWinNum = winnr()
+  let bufnrlist = tabpagebuflist()
+  let netrwBufNum = bufnrlist[0]
+  " if first window is not netrw or enter "useless" window return
+  if !(bufname(netrwBufNum) =~  "NetrwTreeListing")
     return
   endif
+  " define some "useless" window should not be processed
+  let uselessWindow = ["__Tagbar__", "NetrwTreeListing", "__Tag_List__"]
+  let fileName = bufname(bufnrlist[curWinNum - 1])
+  for each in uselessWindow
+    if fileName =~ each
+      return
+    endif
+  endfor
+  " do something to update cursor
+  exe "1 wincmd w"
+  let lineCount = line('$')
+  let line = 2 " first line is empty
+
+  " a better matching solution is full name -> parent folder -> grandparent
+  " folder
+  let mostFitLine = 0
+  let minNotMatchLen = 10000
+  while line <= lineCount
+    call setpos('.', [netrwBufNum, line, 0, 0])
+    let fullPath = netrw#GetFullPath()
+    let curNotMatchLen = strlen(substitute(curFile, fullPath, "", ""))
+    if curNotMatchLen == 0 " 100% matched
+      exe curWinNum . " wincmd w"
+      return
+    elseif curNotMatchLen < minNotMatchLen
+      let minNotMatchLen = curNotMatchLen
+      let mostFitLine = line
+    endif
+    let line += 1
+  endwhile
+  if strlen(curFile) == minNotMatchLen
+    echo curFile . ", file not in current netrw list"
+    call setpos('.', [netrwBufNum, 2, 0, 0])
+  else
+    call setpos('.', [netrwBufNum, mostFitLine, 0, 0])
+  endif
+  exe curWinNum . " wincmd w"
   return
+
+  " naive implementation, match full path
   while line <= lineCount
     call setpos('.', [netrwBufNum, line, 0, 0])
     let fullPath = netrw#GetFullPath()
     if fullPath =~ curFile
+      echo fullPath
+      exe curWinNum . " wincmd w"
       return
     endif
     let line += 1
   endwhile
-  call setpos('.', [netrwBufNum, 1, 0, 0])
-  " a better solution is full name match -> parent folder -> parent folder
+  echo curFile . ", file not in current netrw list"
+  call setpos('.', [netrwBufNum, 2, 0, 0])
+  exe curWinNum . " wincmd w"
+  return
+
 endfunc
 
 " ---------------------------------------------------------------------
@@ -9981,7 +10027,8 @@ augroup netrw
     \exe "cd " . netrw#GetParentPath()
   au WinEnter NetrwTreeListing* setl updatetime=100
   au BufNew NetrwTreeListing* setl updatetime=100
-  au WinEnter * call netrw#UpdateCursorPos()
+  " switched by g:netrw_indicate_current_file
+  au WinEnter,BufEnter * call netrw#UpdateCursorPos()
 augroup end
 
 " ---------------------------------------------------------------------
