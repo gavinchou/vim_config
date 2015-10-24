@@ -9951,6 +9951,9 @@ endfunc
 "                  update cursor to corresponding pos
 " Author: Gavin
 fun! netrw#UpdateCursorPos()
+  if exists("g:netrw_indicate_current_file") && !g:netrw_indicate_current_file
+    return
+  endif
   let curFile = expand('%:p')
   let curWinNum = winnr()
   let bufnrlist = tabpagebuflist()
@@ -10027,7 +10030,7 @@ augroup netrw
     \exe "cd " . netrw#GetParentPath()
   au WinEnter NetrwTreeListing* setl updatetime=100
   au BufNew NetrwTreeListing* setl updatetime=100
-  " switched by g:netrw_indicate_current_file
+  " switched by g:netrw_indicate_current_file, default on
   au WinEnter,BufEnter * call netrw#UpdateCursorPos()
 augroup end
 
