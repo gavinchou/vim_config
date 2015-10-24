@@ -5216,6 +5216,7 @@ fun! s:NetrwMakeDir(usrhost)
   " if its currently a directory, also request will be skipped, but with
   " a message.
   call inputsave()
+  echo b:netrw_curdir
   let newdirname= input("Please give directory name: ")
   call inputrestore()
 "  call Decho("newdirname<".newdirname.">")
@@ -9889,8 +9890,12 @@ endfun
 "               create file under cursor foler, requires a file name
 " Author: Gavin
 fun! netrw#CreateFile()
-  let curDir = s:NetrwTreeDir()
+  " let curDir = s:NetrwTreeDir()
+  let curDir = b:netrw_curdir
   let fileName = input(curDir . "\nnew file name: ", "", "file")
+  if fileName == ""
+    return
+  endif
   " cannot use parent path for building fullpath due to canot get
   " parent folder for empty folder
   " let curDir = netrw#GetParentPath()
