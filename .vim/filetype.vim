@@ -2469,6 +2469,11 @@ au BufNewFile,BufRead /etc/xinetd.d/*		call s:StarSetf('xinetd')
 " Z-Shell script
 au BufNewFile,BufRead zsh*,zlog*		call s:StarSetf('zsh')
 
+" config
+au BufNewFile,BufRead *.conf		call s:StarSetf('config')
+
+" toml
+au BufNewFile,BufRead *.toml		call s:StarSetf('config')
 
 
 " Use the filetype detect plugins.  They may overrule any of the previously
