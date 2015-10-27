@@ -9892,14 +9892,14 @@ endfun
 fun! netrw#CreateFile()
   " let curDir = s:NetrwTreeDir()
   let curDir = b:netrw_curdir
-  let fileName = input(curDir . "\nnew file name: ", "", "file")
+  let fileName = input(curDir . "/\nnew file name: ", "", "file")
   if fileName == ""
     return
   endif
   " cannot use parent path for building fullpath due to canot get
   " parent folder for empty folder
   " let curDir = netrw#GetParentPath()
-  let fileFullName = curDir . fileName
+  let fileFullName = curDir . "/" . fileName
   if fileName != "" && filewritable(fileFullName) == 2 " is a folder, do nothing
     echohl ErrorMsg
     echo fileFullName . " is a folder!"
