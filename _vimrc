@@ -15,7 +15,7 @@ set tabstop=2 " ts, tabstop width
 set tw=80
 set et " extendtab
 " autocmd BufEnter * set et
-autocmd BufEnter,BufRead *.txt,*.md set noet
+autocmd BufEnter,BufRead,WinEnter *.txt,*.md set noet
 
 " --------- display as more lines as possible, do not use @@ {{{3
 set display=lastline " dy=lastline
