@@ -14,7 +14,7 @@ this config general options of vim and some plugins
 		2015-10-17-Sat 14:46:02
 
 * type `timelog` in normal mode to insert a time based log template, cursor will
-	be set right after 'tag: '
+	be set right behind 'tag: '
 
 		## 2015-10-17-Sat 14:45:37
 		tag: 
@@ -62,6 +62,8 @@ input the marks for surrounding, say `***`, `abc def` will be changed to
 	file, create file with the same parent fold of it
 * auto change director when move cursor between different folder
 * enhance preview with `<CR>`, always open file in preview window with `<CR>`
+* auto change netrw cursor position to indicate current file (localtion) with switch
+	g:netrw_indicate_current_file, default on
 
 ### tagbar
 * fixed bugs when use tagbar with netrw, make tagbar process content window
@@ -70,7 +72,6 @@ input the marks for surrounding, say `***`, `abc def` will be changed to
 ### statusline/tabline
 * make statusline change color locally when mode changes
 * tabline will change as statusline changes color (mode stimulated)
-
 
 ### findchar
 * enhance `f`, `F`, `;` and `,` keys to case-insensitive when option
@@ -81,7 +82,8 @@ input the marks for surrounding, say `***`, `abc def` will be changed to
 
 ![markdown heading folder](README_img/markdown_heading_folder.png)
 
-* align markdown table with ranged based command `:Table`
+* <a name="markdownTable"></a>
+	align markdown table with ranged based command `:Table`
 
 	that is 
 
@@ -105,6 +107,40 @@ input the marks for surrounding, say `***`, `abc def` will be changed to
 			dd     |eeeee  |ffffff
 
 		note: this plugin has capability with '\|', skips escaped '|'
+
+### code/text format
+* as [previous](#markdownTable), align with given character is supported with
+	ranged command `Align`
+	
+	example:
+
+	orignal text:
+
+		int a = 10;
+		int aa = 100;
+		int aaa = 1000;
+		int aaaa = 10000;
+		int aaaaa = 100000;
+
+	select it and use command `:'<,'>Align =`
+
+		int a     = 10;
+		int aa    = 100;
+		int aaa   = 1000;
+		int aaaa  = 10000;
+		int aaaaa = 100000;
+
+	select it and use command `:'<,'>Align ;`
+	
+		int a = 10        ;
+		int aa = 100      ;
+		int aaa = 1000    ;
+		int aaaa = 10000  ;
+		int aaaaa = 100000;
+
+	**note: this function is very insteresting, use your imagination!!!**
+
+	take a look at `.vim/plugin/align.vim`
 
 ### misc
 #### file headers
