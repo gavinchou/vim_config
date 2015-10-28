@@ -9959,7 +9959,7 @@ fun! netrw#UpdateCursorPos()
   if exists("g:netrw_indicate_current_file") && !g:netrw_indicate_current_file
     return
   endif
-  let curFile = expand('%:p')
+  let curFile = substitute(expand('%:p'), "\\", "\/", "g")
   let curWinNum = winnr()
   let bufnrlist = tabpagebuflist()
   let netrwBufNum = bufnrlist[0]
