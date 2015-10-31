@@ -407,7 +407,15 @@ function! Comment(mode)
     return "lua"
   endif
 
+  " lisp ;;
+  if &ft == "lisp"
+    call CommentImpl(";;", a:mode)
+    return "lisp"
+  endif
+
+  echohl Error
   echo "No comment command support for " . &ft . " --- Gavin"
+  echohl None
 endfunction
 
 nmap <silent> cc :call Comment(COMMENT_1)<CR>
@@ -664,6 +672,10 @@ set showmatch
 
 " ---------- enter normal mode delay
 set timeoutlen=1000 ttimeoutlen=5
+
+" ---------- config spell su
+set spellsuggest=file:~/.vim/misc/spellsuggest.txt,best
+set spelllang+=cjk
 
 " ================================ commands ============================ {{{2
 " ---------- trim the heading/trailing whitespaces {{{3
