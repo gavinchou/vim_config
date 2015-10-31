@@ -67,6 +67,8 @@ hi Function ctermfg=148 ctermbg=NONE cterm=NONE guifg=#a6e22e guibg=NONE gui=NON
 hi Identifier ctermfg=81 ctermbg=NONE cterm=NONE guifg=#66d9ef guibg=NONE gui=italic
 hi Keyword ctermfg=197 ctermbg=NONE cterm=NONE guifg=#f92672 guibg=NONE gui=NONE
 hi Label ctermfg=186 ctermbg=NONE cterm=NONE guifg=#e6db74 guibg=NONE gui=NONE
+" The "NonText" highlighting will be used for "eol", "extends" and "precedes".
+" "SpecialKey" for "nbsp", "tab" and "trail".
 hi NonText ctermfg=59 ctermbg=236 cterm=NONE guifg=#49483e guibg=#31322c gui=NONE
 hi Number ctermfg=141 ctermbg=NONE cterm=NONE guifg=#ae81ff guibg=NONE gui=NONE
 "hi Operator ctermfg=197 ctermbg=NONE cterm=NONE guifg=#d8d8d8 guibg=NONE gui=NONE
@@ -74,7 +76,7 @@ hi Operator ctermfg=197 ctermbg=NONE cterm=NONE guifg=#f92672 guibg=NONE gui=NON
 hi PreProc ctermfg=197 ctermbg=NONE cterm=NONE guifg=#f92672 guibg=NONE gui=NONE
 hi Special ctermfg=15 ctermbg=NONE cterm=NONE guifg=#f8f8f2 guibg=NONE gui=NONE
 "hi SpecialKey ctermfg=59 ctermbg=237 cterm=NONE guifg=#49483e guibg=#3c3d37 gui=NONE
-hi SpecialKey ctermfg=59 ctermbg=NONE cterm=NONE guifg=#49483e guibg=NONE gui=NONE
+hi SpecialKey ctermfg=235 ctermbg=NONE cterm=NONE guifg=#262626 guibg=NONE gui=NONE
 hi Statement ctermfg=197 ctermbg=NONE cterm=NONE guifg=#f92672 guibg=NONE gui=NONE
 hi StorageClass ctermfg=81 ctermbg=NONE cterm=NONE guifg=#66d9ef guibg=NONE gui=italic
 " hi String ctermfg=186 ctermbg=NONE cterm=NONE guifg=#e6db74 guibg=NONE gui=NONE
@@ -88,6 +90,10 @@ hi Type ctermfg=27 ctermbg=NONE cterm=NONE guifg=#409fff guibg=NONE gui=NONE
 hi Underlined ctermfg=NONE ctermbg=NONE cterm=underline guifg=NONE guibg=NONE gui=underline
 hi Exception ctermfg=81 ctermbg=NONE cterm=NONE guifg=#66d9ef guibg=NONE gui=NONE
 hi Typedef ctermfg=81 ctermbg=NONE cterm=NONE guifg=#66d9ef guibg=NONE gui=NONE
+" spell highlight
+hi SpellBad ctermfg=255 ctermbg=203 cterm=NONE guifg=NONE guibg=NONE gui=undercurl guisp=Red
+hi SpellCap ctermfg=255 ctermbg=12 cterm=NONE guifg=NONE guibg=NONE gui=undercurl guisp=Blue
+hi SpellRare ctermfg=255 ctermbg=13 cterm=NONE guifg=NONE guibg=NONE gui=undercurl guisp=Magenta
 
 " ruby javascript css colorscheme
 hi rubyClass ctermfg=197 ctermbg=NONE cterm=NONE guifg=#f92672 guibg=NONE gui=NONE
