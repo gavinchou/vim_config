@@ -31,7 +31,8 @@
 "   2. align with '#' do not skip
 "
 "     :'<,'>Align #
-"   3. align with ' '(space) with skip
+"
+"   3. align with ' '(space) with skip '\ '
 "
 "     :'<,'>Align space \space
 "
