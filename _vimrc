@@ -652,6 +652,7 @@ au BufNewFile,BufRead,BufEnter *.cpp,*.hpp,*.h,*.cc set omnifunc=omni#cpp#comple
 
 " ---------- YouCompleteMe
 let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
+let g:ycm_confirm_extra_conf = 0
 
 " ---------- virtual edit {{{3
 set virtualedit=block
