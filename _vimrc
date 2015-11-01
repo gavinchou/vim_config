@@ -464,7 +464,7 @@ function! Run()
     return "markdown"
   endif
   if (&ft == 'go')
-    if has('mac')
+    if has('mac') || has('unix')
       exe '!clear; rm ~/tmp/go.out 2>/dev/null;' .
             \ 'go build -o ~/tmp/go.out "%:p" && ~/tmp/go.out;' .
             \ 'read -n1 -p "Press any key to continue...";'
