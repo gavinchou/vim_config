@@ -1016,6 +1016,11 @@ function! MarkdownFoldExpr(lnum)
     return '>'.headingLvl
 endfunction
 
+" ---------- SwitchTab() {{{3
+let g:last_tab_num=-1
+nmap gb :exe 'normal! ' . g:last_tab_num . 'gt' <BAR>echo "go back to last tab"<CR>
+autocmd TabLeave * let g:last_tab_num=tabpagenr()
+
 " ============================ tagbar ==================================== {{{2
 let g:tagbar_sort = 0 " do not sort tags by name
 let g:tagbar_type_asciidoc = {
