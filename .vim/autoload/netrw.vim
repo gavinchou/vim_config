@@ -9998,7 +9998,7 @@ fun! netrw#UpdateCursorPos()
     let line += 1
   endwhile
   if strlen(curFile) == minNotMatchLen
-    echo curFile . ", file not in current netrw list"
+    " echo curFile . ", file not in current netrw list"
     call setpos('.', [netrwBufNum, 2, 0, 0])
   else
     call setpos('.', [netrwBufNum, mostFitLine, 0, 0])
