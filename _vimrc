@@ -476,6 +476,13 @@ function! Run()
     endif
     return "go"
   endif
+  if (&ft == 'python')
+    if has('linux') || has('unix')
+      exe '!python "%:p";' .
+          \ 'read -n1 -p "Press any key to continue...";'
+      call RefreshCurrentTab()
+    endif
+  endif
   if has("win32")
     exe '!start cmd /c start "vim run" nppCompileAndRun.lnk "%:p"'
   elseif has("unix")
