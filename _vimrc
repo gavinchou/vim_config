@@ -101,9 +101,9 @@ endif
 if &term == 'vt100' || &term == 'xterm'
   set term=xterm-256color
 endif
-if &term == 'screen'
+" if &term == 'screen'
   set t_Co=256
-end
+" end
 colorscheme Monokai_Gavin
 set guifont=Consolas:h13
 " echo &t_Co
