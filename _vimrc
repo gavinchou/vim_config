@@ -349,7 +349,7 @@ function! Comment(mode)
   endif
   " comment string is #
   for tmp in ["python","sed","apache","bash","conf", "sh", "make", "cfg",
-      \ "gitignore", "zsh", "config"]
+      \ "gitignore", "zsh", "config", "jproperties", "properties"]
     if &ft == tmp
       call CommentImpl("#", a:mode)
       return tmp
