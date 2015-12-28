@@ -70,6 +70,7 @@ let g:netrw_browse_split = 5 " when browsing, <cr> will open the file as "p"
 let g:netrw_cursor = "ctags"
 let g:netrw_chgwin = 2 " specifies a window number where file edits will take place
 let g:netrw_use_errorwindow = 0 " dont use an extra window for errors
+let g:netrw_indicate_current_file = 1 " auto change cursor of the tree in netrw
 
 " menu bar {{{3
 if has("gui")
