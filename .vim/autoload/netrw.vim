@@ -4,6 +4,7 @@
 " Version:	149
 " Maintainer:	Charles E Campbell <NdrOchip@ScampbellPfamily.AbizM-NOSPAM>
 " Updated: 2015-10-24-Sat by Gavin <gavineaglechou@gmail.com>
+" Updated: 2016-02-06-Sat 18:39:47 by Gavin <gavineaglechou@gmail.com>
 " GetLatestVimScripts: 1075 1 :AutoInstall: netrw.vim
 " Copyright:    Copyright (C) 1999-2012 Charles E. Campbell {{{1
 "               Permission is hereby granted to use and distribute this code,
@@ -553,7 +554,11 @@ fun! s:NetrwOptionSave(vt)
   if has("win32") && !has("win95")
    let {a:vt}netrw_swfkeep  = &l:swf          " swapfile
   endif
-  if &go =~# 'a' | sil! let {a:vt}netrw_regstar = @* | endif
+
+  " this statment may cause bug of register @*
+"   if &go =~# 'a' | sil! let {a:vt}netrw_regstar = @* | endif
+
+  sil! let {a:vt}netrw_regstar = @*
   sil! let {a:vt}netrw_regslash= @/
 
 "  call Dret("s:NetrwOptionSave : tab#".tabpagenr()." win#".winnr()." buf#".bufnr("%")." modified=".&modified." modifiable=".&modifiable." readonly=".&readonly)
@@ -846,6 +851,12 @@ fun! netrw#Explore(indx,dosplit,style,...)
 "   call Decho("(Explore) case a:0=".a:0.": clearing Explore list")
    call s:NetrwClearExplore()
 "   call Dret("netrw#Explore : cleared list")
+"
+   " restore registers
+   sil! let @* = keepregstar
+   sil! let @+ = keepregplus
+   sil! let @/ = keepregslash
+
    return
   endif
 
@@ -970,7 +981,7 @@ fun! netrw#Explore(indx,dosplit,style,...)
      if !exists("w:netrw_explore_list") " sanity check
       keepj call netrw#ErrorMsg(s:WARNING,"using Nexplore or <s-down> improperly; see help for netrw-starstar",40)
       sil! let @* = keepregstar
-      sil! let @+ = keepregstar
+      sil! let @+ = keepregplus
       sil! let @/ = keepregslash
 "      call Dret("netrw#Explore")
       return
@@ -993,7 +1004,7 @@ fun! netrw#Explore(indx,dosplit,style,...)
      if !exists("w:netrw_explore_list") " sanity check
       keepj call netrw#ErrorMsg(s:WARNING,"using Pexplore or <s-up> improperly; see help for netrw-starstar",41)
       sil! let @* = keepregstar
-      sil! let @+ = keepregstar
+      sil! let @+ = keepregplus
       sil! let @/ = keepregslash
 "      call Dret("netrw#Explore")
       return
@@ -1031,6 +1042,12 @@ fun! netrw#Explore(indx,dosplit,style,...)
       catch /^Vim\%((\a\+)\)\=:E480/
        keepalt call netrw#ErrorMsg(s:WARNING,"no match with pattern<".pattern.">",76)
 "       call Dret("netrw#Explore : unable to find pattern<".pattern.">")
+
+       " restore registers
+       sil! let @* = keepregstar
+       sil! let @+ = keepregplus
+       sil! let @/ = keepregslash
+
        return
       endtry
       let w:netrw_explore_list = s:NetrwExploreListUniq(map(getqflist(),'bufname(v:val.bufnr)'))
@@ -1046,7 +1063,7 @@ fun! netrw#Explore(indx,dosplit,style,...)
        keepalt call netrw#ErrorMsg(s:WARNING,'no files matched pattern<'.pattern.'>',45)
        if &hls | let keepregslash= s:ExplorePatHls(pattern) | endif
        sil! let @* = keepregstar
-       sil! let @+ = keepregstar
+       sil! let @+ = keepregplus
        sil! let @/ = keepregslash
 "       call Dret("netrw#Explore : no files matched pattern")
        return
@@ -1080,7 +1097,7 @@ fun! netrw#Explore(indx,dosplit,style,...)
      if w:netrw_explore_listlen == 0 || (w:netrw_explore_listlen == 1 && w:netrw_explore_list[0] =~ '\*\*\/')
       keepalt keepj call netrw#ErrorMsg(s:WARNING,"no files matched",42)
       sil! let @* = keepregstar
-      sil! let @+ = keepregstar
+      sil! let @+ = keepregplus
       sil! let @/ = keepregslash
 "      call Dret("netrw#Explore : no files matched")
       return
@@ -1126,7 +1143,7 @@ fun! netrw#Explore(indx,dosplit,style,...)
      keepalt keepj call netrw#ErrorMsg(s:WARNING,"your vim needs the +path_extra feature for Exploring with **!",44)
     endif
     sil! let @* = keepregstar
-    sil! let @+ = keepregstar
+    sil! let @+ = keepregplus
     sil! let @/ = keepregslash
 "    call Dret("netrw#Explore : missing +path_extra")
     return
@@ -1191,7 +1208,7 @@ fun! netrw#Explore(indx,dosplit,style,...)
   endif
 
   sil! let @* = keepregstar
-  sil! let @+ = keepregstar
+  sil! let @+ = keepreplus
   sil! let @/ = keepregslash
 "  call Dret("netrw#Explore : @/<".@/.">")
 endfun
@@ -4398,6 +4415,7 @@ fun! s:NetrwBrowseChgDir(islocal,newdir,...)
       if previewWin > 0
         exe previewWin . "wincmd w"
       endif
+      let @@= ykeep
       return
      else
       " handling a file, didn't split, so remove menu
