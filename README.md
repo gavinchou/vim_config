@@ -7,6 +7,7 @@
 ### `_vimrc`
 this config general options of vim and some plugins
 #### netrw
+* auto resize netrw window when move cursor between windows
 #### tagbar
 #### time date
 * type `time` in normal mode to insert current time
@@ -62,12 +63,15 @@ input the marks for surrounding, say `***`, `abc def` will be changed to
 	file, create file with the same parent fold of it
 * auto change director when move cursor between different folder
 * enhance preview with `<CR>`, always open file in preview window with `<CR>`
-* auto change netrw cursor position to indicate current file (localtion) with switch
+* auto change netrw cursor position to indicate current file (location) with switch
 	g:netrw_indicate_current_file, default on
+* fix bug of messing up register `@*` and `@+`
 
 ### tagbar
 * fixed bugs when use tagbar with netrw, make tagbar process content window
 * markdown support
+* hilight whole tag line (maybe a switch can be added whether this function is
+	enabled)
 
 ### statusline/tabline
 * make statusline change color locally when mode changes
