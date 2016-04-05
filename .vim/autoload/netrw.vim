@@ -9997,6 +9997,7 @@ fun! netrw#UpdateCursorPos()
   exe "1 wincmd w"
   let lineCount = line('$')
   let line = 2 " first line is empty
+  let oldCursorLinePos = getpos(".")[1]
 
   " a better matching solution is full name -> parent folder -> grandparent
   " folder
@@ -10017,7 +10018,7 @@ fun! netrw#UpdateCursorPos()
   endwhile
   if strlen(curFile) == minNotMatchLen
     " echo curFile . ", file not in current netrw list"
-    call setpos('.', [netrwBufNum, 2, 0, 0])
+    call setpos('.', [netrwBufNum, oldCursorLinePos, 0, 0])
   else
     call setpos('.', [netrwBufNum, mostFitLine, 0, 0])
   endif
