@@ -13,9 +13,7 @@ set autoindent " ai
 set sw=2 " shift width, indent width
 set tabstop=2 " ts, tabstop width
 set tw=80
-set et " extendtab
-" autocmd BufEnter * set et
-autocmd BufEnter,BufRead,WinEnter *.txt,*.md set noet
+set et " extendtab by default
 
 " --------- display as more lines as possible, do not use @@ {{{3
 set display=lastline " dy=lastline
@@ -389,7 +387,7 @@ function! Comment(mode)
   endif
   
   " comment string is <!--  -->
-  for tmp in ["html", "xml", "axml", "htm", "xhtml"]
+  for tmp in ["html", "xml", "axml", "htm", "xhtml", "ant"]
     if &ft == tmp
       call CommentImpl("xml", a:mode)
       return "xml"
@@ -467,7 +465,8 @@ function! Run()
   if (&ft == 'go')
     if has('mac') || has('unix')
       exe '!clear; rm ~/tmp/go.out 2>/dev/null;' .
-            \ 'go build -o ~/tmp/go.out "%:p" && ~/tmp/go.out;' .
+            \ 'export GOPATH=$GOPATH:`pwd`:`pwd`/..;' .
+            \ '(go build -o ~/tmp/go.out "%:p"  && ~/tmp/go.out) || (clear; go test "%:p");' .
             \ 'read -n1 -p "Press any key to continue...";'
       call RefreshCurrentTab()
     elseif has("win32")
@@ -484,6 +483,20 @@ function! Run()
       call RefreshCurrentTab()
     endif
   endif
+  for tmp in ["html", "xml", "axml", "htm", "xhtml", "js", "javascript"]
+    if (&ft == tmp)
+      if has('unix')
+        exe '!chrome "file://%:p";' .
+            \ 'read -n1 -p "Press any key to continue...";'
+        call RefreshCurrentTab()
+      elseif has('win32')
+        exe '!chrome.lnk "file://%:p";' .
+            \ 'read -n1 -p "Press any key to continue...";'
+        call RefreshCurrentTab()
+      endif
+    endif
+  endfor
+
   if has("win32")
     exe '!start cmd /c start "vim run" nppCompileAndRun.lnk "%:p"'
   elseif has("unix")
@@ -516,7 +529,7 @@ endfunction
 map <F12> :call MakeTags()<CR>
 
 " select all
-nmap <C-A> ggVG
+" nmap <C-A> ggVG
 
 " ---------- redirect for ESC {{{3
 " imap fds <ESC>
@@ -798,12 +811,27 @@ command! -count=1 W <count> winc w
 command! Baiducpp echo "added baidu cpp vim format footer"<BAR>
   \silent call append('$',  '// vim: tw=80 ts=4 sw=4 cc=80')
 
+" ---------- Sum the selected text {{{3
+" sum the specific
+command! -range -nargs=? Sum let g:_sum_ = 0<BAR>
+  \ let col = <args><BAR>
+  \ <line1>,<line2>s/-\?[0-9]\+\(\.*[0-9]\+\)\?/\=SumImpl(submatch(0))/<BAR>
+  \ noh<BAR>
+  \ echo g:_sum_<BAR>
+
+function! SumImpl(num)
+  let g:_sum_ += a:num
+  return a:num
+endfunction
+
 " ========================= file type ================================== {{{2
 autocmd BufNewFile,BufRead *.alipaylog setf alipaylog
 autocmd BufNewFile,BufRead *.md setf markdown
 autocmd BufNewFile,BufRead *.md setlocal foldexpr=MarkdownFoldExpr(v:lnum) fdm=expr
 autocmd BufNewFile,BufRead *.gitignore setf gitignore
 autocmd BufNewFile,BufRead BCLOUD setf conf
+" autocmd BufEnter * set et
+autocmd BufEnter,BufRead,WinEnter *.txt,*.md,*.go setl noet
 
 " ========================= autocmd ================================== {{{2
 augroup netrw " ---------- {{{3
@@ -1062,15 +1090,15 @@ let g:tagbar_type_go = {
       \ 't:type',
       \ 'c:const',
     \ ],
-					\ 'sro' : '.',
-					\ 'kind2scope' : {
-					\ 't' : 'ctype',
-					\ 'n' : 'ntype'
-					\ },
-					\ 'scope2kind' : {
-					\ 'ctype' : 't',
-					\ 'ntype' : 'n'
-					\ },
+    \ 'sro' : '.',
+    \ 'kind2scope' : {
+    \ 't' : 'ctype',
+    \ 'n' : 'ntype'
+    \ },
+    \ 'scope2kind' : {
+    \ 'ctype' : 't',
+    \ 'ntype' : 'n'
+    \ },
     \ 'sort' : 0
 \ }
 
