@@ -614,7 +614,7 @@ nmap T :T<CR>
 if has('win32')
   set dir=e:/temp/
 elseif has('unix')
-  set dir=~/temp/,~/tmp/
+  set dir=~/temp/,~/tmp/,/tmp/
 endif
 
 " ignore case while search {{{3
