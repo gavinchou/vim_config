@@ -2980,6 +2980,7 @@ fun! s:NetrwMaps(islocal)
    nnoremap <buffer> <silent> v		:call <SID>NetrwSplit(5)<cr>
    nnoremap <buffer> <silent> x		:call netrw#NetrwBrowseX(<SID>NetrwBrowseChgDir(1,<SID>NetrwGetWord(),0),0)"<cr>
    nnoremap <buffer> <silent> X		:call <SID>NetrwLocalExecute(expand("<cword>"))"<cr>
+   nnoremap <buffer> <silent> yp		:call netrw#NetrwCopyCurrentPath()<cr>
    " local insert-mode maps
    inoremap <buffer> <silent> a		<c-o>:call <SID>NetrwHide(1)<cr>
    inoremap <buffer> <silent> c		<c-o>:exe "keepjumps lcd ".fnameescape(b:netrw_curdir)<cr>
@@ -10205,6 +10206,15 @@ fun! netrw#UpdateCursorPos()
   return
 
 endfunc
+
+
+" UpdateCursorPos: (used by CursorHold and CreateFile) {{{2
+"                  update cursor to corresponding pos
+" Author: Gavin
+fun! netrw#NetrwCopyCurrentPath()
+  call setreg('"', netrw#GetFullPath())
+  call setreg('+', netrw#GetFullPath())
+endfun
 
 " ---------------------------------------------------------------------
 " Auto Commands: {{{1
