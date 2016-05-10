@@ -10213,7 +10213,9 @@ endfunc
 " Author: Gavin
 fun! netrw#NetrwCopyCurrentPath()
   call setreg('"', netrw#GetFullPath())
-  call setreg('+', netrw#GetFullPath())
+  if has('clipboard')
+    call setreg('+', netrw#GetFullPath())
+  endif
 endfun
 
 " ---------------------------------------------------------------------
