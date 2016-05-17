@@ -635,7 +635,9 @@ set incsearch "increase search, search when typing a pattern
 filetype on
 filetype plugin on
 filetype indent on
-set noundofile
+if v:version >= 704
+  set noundofile
+endif
 
 " ---------- tags, taglist, file explorer {{{3
 set tags=tags,./tags,../tags,../../tags,../../../tags
