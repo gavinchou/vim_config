@@ -13,7 +13,7 @@ set autoindent " ai
 set sw=2 " shift width, indent width
 set tabstop=2 " ts, tabstop width
 set tw=80
-set et " extendtab by default
+" set et " extendtab by default
 
 " --------- display as more lines as possible, do not use @@ {{{3
 set display=lastline " dy=lastline
@@ -829,7 +829,7 @@ autocmd BufNewFile,BufRead *.alipaylog setf alipaylog
 autocmd BufNewFile,BufRead *.md setf markdown
 autocmd BufNewFile,BufRead *.md setlocal foldexpr=MarkdownFoldExpr(v:lnum) fdm=expr
 autocmd BufNewFile,BufRead *.gitignore setf gitignore
-autocmd BufNewFile,BufRead BCLOUD setf conf
+autocmd BufNewFile,BufRead BCLOUD setf python
 " autocmd BufEnter * set et
 autocmd BufEnter,BufRead,WinEnter *.txt,*.md,*.go setl noet
 
