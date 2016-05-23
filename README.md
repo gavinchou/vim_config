@@ -4,6 +4,20 @@
 
 ![insert mode screenshot](./README_img/insert_mode.png)
 
+### overview
+this config suite gets you the best experience with minimum plugins
+
+### installation
+
+1. to get the best experience of this config suite,
+	 install [vim 7.4+](https://github.com/vim/vim.git)
+
+2. download this vim config suite from github and
+
+		git clone http://github.com/gavinchou/vim_config.git
+		cd vim_config
+		sh install.sh
+
 ### `_vimrc`
 this config general options of vim and some plugins
 #### netrw
@@ -57,6 +71,11 @@ input the marks for surrounding, say `***`, `abc def` will be changed to
 `***abc def***`
 
 ### netrw
+file path: `autoload/netrw.vim`
+netrw is a builtin plugin of vim, which is a file explorer. Using it by using
+command `:Ve`, or type `:h netrw` for more info
+
+**some personal modifications and some bug fixes**
 * display file/dir full path under cursor
 * fixed `s:NetrwTreeDir()`'s bugs of moving cursor around after calling it
 * create file in current cursor folder with key `c`, if file is under current
@@ -66,6 +85,7 @@ input the marks for surrounding, say `***`, `abc def` will be changed to
 * auto change netrw cursor position to indicate current file (location) with switch
 	g:netrw_indicate_current_file, default on
 * fix bug of messing up register `@*` and `@+`
+* map 'yp' to copy current full path in netrw list
 
 ### tagbar
 * fixed bugs when use tagbar with netrw, make tagbar process content window
@@ -74,6 +94,7 @@ input the marks for surrounding, say `***`, `abc def` will be changed to
 	enabled)
 
 ### statusline/tabline
+file path: `plugin/statusline.vim`
 * make statusline change color locally when mode changes
 * tabline will change as statusline changes color (mode stimulated)
 
