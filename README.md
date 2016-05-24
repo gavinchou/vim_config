@@ -66,12 +66,12 @@ this config suite gets you the best experience with minimum plugins
 	├── _vimrc --- main config/customization of vim, with functions/plugins/keymaps
 	├── _vrapperrc --- vim config for eclipse plugin `vrapper`
 	├── eclipse_color_monokai_gavin.xml --- theme on eclipse
-	├── install.sh --- installation script for Linux/MacOS
+	├── install.sh --- installation script for Linux/MacOSx
 	├── php_function_list.txt --- php function list for compeletion while editing php file
 	└── plugin_collect --- not used, as a memo
 
 ### `_vimrc`
-this config general options of vim and some plugins
+This configs general options of vim and some plugins
 #### netrw
 * auto resize netrw window when move cursor between windows
 #### tagbar
@@ -86,20 +86,26 @@ this config general options of vim and some plugins
 		## 2015-10-17-Sat 14:45:37
 		tag: 
 
-#### autu change IME
-this is useful for the users work with different IMEs,
-2 platform support, Mac os x and Windows
-* auto change IME to Eng when change `insert mode` to `normal mode`
-##### to enable this feature, several thins should be done
+#### auto change IME
+
+**change IME to Eng when user changes `insert mode` to `normal mode`
+automatically**
+
+This is useful for the users work with different IMEs, especially for users
+who use Assian language.
+
+MacOSx and Windows are supported.
+
+##### enable auto-change-IME
 * windows
 	1. install the external util `change_ime_to_eng` for windows, which i offers
-		in my repository, see this [link](mylink.com) for more details
+		in my repository, see this [link](mylink.com) for more details, contact me
 	2. make shortcut link of it named `changeVimIme2Eng.lnk`, and put to
 		 `%windir%`, say "C:\windows" as usual
 	3. enjoy it
 
 * mac os x
-	1. `xkbswitch` for mac os x, refer to <xkbswitch.github>
+	1. `xkbswitch` for mac os x, refer to <https://github.com/myshov/xkbswitch-macosx>
 	2. add the path of `xkbswitch` to system evn `PATH`
 	3. enjoy it
 
@@ -123,7 +129,7 @@ input the marks for surrounding, say `***`, `abc def` will be changed to
 `***abc def***`
 
 ### netrw
-file path: `autoload/netrw.vim`
+file path: `autoload/netrw.vim`, some modifications/bug-fixes have been done to it
 netrw is a builtin plugin of vim, which is a file explorer. Using it by using
 command `:Ve`, or type `:h netrw` for more info
 
@@ -135,9 +141,9 @@ command `:Ve`, or type `:h netrw` for more info
 * auto change director when move cursor between different folder
 * enhance preview with `<CR>`, always open file in preview window with `<CR>`
 * auto change netrw cursor position to indicate current file (location) with switch
-	g:netrw_indicate_current_file, default on
-* fix bug of messing up register `@*` and `@+`
-* map 'yp' to copy current full path in netrw list
+	g:netrw_indicate_current_file, default value is 1
+* fix bug of messing up register `@*` and `@+`, which affect the system clipboard
+* map 'yp' to copy full path in netrw list of the file under cursor
 
 ### tagbar
 * fixed bugs when use tagbar with netrw, make tagbar process content window
