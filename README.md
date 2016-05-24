@@ -1,11 +1,10 @@
 ## gvim and vim configs/plugins
+### overview
+this config suite gets you the best experience with minimum plugins
 
 ![normal mode screenshot](./README_img/normal_mode.png)
 
 ![insert mode screenshot](./README_img/insert_mode.png)
-
-### overview
-this config suite gets you the best experience with minimum plugins
 
 ### installation
 
@@ -17,6 +16,59 @@ this config suite gets you the best experience with minimum plugins
 		git clone http://github.com/gavinchou/vim_config.git
 		cd vim_config
 		sh install.sh
+
+### directory structure
+
+	.
+	├── .vim --- .vim dir for vim customization
+	│   ├── after
+	│   │   └── ftplugin --- file type plugin
+	│   │       ├── c.vim
+	│   │       └── cpp.vim
+	│   ├── autoload --- plugin
+	│   │   ├── netrw.vim --- enhanced explorer, replace the vim-built-in netrw
+	│   │   ├── omni --- omi complete plugin
+	│   │   └── tagbar.vim --- taglist-alike outline view
+	│   ├── colors --- themes/colors
+	│   │   ├── Monokai.vim
+	│   │   ├── Monokai_Gavin.vim --- currently used customized theme
+	│   │   └── Monokai_Gavin_Low_Contrast.vim
+	│   ├── doc --- plugin docs
+	│   │   ├── omnicppcomplete.txt
+	│   │   └── taglist.txt
+	│   ├── filetype.vim --- file type definition plugin
+	│   ├── ftdetect --- file type detection plugin
+	│   │   └── go.vim
+	│   ├── indent --- customized indent plugin
+	│   │   └── go.vim
+	│   ├── plugin --- plugins written by me or collected
+	│   │   ├── align.vim --- customized plugin for table alignment, like markdown table
+	│   │   ├── findchar.vim --- find char with key `f` `F` in smartcase mode
+	│   │   ├── statusline.vim --- customized statusline, pretty statusline
+	│   │   ├── surround.vim --- surround something with key `F4`
+	│   │   ├── tagbar.vim --- collected plugin `tagbar`
+	│   │   ├── taglist.vim --- taglist, deprecated
+	│   │   ├── template.vim --- customized file/code templates
+	│   │   └── xterm-color-table.vim --- collected plugin for adjusting colors
+	│   ├── spell
+	│   │   ├── en.utf-8.add
+	│   │   ├── en.utf-8.add.spl
+	│   │   └── spellsuggest.txt
+	│   └── syntax --- customized syntax coloring for different types of file
+	│       ├── alipaylog.vim
+	│       ├── cpp.vim
+	│       ├── go.vim
+	│       ├── html.vim
+	│       ├── markdown.vim
+	│       ├── tagbar.vim
+	│       └── test.vim
+	├── .ycm_extra_conf.py --- YCM config file, not used
+	├── _vimrc --- main config/customization of vim, with functions/plugins/keymaps
+	├── _vrapperrc --- vim config for eclipse plugin `vrapper`
+	├── eclipse_color_monokai_gavin.xml --- theme on eclipse
+	├── install.sh --- installation script for Linux/MacOS
+	├── php_function_list.txt --- php function list for compeletion while editing php file
+	└── plugin_collect --- not used, as a memo
 
 ### `_vimrc`
 this config general options of vim and some plugins
