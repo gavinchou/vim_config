@@ -1037,11 +1037,17 @@ function! RefreshCurrentTab()
   " refresh the current tab
   " tabnew and tabc will make the next tab active if there are more than 1 tabs
   " save the current tabpage number
+  if exists("g:last_tab_num")
+    let tmpTabNum = g:last_tab_num
+  endif
   let curTabNum = tabpagenr()
   exe 'tabnew'
   exe 'tabc'
   if tabpagenr('$') != curTabNum
     exe 'tabp'
+  endif
+  if exists("tmpTabNum")
+    let g:last_tab_num = tmpTabNum
   endif
 endfunction
 
