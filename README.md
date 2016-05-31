@@ -73,9 +73,6 @@ this config suite gets you the best experience with minimum plugins
 ### `_vimrc`
 This configs general options of vim and some plugins
 
-#### netrw
-* auto resize netrw window when move cursor between windows
-
 #### time date
 * type `time` in normal mode to insert current time
 
@@ -117,7 +114,7 @@ feature for more filetypes just change the flowing line in `_vimrc`
 
 		autocmd! InsertLeave *.txt,*.md call ChangeIme(g:autoChangeIme)
 
-#### surround chars with certain marks
+#### surround chars with given string
 surround word under cursor or content selected with certain marks with, `F4` in
 normal mode or visual mode
 
@@ -131,10 +128,11 @@ input the marks for surrounding, say `***`, `abc def` will be changed to
 
 ### netrw
 file path: `autoload/netrw.vim`, some modifications/bug-fixes have been done to it
-netrw is a builtin plugin of vim, which is a file explorer. Using it by using
+
+netrw is a built-in plugin of vim, which is a file explorer. Using it by using
 command `:Ve`, or type `:h netrw` for more info
 
-**some personal modifications and some bug fixes**
+**some personal modifications and bug fixes**
 * display file/dir full path under cursor
 * fixed `s:NetrwTreeDir()`'s bugs of moving cursor around after calling it
 * create file in current cursor folder with key `c`, if file is under current
