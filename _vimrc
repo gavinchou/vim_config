@@ -814,17 +814,69 @@ command! Baiducpp echo "added baidu cpp vim format footer"<BAR>
   \silent call append('$',  '// vim: tw=80 ts=4 sw=4 cc=80')
 
 " ---------- Sum the selected text {{{3
-" sum the specific
-command! -range -nargs=? Sum let g:_sum_ = 0<BAR>
-  \ let col = <args><BAR>
-  \ <line1>,<line2>s/-\?[0-9]\+\(\.*[0-9]\+\)\?/\=SumImpl(submatch(0))/<BAR>
-  \ noh<BAR>
-  \ echo g:_sum_<BAR>
+" sum the numbers selected block, result will be stored in default register
+command! -range -nargs=? Sum let col = str2nr("<args>")<BAR>
+  \ if col == 0 | let col += 1 | endif<BAR>
+  \ call CalculateVisualBlock(col, '+')<BAR>
 
-function! SumImpl(num)
-  let g:_sum_ += a:num
-  return a:num
-endfunction
+command! -range -nargs=? Mul let col = str2nr("<args>")<BAR>
+  \ if col == 0 | let col += 1 | endif<BAR>
+  \ call CalculateVisualBlock(col, '*')<BAR>
+
+function! CalculateVisualBlock(col, operator)
+  let regz = getreg('z')
+  let reg = '*'
+  exe "norm! gv"
+  exe 'norm! "' . reg . 'y'
+  let text = getreg(reg)
+  let line_list = []
+  let idx = stridx(text, "\n")
+  while idx > 0
+    " add a space to the head of every line to match the pattern, tricky!
+"     call add(line_list, ' ' . strpart(text, 0, idx))
+    call add(line_list, strpart(text, 0, idx))
+    let text = strpart(text, idx + 1)
+    let idx = stridx(text, "\n")
+  endwhile
+  if len(text) > 0
+    call add(line_list, text)
+  endif
+  if a:operator == '+'
+    let result = 0
+  else
+    let result = 1
+  endif
+  " let pat = '\<-\?[0-9]\+\(\.*[0-9]\+\)\?\>'
+  let pat = '[\<<>?`~=+!@#$%^&*() \[\]\{\}\t/\\|,]\zs-\?\d\+\(\.\d\+\)\?'
+  " process on line, one line
+  if len(line_list) == 1
+    let line = line_list[0]
+    while (1)
+"       let result += str2float(matchstr(line, pat))
+      exe "let result = result " . a:operator . " str2float(matchstr(line, pat))"
+      let idx = matchend(line, pat)
+      if idx < 0
+        break
+      endif
+      let line = strpart(line, idx + 1)
+    endwhile
+  else " process on coloumns
+    for i in line_list
+      let line = i
+      for j in range(2, a:col, 1)
+        let idx = matchend(line, pat)
+        if idx < 0
+          break
+        endif
+        let line = strpart(line, idx + 1)
+      endfor
+"       let result += str2float(matchstr(line, pat))
+      exe "let result = result " . a:operator . " str2float(matchstr(line, pat))"
+    endfor
+  endif
+  call setreg(reg, string(result))
+  echo result
+endfunc
 
 " ========================= file type ================================== {{{2
 autocmd BufNewFile,BufRead *.alipaylog setf alipaylog
@@ -1127,4 +1179,4 @@ command! -nargs=* -bang TestCmd echo "test cmd"<BAR>
 " nohlsearch
 noh
 
-" vim:tw=80:ts=2:ft=vim:et:foldcolumn=2:foldenable:fdl=2
+" vim:tw=80:ts=2:ft=vim:et:foldcolumn=2:foldenable:fdl=3
