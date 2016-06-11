@@ -1,3 +1,5 @@
+" nocapatible with vi
+set nocompatible
 " ============================ favorite files and direcotries {{{2
 let $favorites=''
 if has("win32")
@@ -298,6 +300,18 @@ map <C-F4> <ESC>:tabc<CR>
 noremap <C-S> :update<CR>
 vnoremap <C-S> <C-C>:update<CR>
 inoremap <C-S> <C-O>:update<CR>
+
+" copy current file full path
+nnoremap yp :let fullPath = expand('%:p')<BAR>
+  \ call setreg('*', fullPath)<BAR>
+  \ echo "copied current file full path: " . fullPath<CR>
+" copy current directory
+nnoremap yd :let fullPath = expand('%:p')<BAR>
+  \ if has('win32') <BAR> let slash = '\'<BAR> else <BAR> let slash = '/' <BAR> endif<BAR>
+  \ let lastSlash = strridx(fullPath, slash) <BAR>
+  \ if lastSlash > 0 <BAR> let path = strpart(fullPath, 0, lastSlash) <BAR> else <BAR> let path = fullPath <BAR> endif<BAR>
+  \ call setreg('*', path)<BAR>
+  \ echo "copied current directory: " . path . slash<CR>
 
 " comment {{{3
 let g:COMMENT_1 = 1 " add comment string at the begin of the line
@@ -626,8 +640,6 @@ if has('win32')
   language us
 endif
 
-" nocapatible with vi
-set nocompatible
 set magic
 set nobackup
 set hlsearch
