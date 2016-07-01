@@ -10169,7 +10169,7 @@ fun! netrw#UpdateCursorPos()
   let minNotMatchLen = 10000
   while line <= lineCount
     call setpos('.', [netrwBufNum, line, 0, 0])
-    let fullPath = netrw#GetFullPath()
+    let fullPath = escape(netrw#GetFullPath(), "*&~")
     let curNotMatchLen = strlen(substitute(curFile, fullPath, "", ""))
     if curNotMatchLen == 0 " 100% matched
       exe curWinNum . " wincmd w"
