@@ -13,7 +13,7 @@ this config suite gets you the best experience with minimum plugins
 
 2. download this vim config suite from github and
 
-		git clone http://github.com/gavinchou/vim_config.git
+		git clone https://github.com/gavinchou/vim_config.git
 		cd vim_config
 		sh install.sh
 
