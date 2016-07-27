@@ -303,14 +303,16 @@ inoremap <C-S> <C-O>:update<CR>
 
 " copy current file full path
 nnoremap yp :let fullPath = expand('%:p')<BAR>
-  \ call setreg('*', fullPath)<BAR>
+  \ if has('clipboard') <BAR> let register = "*" <BAR> else <BAR> let register = '"' <BAR>endif <BAR>
+  \ call setreg(register, fullPath)<BAR>
   \ echo "copied current file full path: " . fullPath<CR>
 " copy current directory
 nnoremap yd :let fullPath = expand('%:p')<BAR>
   \ if has('win32') <BAR> let slash = '\'<BAR> else <BAR> let slash = '/' <BAR> endif<BAR>
   \ let lastSlash = strridx(fullPath, slash) <BAR>
   \ if lastSlash > 0 <BAR> let path = strpart(fullPath, 0, lastSlash) <BAR> else <BAR> let path = fullPath <BAR> endif<BAR>
-  \ call setreg('*', path)<BAR>
+  \ if has('clipboard') <BAR> let register = "*" <BAR> else <BAR> let register = '"' <BAR>endif <BAR>
+  \ call setreg(register, path)<BAR>
   \ echo "copied current directory: " . path . slash<CR>
 
 " comment {{{3
@@ -859,7 +861,7 @@ function! CalculateVisualBlock(col, operator)
     let result = 1
   endif
   " let pat = '\<-\?[0-9]\+\(\.*[0-9]\+\)\?\>'
-  let pat = '[\<<>?`~=+!@#$%^&*() \[\]\{\}\t/\\|,]\zs-\?\d\+\(\.\d\+\)\?'
+  let pat = '\([\<<>?`~=+!@#$%^&*() \[\]{}\t/\|,;:"' . "'" . ']'. '\|^\)\zs-\?\d\+\(\.\d\+\)\?'
   " process on line, one line
   if len(line_list) == 1
     let line = line_list[0]

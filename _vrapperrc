@@ -1,10 +1,10 @@
 "indent
 " shift width, indent width
-set sw=2
+set sw=4
 " ts, tabstop width
-set tabstop=2
+set tabstop=4
 " extendtab
-set et
+" set et
 
 " ignore case while search
 set ignorecase
