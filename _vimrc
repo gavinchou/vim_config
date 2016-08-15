@@ -305,7 +305,7 @@ inoremap <C-S> <C-O>:update<CR>
 nnoremap yp :let fullPath = expand('%:p')<BAR>
   \ if has('clipboard') <BAR> let register = "*" <BAR> else <BAR> let register = '"' <BAR>endif <BAR>
   \ call setreg(register, fullPath)<BAR>
-  \ echo "copied current file full path: " . fullPath<CR>
+  \ echo "copied full path: " . fullPath<CR>
 " copy current directory
 nnoremap yd :let fullPath = expand('%:p')<BAR>
   \ if has('win32') <BAR> let slash = '\'<BAR> else <BAR> let slash = '/' <BAR> endif<BAR>
@@ -313,7 +313,7 @@ nnoremap yd :let fullPath = expand('%:p')<BAR>
   \ if lastSlash > 0 <BAR> let path = strpart(fullPath, 0, lastSlash) <BAR> else <BAR> let path = fullPath <BAR> endif<BAR>
   \ if has('clipboard') <BAR> let register = "*" <BAR> else <BAR> let register = '"' <BAR>endif <BAR>
   \ call setreg(register, path)<BAR>
-  \ echo "copied current directory: " . path . slash<CR>
+  \ echo "copied directory: " . path . slash<CR>
 
 " comment {{{3
 let g:COMMENT_1 = 1 " add comment string at the begin of the line
@@ -1128,9 +1128,29 @@ function! MarkdownFoldExpr(lnum)
 endfunction
 
 " ---------- SwitchTab() {{{3
-let g:last_tab_num=-1
+let g:last_tab_num = -1
 nmap gb :exe 'normal! ' . g:last_tab_num . 'gt' <BAR>echo "go back to last tab"<CR>
-autocmd TabLeave * let g:last_tab_num=tabpagenr()
+autocmd TabLeave * let g:last_tab_num = tabpagenr()
+
+
+" ---------- GetMaxWindowSize() {{{3
+"Returns a list contains [max_height, max_width, ...]
+" let g:max_win_height = 0
+" let g:max_win_width = 0
+function! GetMaxWindowSize()
+  if exists("g:last_tab_num")
+    let tmpTabNum = g:last_tab_num
+  endif
+  tabnew
+  let g:max_win_height = winheight('.')
+  let g:max_win_width = winwidth('.')
+  tabc
+  if exists("tmpTabNum")
+    let g:last_tab_num = tmpTabNum
+  endif
+  return [g:max_win_height, g:max_win_width]
+endfunc
+call GetMaxWindowSize()
 
 " ============================ tagbar ==================================== {{{2
 let g:tagbar_sort = 0 " do not sort tags by name
