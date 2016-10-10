@@ -2475,6 +2475,9 @@ au BufNewFile,BufRead *.conf		call s:StarSetf('config')
 " toml
 au BufNewFile,BufRead *.toml		call s:StarSetf('config')
 
+" protobuf file
+au BufNewFile,BufRead *.proto		call s:StarSetf('proto')
+
 
 " Use the filetype detect plugins.  They may overrule any of the previously
 " detected filetypes.
