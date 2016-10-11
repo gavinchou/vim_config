@@ -71,6 +71,7 @@ let g:netrw_cursor = "ctags"
 let g:netrw_chgwin = 2 " specifies a window number where file edits will take place
 let g:netrw_use_errorwindow = 0 " dont use an extra window for errors
 let g:netrw_indicate_current_file = 1 " auto change cursor of the tree in netrw
+let g:netrw_winsize_ratio = 0.166666 " auto resize netrw width when change window
 
 " menu bar {{{3
 if has("gui")
@@ -113,6 +114,7 @@ syntax on
 
 " show white spaces {{{3
 set listchars=tab:>-,trail:-
+" set listchars=tab:\|\ ,trail:-
 set list
 
 " set tablabel as 'number filename' for gui{{{3
@@ -443,6 +445,19 @@ vmap <silent> cz :call Comment(UNCOMMENT)<CR>
 vmap <silent> cx :call Comment(UNCOMMENT)<CR>
 
 function! Run()
+  if !exists('g:argv')
+    let g:argv = ''
+  endif
+  if type(g:argv) == type([])
+    let argv = ''
+    for i in g:argv
+      let argv = argv . " " . i
+    endfor
+  elseif type(g:argv) == type('')
+    let argv = g:argv
+  else
+    let argv = ''
+  endif
   if &ft == "vim"
     exe 'source %'
     return "vim"
@@ -457,7 +472,8 @@ function! Run()
            \ 'if [ $? -eq 0 ]; then ' .
            \ 'isGdb="n";read -n1 -t 3 -p "use gdb[yn]?" isGdb; echo "";' .
            \ 'if [ "x$isGdb" = "xy" ]; then ' .
-           \ 'gdb ~/tmp/vim.out;else ~/tmp/vim.out;fi;fi;' .
+           \ 'gdb ~/tmp/vim.out --args ' . argv . ';' .
+           \ 'else ~/tmp/vim.out ' . argv . ';fi;fi;' .
            \ 'read -n1 -p "Press any key to continue...";'
         " refresh when return from external command
         call RefreshCurrentTab()
@@ -534,11 +550,11 @@ function! MakeTags()
 "     exe '!ctags -R --langmap=.h.inl.cxx.cc --c++-kinds=+p --fields=+iaSK --extra=+q --languages=c++'
     exe '!ctags -R --exclude=.git --exclude=.svn --langmap=c++:+.inl+.cc+.h+.cxx -h +.inl --c++-kinds=+p --fields=+iaSK --extra=+q --languages=c++'
   elseif &ft == "java"
-    exe '!ctags -R --java-kinds=+p --fields=+iaS --extra=+q --languages=java'
+    exe '!ctags -R --exclude=.git --exclude=.svn --java-kinds=+p --fields=+iaS --extra=+q --languages=java'
   elseif &ft == "php"
-    exe '!ctags -R --php-kinds=+cidfvj --fields=+iaSK --fields=-k --extra=+q --languages=php'
+    exe '!ctags -R --exclude=.git --exclude=.svn --php-kinds=+cidfvj --fields=+iaSK --fields=-k --extra=+q --languages=php'
   elseif &ft == "javascript"
-    exe '!ctags -R --javascript-kinds=+cfv --fields=+iaSK --fields=-k --extra=+q --languages=javascript'
+    exe '!ctags -R --exclude=.git --exclude=.svn --javascript-kinds=+cfv --fields=+iaSK --fields=-k --extra=+q --languages=javascript'
   endif
 endfunction
 
@@ -617,7 +633,7 @@ vnoremap gj j
 vnoremap gk k
 
 " ---------- resize vertical explorer to width 30 {{{3
-nmap <F3> :vert res 30<CR>
+nmap <F3> :exe "vert res " . float2nr(g:netrw_winsize_ratio * g:max_win_width)<CR>
 
 " ---------- build project {{{3
 nmap <F7> :make clean; make -j7<CR>
@@ -824,8 +840,8 @@ command! Spell silent echo "toggle spell"<BAR>
 command! -count=1 W <count> winc w
 
 " ---------- set vim format footer fo baidu cpp {{{3
-command! Baiducpp echo "added baidu cpp vim format footer"<BAR>
-  \silent call append('$',  '// vim: tw=80 ts=4 sw=4 cc=80')
+command! Baiducpp echo "add baidu cpp file vim mode lines"<BAR>
+  \silent call append('$',  '// vim: et tw=80 ts=4 sw=4 cc=80:')
 
 " ---------- Sum the selected text {{{3
 " sum the numbers selected block, result will be stored in default register
@@ -902,11 +918,12 @@ autocmd BufNewFile,BufRead BCLOUD setf python
 autocmd BufEnter,BufRead,WinEnter *.txt,*.md,*.go setl noet
 
 " ========================= autocmd ================================== {{{2
+" this command has bug when create new window, say tagbar
 augroup netrw " ---------- {{{3
   autocmd WinEnter * let bufnrlist = tabpagebuflist() |
       \if bufname(bufnrlist[0]) =~ "NetrwTreeListing" |
       \  let curWinnr = winnr() |
-      \  let winsz = 30 |
+      \  let winsz = float2nr(g:netrw_winsize_ratio * g:max_win_width) |
       \  exe "1wincmd w" |
       \  exe winsz . "wincmd |" |
       \  exe curWinnr . "wincmd w" |
