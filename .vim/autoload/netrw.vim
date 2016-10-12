@@ -8714,7 +8714,12 @@ fun! s:LocalListing()
    if getftype(filename) == "link"
     " indicate a symbolic link
 "    call Decho("(LocalListing) indicate <".filename."> is a symbolic link with trailing @")
-    let pfile= filename."@"
+    if isdirectory(filename)
+"       let pfile= filename."/@"
+      let pfile= filename."/"
+    else
+      let pfile= filename."@"
+    endif
 
    elseif getftype(filename) == "socket"
     " indicate a socket
