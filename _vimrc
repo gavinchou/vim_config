@@ -72,6 +72,7 @@ let g:netrw_chgwin = 2 " specifies a window number where file edits will take pl
 let g:netrw_use_errorwindow = 0 " dont use an extra window for errors
 let g:netrw_indicate_current_file = 1 " auto change cursor of the tree in netrw
 let g:netrw_winsize_ratio = 0.166666 " auto resize netrw width when change window
+let g:netrw_show_path = 1
 
 " menu bar {{{3
 if has("gui")
@@ -841,7 +842,7 @@ command! -count=1 W <count> winc w
 
 " ---------- set vim format footer fo baidu cpp {{{3
 command! Baiducpp echo "add baidu cpp file vim mode lines"<BAR>
-  \silent call append('$',  '// vim: et tw=80 ts=4 sw=4 cc=80:')
+  \silent call append('$',  '// vim: et tw=100 ts=4 sw=4 cc=100:')
 
 " ---------- Sum the selected text {{{3
 " sum the numbers selected block, result will be stored in default register
