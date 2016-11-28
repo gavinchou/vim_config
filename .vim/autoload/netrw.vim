@@ -10223,6 +10223,22 @@ fun! netrw#NetrwCopyCurrentPath()
   endif
 endfun
 
+" NetrwShowCurrentPath: (used by CursorHold) {{{2
+"                   show path of file under cursor
+" Author: Gavin
+fun! netrw#NetrwShowCurrentPath()
+  if exists('g:netrw_show_path') && g:netrw_show_path != 0
+    let l:path = netrw#GetFullPath()
+    " adjust cmdheight to avoid 'Press ENTER to continue'
+    let l:cmdheight = float2nr(ceil(strlen(l:path) * 1.0 / g:max_win_width))
+    if l:cmdheight != &cmdheight
+      exe 'set cmdheight=' . l:cmdheight
+    endif
+    echo l:path
+  endif
+endfun
+
+
 " ---------------------------------------------------------------------
 " Auto Commands: {{{1
 
@@ -10230,7 +10246,7 @@ endfun
 augroup netrw
   au WinEnter NetrwTreeListing* setl stl=%=B%nW%{winnr()}
   au BufNew NetrwTreeListing* setl stl=%=B%nW%{winnr()}
-  au! CursorHold NetrwTreeListing* echo netrw#GetFullPath() |
+  au! CursorHold NetrwTreeListing* call netrw#NetrwShowCurrentPath() |
     \exe "cd " . netrw#GetParentPath()
   au WinEnter NetrwTreeListing* setl updatetime=100
   au BufNew NetrwTreeListing* setl updatetime=100
@@ -10245,4 +10261,4 @@ unlet s:keepcpo
 
 " ------------------------------------------------------------------------
 " Modelines: {{{1
-" vim:ts=2 sw=2 fdm=marker
+" vim: et ts=2 sw=2 fdm=marker:
