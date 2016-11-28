@@ -354,7 +354,7 @@ endfunction
 
 function! Comment(mode)
   " comment string is //
-  for tmp in ["cpp", "c", "java", "php", "javascript", "go"]
+  for tmp in ["cpp", "c", "java", "php", "javascript", "go", "scss", "proto"]
     if &ft == tmp
       call CommentImpl("//", a:mode)
       return "//"
@@ -367,7 +367,7 @@ function! Comment(mode)
   endif
   " comment string is #
   for tmp in ["python","sed","apache","bash","conf", "sh", "make", "cfg",
-      \ "gitignore", "zsh", "config", "jproperties", "properties"]
+      \ "gitignore", "zsh", "config", "jproperties", "properties", "yaml"]
     if &ft == tmp
       call CommentImpl("#", a:mode)
       return tmp
@@ -473,7 +473,7 @@ function! Run()
            \ 'if [ $? -eq 0 ]; then ' .
            \ 'isGdb="n";read -n1 -t 3 -p "use gdb[yn]?" isGdb; echo "";' .
            \ 'if [ "x$isGdb" = "xy" ]; then ' .
-           \ 'gdb ~/tmp/vim.out --args ' . argv . ';' .
+           \ 'gdb --args ~/tmp/vim.out ' . argv . ';' .
            \ 'else ~/tmp/vim.out ' . argv . ';fi;fi;' .
            \ 'read -n1 -p "Press any key to continue...";'
         " refresh when return from external command
@@ -843,6 +843,8 @@ command! -count=1 W <count> winc w
 " ---------- set vim format footer fo baidu cpp {{{3
 command! Baiducpp echo "add baidu cpp file vim mode lines"<BAR>
   \silent call append('$',  '// vim: et tw=100 ts=4 sw=4 cc=100:')
+command! Googlecpp echo "add google cpp file vim mode lines"<BAR>
+  \silent call append('$',  '// vim: et tw=80 ts=2 sw=2 cc=80:')
 
 " ---------- Sum the selected text {{{3
 " sum the numbers selected block, result will be stored in default register
@@ -908,6 +910,25 @@ function! CalculateVisualBlock(col, operator)
   call setreg(reg, string(result))
   echo result
 endfunc
+
+" ---------- Find line with certain tags {{{3
+command! -nargs=+ FindTags let keys = split("<args>", " ")<BAR>
+  \let pat = '\('<BAR>
+  \for i in keys<BAR>
+  \  let pat = pat . i . '\|'<BAR>
+  \endfor<BAR>
+  \let pat = strpart(pat, -2, strlen(pat))<BAR>
+  \let pat = pat . '\)'<BAR>
+  \let pat_line = ''<BAR>
+  \for i in range(len(keys))<BAR>
+  \  let pat_line = pat_line . '.\{-}' . pat<BAR>
+  \endfor<BAR>
+  \let pat_line .= '.\{-}'<BAR>
+  \exe "/" . pat_line<BAR>
+" .*\(c++\|time\).*\1.*
+
+" ---------- Run {{{3
+command! Run call Run()
 
 " ========================= file type ================================== {{{2
 autocmd BufNewFile,BufRead *.alipaylog setf alipaylog
