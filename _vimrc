@@ -420,9 +420,9 @@ function! Comment(mode)
   endif
 
   " comment string is --
-  if &ft == "lua"
+  if &ft == "lua" || &ft == "haskell"
     call CommentImpl("--", a:mode)
-    return "lua"
+    return &ft
   endif
 
   " lisp ;;
@@ -469,7 +469,7 @@ function! Run()
         exe '!start cmd /c start "vim run cpp" g++.lnk "%:p"'
       elseif has("unix")
         exe '!clear; rm ~/tmp/vim.out 2>/dev/null;' .
-           \ 'g++ -g -Wall -std=c++11 "%:p" -o ~/tmp/vim.out;' .
+           \ 'g++ -g -ggdb -Wall -std=c++11 "%:p" -o ~/tmp/vim.out;' .
            \ 'if [ $? -eq 0 ]; then ' .
            \ 'isGdb="n";read -n1 -t 3 -p "use gdb[yn]?" isGdb; echo "";' .
            \ 'if [ "x$isGdb" = "xy" ]; then ' .
@@ -515,6 +515,7 @@ function! Run()
           \ 'read -n1 -p "Press any key to continue...";'
       call RefreshCurrentTab()
     endif
+    return &ft
   endif
   for tmp in ["html", "xml", "axml", "htm", "xhtml", "js", "javascript"]
     if (&ft == tmp)
@@ -527,8 +528,18 @@ function! Run()
             \ 'read -n1 -p "Press any key to continue...";'
         call RefreshCurrentTab()
       endif
+      return tmp
     endif
   endfor
+  if &ft == "haskell"
+    if has('linux') || has('unix')
+      exe '!clear; rm /tmp/vim.out 2>/dev/null;' .
+            \ 'ghc -o /tmp/vim.out -odir /tmp/ -hidir /tmp/ "%:p" && /tmp/vim.out;' .
+            \ 'read -n1 -p "Press any key to continue...";'
+      call RefreshCurrentTab()
+    endif
+    return &ft
+  endif
 
   if has("win32")
     exe '!start cmd /c start "vim run" nppCompileAndRun.lnk "%:p"'
