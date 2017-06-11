@@ -469,7 +469,7 @@ function! Run()
         exe '!start cmd /c start "vim run cpp" g++.lnk "%:p"'
       elseif has("unix")
         exe '!clear; rm ~/tmp/vim.out 2>/dev/null;' .
-           \ 'g++ -g -ggdb -Wall -std=c++11 "%:p" -o ~/tmp/vim.out;' .
+           \ 'g++ -g -ggdb -Wall -pthread -std=c++11 "%:p" -o ~/tmp/vim.out;' .
            \ 'if [ $? -eq 0 ]; then ' .
            \ 'isGdb="n";read -n1 -t 3 -p "use gdb[yn]?" isGdb; echo "";' .
            \ 'if [ "x$isGdb" = "xy" ]; then ' .
@@ -489,7 +489,9 @@ function! Run()
   endif
   if (&ft == 'markdown') " view in markdown previewer
     if has('mac')
-      exe '!killall Mou; mou %:p'
+"       exe '!killall Mou; mou %:p'
+"       exe '!killall MacDown; MacDown %:p'
+      exe '!killall Typora; typora %:p'
     elseif has('win32')
       exe 'silent !start cmd /c start "markdown" markdown.lnk "%:p"'
     endif
@@ -948,7 +950,33 @@ autocmd BufNewFile,BufRead *.md setlocal foldexpr=MarkdownFoldExpr(v:lnum) fdm=e
 autocmd BufNewFile,BufRead *.gitignore setf gitignore
 autocmd BufNewFile,BufRead BCLOUD setf python
 " autocmd BufEnter * set et
-autocmd BufEnter,BufRead,WinEnter *.txt,*.md,*.go setl noet
+autocmd BufEnter,BufRead,WinEnter *.txt,*.md setl noet
+
+" ---------  Unique, unique all lines {{{3
+command! Unique exe 'g/^\(.*\)\n\1$/d'
+
+" ---------  Half-width, make all full-width symbols half-width {{{3
+command! -range=% Halfwidth echo "" |
+  \let rep = {'：': ': ', '　': ' ', '，':', ', '、':', ', '。':'. ', '．':'. ', '？':'? ', '！':'! ', '～':'\~ ', '＄':'$ ', '％':'% ', '＠':'@ ', '＆':'\& ', '＃':'# ', '＊':'* ', '；':'; ', '︰':': ', '…':'... ', '‥':'. ', '﹐':', ', '﹒':'. ', '˙':'. ', '‘':"' ", '’':"' ", '“':'"', '”':'"', '〝':'"', '〞':'"', '（':'(', '）':')', '－': '-'} |
+  \for key in keys(rep) |
+  \   silent! exe "<line1>,<line2>s/" . key . "/" . rep[key] . "/g" |
+  \endfor
+
+" -------- make/remove anchor for markdown
+command! -range=% AddAnchor echo "add anchor for markdown" |
+  \if &ft == "markdown" |
+  \  exe '<line1>,<line2>s/^\(#\+ *\)\(.*\)/\1[\2](id:\2)/gc' |
+  \endif
+command! -range=% RemoveAnchor echo "remove anchor for markdown" |
+  \if &ft == "markdown" |
+  \  exe '<line1>,<line2>s/^\(#\+ *\)\[\(.*\)\](id:.*)/\1\2/gc' |
+  \endif
+command! -range=% MakeToc echo "make table of content for markdown" |
+  \if &ft == "markdown" |
+  \  exe 'RemoveAnchor' |
+  \  exe 'AddAnchor' |
+  \  exe '<line1>,<line2>s/^\(#\+ *\)\[\(.*\)\](id:.*)/\1\2/gc' |
+  \endif
 
 " ========================= autocmd ================================== {{{2
 " this command has bug when create new window, say tagbar
@@ -1204,8 +1232,10 @@ call GetMaxWindowSize()
 
 " ============================ tagbar ==================================== {{{2
 let g:tagbar_sort = 0 " do not sort tags by name
+" g:tagb_type_${filetype} = {}
 let g:tagbar_type_asciidoc = {
     \ 'ctagstype' : 'asciidoc',
+    \ 'ctagsbin' : 'ctags',
     \ 'kinds' : [
       \ 'h:table of contents',
       \ 'a:anchors:1',
@@ -1219,6 +1249,7 @@ let g:tagbar_type_asciidoc = {
 
 let g:tagbar_type_markdown = {
     \ 'ctagstype' : 'markdown',
+    \ 'ctagsbin' : 'ctags',
     \ 'kinds' : [
       \ 'h:heading',
     \ ],
@@ -1227,6 +1258,7 @@ let g:tagbar_type_markdown = {
 
 let g:tagbar_type_go = {
     \ 'ctagstype' : 'go',
+    \ 'ctagsbin' : 'ctags',
     \ 'kinds' : [
       \ 'f:function',
       \ 'p:package',
@@ -1245,6 +1277,52 @@ let g:tagbar_type_go = {
     \ },
     \ 'sort' : 0
 \ }
+
+let g:tagbar_type_proto = {
+    \ 'ctagstype' : 'protobuf',
+    \ 'ctagsbin' : 'ctags',
+    \ 'kinds' : [
+      \ 'p:package',
+      \ 'm:message',
+      \ 'f:field',
+      \ 's:service',
+      \ 'e:enumerator',
+      \ 'g:enum',
+      \ 'r:rpc'
+    \ ],
+    \ 'sro' : '.',
+    \ 'sort' : 0
+\ }
+
+if executable('ctags_haskell')
+    let g:tagbar_type_haskell = {
+        \ 'ctagsbin' : 'ctags_haskell',
+        \ 'ctagsargs' : '--ignore-parse-error --',
+        \ 'kinds' : [
+            \ 'm:module:0',
+            \ 'e:exports:1',
+            \ 'i:imports:1',
+            \ 't:declarations:0',
+            \ 'd:declarations:1',
+            \ 'n:declarations:1',
+            \ 'f:functions:0',
+            \ 'c:constructors:0'
+        \ ],
+        \ 'sro' : '.',
+        \ 'kind2scope' : {
+            \ 'd' : 'data',
+            \ 'n' : 'newtype',
+            \ 'c' : 'constructor',
+            \ 't' : 'type'
+        \ },
+        \ 'scope2kind' : {
+            \ 'data' : 'd',
+            \ 'newtype' : 'n',
+            \ 'constructor' : 'c',
+            \ 'type' : 't'
+        \ }
+    \ }
+endif
 
 " ============================ test ====================================== {{{2
 command! -nargs=* -bang TestCmd call <bang>TestFunc(<f-args>)

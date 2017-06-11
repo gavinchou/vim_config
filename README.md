@@ -160,7 +160,7 @@ file path: `plugin/statusline.vim`
 	`ignorecase` is on
 
 ### markdown
-* auto folder contents with the same headings levels
+* fold contents with the same heading levels automatically
 
 ![markdown heading folder](README_img/markdown_heading_folder.png)
 
