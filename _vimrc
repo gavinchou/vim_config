@@ -354,7 +354,8 @@ endfunction
 
 function! Comment(mode)
   " comment string is //
-  for tmp in ["cpp", "c", "java", "php", "javascript", "go", "scss", "proto"]
+  for tmp in ["cpp", "c", "java", "php", "javascript", "go", "scss", "proto",
+        \ "thrift"]
     if &ft == tmp
       call CommentImpl("//", a:mode)
       return "//"
@@ -367,7 +368,8 @@ function! Comment(mode)
   endif
   " comment string is #
   for tmp in ["python","sed","apache","bash","conf", "sh", "make", "cfg",
-      \ "gitignore", "zsh", "config", "jproperties", "properties", "yaml"]
+      \ "gitignore", "zsh", "config", "jproperties", "properties", "yaml",
+      \ "cmake"]
     if &ft == tmp
       call CommentImpl("#", a:mode)
       return tmp
@@ -945,9 +947,7 @@ command! Run call Run()
 
 " ========================= file type ================================== {{{2
 autocmd BufNewFile,BufRead *.alipaylog setf alipaylog
-autocmd BufNewFile,BufRead *.md setf markdown
 autocmd BufNewFile,BufRead *.md setlocal foldexpr=MarkdownFoldExpr(v:lnum) fdm=expr
-autocmd BufNewFile,BufRead *.gitignore setf gitignore
 autocmd BufNewFile,BufRead BCLOUD setf python
 " autocmd BufEnter * set et
 autocmd BufEnter,BufRead,WinEnter *.txt,*.md setl noet

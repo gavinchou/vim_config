@@ -2478,6 +2478,14 @@ au BufNewFile,BufRead *.toml		call s:StarSetf('config')
 " protobuf file
 au BufNewFile,BufRead *.proto		call s:StarSetf('proto')
 
+" json file
+au BufNewFile,BufRead *.json		call s:StarSetf('json')
+
+" thrift idl file
+au BufNewFile,BufRead *.thrift		call s:StarSetf('thrift')
+
+" gitignore
+au BufNewFile,BufRead *.gitignore		call s:StarSetf('gitignore')
 
 " Use the filetype detect plugins.  They may overrule any of the previously
 " detected filetypes.
