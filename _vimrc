@@ -814,6 +814,22 @@ command! Time echo strftime("%Y-%m-%d-%a %H:%M:%S")<BAR>
 nnoremap time "=strftime("%Y-%m-%d-%a %H:%M:%S")<CR>pa
 nnoremap timelog "="\n## " . strftime("%Y-%m-%d-%a %H:%M:%S") . "\ntag: \n"<CR>PjjA
 
+" ---------- grep current keyword, the silver searcher
+" The Silver Searcher
+if executable('ag')
+  " Use ag over grep
+  set grepprg=ag\ --nogroup\ --nocolor
+
+  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+
+  " ag is fast enough that CtrlP doesn't need to cache
+  let g:ctrlp_use_caching = 0
+endif
+" add ! to override "press Enter to continue
+nnoremap K :grep! "<C-R><C-W>"<CR>:belowright cw<CR>
+vmap K :grep! "<C-R><C-W>"<CR>:belowright cw<CR>
+
 " ---------- auto change IME to en {{{3
 " for some type of files auto ime is needed
 autocmd! InsertLeave *.txt,*.md call ChangeIme(g:autoChangeIme)
@@ -951,6 +967,8 @@ autocmd BufNewFile,BufRead *.md setlocal foldexpr=MarkdownFoldExpr(v:lnum) fdm=e
 autocmd BufNewFile,BufRead BCLOUD setf python
 " autocmd BufEnter * set et
 autocmd BufEnter,BufRead,WinEnter *.txt,*.md setl noet
+" quickfix key map, p: preview
+autocmd BufEnter,BufRead,WinEnter *[Quickfix\ List]* nmap <buffer> p <CR>gbw
 
 " ---------  Unique, unique all lines {{{3
 command! Unique exe 'g/^\(.*\)\n\1$/d'
@@ -1206,10 +1224,25 @@ function! MarkdownFoldExpr(lnum)
 endfunction
 
 " ---------- SwitchTab() {{{3
-let g:last_tab_num = -1
-nmap gb :exe 'normal! ' . g:last_tab_num . 'gt' <BAR>echo "go back to last tab"<CR>
+let g:last_tab_num = tabpagenr()
+nmap gbt :exe 'normal! ' . g:last_tab_num . 'gt' <BAR>echo "go back to last tab"<CR>
 autocmd TabLeave * let g:last_tab_num = tabpagenr()
 
+" ---------- switch window {{{3
+let g:last_win_num = tabpagewinnr(tabpagenr())
+autocmd TabEnter * call GenLastWinNum()
+" autocmd TabLeave <tab> tabclose
+nmap gbw :exe t:last_win_num . 'wincmd w' <BAR>echo "go back to last window: " . t:last_win_num<CR>
+autocmd WinLeave * let t:last_win_num = tabpagewinnr(tabpagenr())
+" TODO: make it work even if tab changed
+function! GenLastWinNum()
+  if !exists('t:last_win_num')
+    let t:last_win_num = tabpagewinnr(tabpagenr())
+  endif
+endfunc
+function! ChangeLastWinNum()
+  let t:last_win_num = tabpagewinnr(tabpagenr())
+endfunc
 
 " ---------- GetMaxWindowSize() {{{3
 "Returns a list contains [max_height, max_width, ...]
