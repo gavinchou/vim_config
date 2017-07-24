@@ -545,6 +545,35 @@ function! Run()
     return &ft
   endif
 
+  if &ft == "java"
+    if executable("javac") && executable("java") && (has('linux') || has('unix'))
+      let mainclass = expand("%:r")
+      " let mainclass = input("Class to run: ")
+      let outdir = '/tmp'
+      let javafile = expand("%:p")
+      let classfile = outdir . '/' . mainclass . '.class'
+      " classpath is directory which contains jar files for classes neede
+      let classpath = outdir . ':' . getcwd()
+      let jarfile = outdir . '/java.jar'
+      exe '!clear; rm ' . classfile . ' 2>/dev/null;'
+      exe '!javac ' . javafile . ' -d ' . outdir .
+            \ ' -classpath ' . classpath .
+            \ ' -sourcepath ' . getcwd() .
+            \ ' -encoding UTF8 ' .
+            \ ' && echo "Build successfully: ' . classfile . '"'
+            \ ' && cd ' . outdir .
+            \ ' && java ' . mainclass .
+            \ ' -classpath ' . classpath . ' ;'
+            \ ' read -n1 -p "Press any key to continue...";'
+      call RefreshCurrentTab()
+      return &ft
+    else
+      echohl Error
+      echo "Support linux/unix env with binary javac and java only!"
+      echohl None
+    endif
+  endif
+
   if has("win32")
     exe '!start cmd /c start "vim run" nppCompileAndRun.lnk "%:p"'
   elseif has("unix")
