@@ -826,7 +826,8 @@ if executable('ag')
   " ag is fast enough that CtrlP doesn't need to cache
   let g:ctrlp_use_caching = 0
 endif
-" add ! to override "press Enter to continue
+" add ! to override "prevent vim grep from opening first matching file"
+" and "press Enter to continue"
 nnoremap K :grep! "<C-R><C-W>"<CR>:belowright cw<CR>
 vmap K :grep! "<C-R><C-W>"<CR>:belowright cw<CR>
 
@@ -968,7 +969,9 @@ autocmd BufNewFile,BufRead BCLOUD setf python
 " autocmd BufEnter * set et
 autocmd BufEnter,BufRead,WinEnter *.txt,*.md setl noet
 " quickfix key map, p: preview
-autocmd BufEnter,BufRead,WinEnter *[Quickfix\ List]* nmap <buffer> p <CR>gbw
+autocmd WinEnter * if &ft=="qf" | nmap <buffer> p <CR>gbw | endif
+" if the error to open is not in some window of current tab, open a newtab
+set switchbuf=usetab,newtab
 
 " ---------  Unique, unique all lines {{{3
 command! Unique exe 'g/^\(.*\)\n\1$/d'
