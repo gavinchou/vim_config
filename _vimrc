@@ -447,6 +447,7 @@ nmap <silent> cx :call Comment(UNCOMMENT)<CR>
 vmap <silent> cz :call Comment(UNCOMMENT)<CR>
 vmap <silent> cx :call Comment(UNCOMMENT)<CR>
 
+" executes building and running scripts according to the file type
 function! Run()
   if !exists('g:argv')
     let g:argv = ''
@@ -469,24 +470,20 @@ function! Run()
     if &ft == ext
       if has("win32")
         exe '!start cmd /c start "vim run cpp" g++.lnk "%:p"'
-      elseif has("unix")
-        exe '!clear; rm ~/tmp/vim.out 2>/dev/null;' .
-           \ 'g++ -g -ggdb -Wall -pthread -std=c++11 "%:p" -o ~/tmp/vim.out;' .
+      elseif has("unix") || has('linux') && executable('g++')
+        exe 'silent !clear; rm ~/tmp/vim.out 2>/dev/null;'
+        exe '!g++ -g -ggdb -Wall -pthread -std=c++11 "%:p" -o ~/tmp/vim.out;' .
            \ 'if [ $? -eq 0 ]; then ' .
            \ 'isGdb="n";read -n1 -t 3 -p "use gdb[yn]?" isGdb; echo "";' .
            \ 'if [ "x$isGdb" = "xy" ]; then ' .
            \ 'gdb --args ~/tmp/vim.out ' . argv . ';' .
-           \ 'else ~/tmp/vim.out ' . argv . ';fi;fi;' .
-           \ 'read -n1 -p "Press any key to continue...";'
-        " refresh when return from external command
-        call RefreshCurrentTab()
+           \ 'else ~/tmp/vim.out ' . argv . ';fi;fi;'
       endif
-      return ""
+      return &ft
     endif
   endfor
   if (&ft == 'sh')
-    exe "!source %; read -n1 -p 'Press any key to continue...'"
-    call RefreshCurrentTab()
+    exe "!source %;"
     return "bash"
   endif
   if (&ft == 'markdown') " view in markdown previewer
@@ -501,11 +498,9 @@ function! Run()
   endif
   if (&ft == 'go')
     if has('mac') || has('unix')
-      exe '!clear; rm ~/tmp/go.out 2>/dev/null;' .
-            \ 'export GOPATH=$GOPATH:`pwd`:`pwd`/..;' .
-            \ '(go build -o ~/tmp/go.out "%:p"  && ~/tmp/go.out) || (clear; go test "%:p");' .
-            \ 'read -n1 -p "Press any key to continue...";'
-      call RefreshCurrentTab()
+      exe 'silent !clear; rm ~/tmp/go.out 2>/dev/null;'
+      exe '!export GOPATH=$GOPATH:`pwd`:`pwd`/..;' .
+            \ '(go build -o ~/tmp/go.out "%:p"  && ~/tmp/go.out) || (clear; go test "%:p");'
     elseif has("win32")
       exe '!cls & del e:/temp/go.out 2>nul & ' .
             \'go build -o e:/temp/go.out ' . expand("%:p") . ' && ' .
@@ -515,32 +510,24 @@ function! Run()
   endif
   if (&ft == 'python')
     if has('linux') || has('unix')
-      exe '!python "%:p";' .
-          \ 'read -n1 -p "Press any key to continue...";'
-      call RefreshCurrentTab()
+      exe '!python "%:p";'
     endif
     return &ft
   endif
   for tmp in ["html", "xml", "axml", "htm", "xhtml", "js", "javascript"]
     if (&ft == tmp)
       if has('unix')
-        exe '!chrome "file://%:p";' .
-            \ 'read -n1 -p "Press any key to continue...";'
-        call RefreshCurrentTab()
+        exe '!chrome "file://%:p";'
       elseif has('win32')
-        exe '!chrome.lnk "file://%:p";' .
-            \ 'read -n1 -p "Press any key to continue...";'
-        call RefreshCurrentTab()
+        exe '!chrome.lnk "file://%:p";'
       endif
       return tmp
     endif
   endfor
   if &ft == "haskell"
-    if has('linux') || has('unix')
-      exe '!clear; rm /tmp/vim.out 2>/dev/null;' .
-            \ 'ghc -o /tmp/vim.out -odir /tmp/ -hidir /tmp/ "%:p" && /tmp/vim.out;' .
-            \ 'read -n1 -p "Press any key to continue...";'
-      call RefreshCurrentTab()
+    if executable('ghc') || has('linux') || has('unix')
+      exe 'silent !clear; rm /tmp/vim.out 2>/dev/null;'
+      exe '!ghc -o /tmp/vim.out -odir /tmp/ -hidir /tmp/ "%:p" && /tmp/vim.out;'
     endif
     return &ft
   endif
@@ -555,7 +542,7 @@ function! Run()
       " classpath is directory which contains jar files for classes neede
       let classpath = outdir . ':' . getcwd()
       let jarfile = outdir . '/java.jar'
-      exe '!clear; rm ' . classfile . ' 2>/dev/null;'
+      exe 'silent !clear; rm ' . classfile . ' 2>/dev/null;'
       exe '!javac ' . javafile . ' -d ' . outdir .
             \ ' -classpath ' . classpath .
             \ ' -sourcepath ' . getcwd() .
@@ -563,10 +550,7 @@ function! Run()
             \ ' && echo "Build successfully: ' . classfile . '"'
             \ ' && cd ' . outdir .
             \ ' && java ' . mainclass .
-            \ ' -classpath ' . classpath . ' ;'
-            \ ' read -n1 -p "Press any key to continue...";'
-      call RefreshCurrentTab()
-      return &ft
+            \ ' -classpath ' . classpath
     else
       echohl Error
       echo "Support linux/unix env with binary javac and java only!"
@@ -584,7 +568,7 @@ function! Run()
   return ""
 endfunction
 
-map <F5> :silent call Run()<CR>
+map <F5> :call Run()<CR>
 
 nmap <F4> :call MakeSurround("normal")<CR>
 vmap <F4> <ESC>:call MakeSurround("visual")<CR>
