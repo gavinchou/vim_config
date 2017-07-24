@@ -819,17 +819,15 @@ nnoremap timelog "="\n## " . strftime("%Y-%m-%d-%a %H:%M:%S") . "\ntag: \n"<CR>P
 if executable('ag')
   " Use ag over grep
   set grepprg=ag\ --nogroup\ --nocolor
-
   " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
   let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-
   " ag is fast enough that CtrlP doesn't need to cache
   let g:ctrlp_use_caching = 0
 endif
 " add ! to override "prevent vim grep from opening first matching file"
 " and "press Enter to continue"
-nnoremap K :grep! "<C-R><C-W>"<CR>:belowright cw<CR>
-vmap K :grep! "<C-R><C-W>"<CR>:belowright cw<CR>
+nnoremap K :grep! "<C-R><C-W>"<CR>:rightbelow cw<CR>
+vmap K :grep! "<C-R><C-W>"<CR>:rightbelow cw<CR>
 
 " ---------- auto change IME to en {{{3
 " for some type of files auto ime is needed
