@@ -369,7 +369,7 @@ function! Comment(mode)
   " comment string is #
   for tmp in ["python","sed","apache","bash","conf", "sh", "make", "cfg",
       \ "gitignore", "zsh", "config", "jproperties", "properties", "yaml",
-      \ "cmake"]
+      \ "cmake", "crontab"]
     if &ft == tmp
       call CommentImpl("#", a:mode)
       return tmp
@@ -805,8 +805,8 @@ command! -nargs=? -bang Mks silent echo "try to make session"<BAR>
     \mks<bang> <args><BAR>
     \echo "made session at: <args>"<BAR>
   \else<BAR>
-    \mks<bang> $ses<BAR>
-    \echo "made session at: ".$ses<BAR>
+    \mks<bang> /tmp/tmp.ses<BAR>
+    \echo "made session at: /tmp/tmp.ses"<BAR>
   \endif
 " command! -nargs=? -bang Loadsession so $ses <args>
 command! -nargs=? -bang Loadsession silent echo "try to load session"<BAR>
@@ -814,8 +814,8 @@ command! -nargs=? -bang Loadsession silent echo "try to load session"<BAR>
     \so <args><BAR>
     \echo "loaded session from: <args>"<BAR>
   \else<BAR>
-    \so $ses<BAR>
-    \echo "loaded session from: ".$ses<BAR>
+    \so /tmp/tmp.ses<BAR>
+    \echo "loaded session from: /tmp/tmp.ses"<BAR>
   \endif<BAR>
 
 " ---------- insert current time in the current position, after the cursor box {{{3
@@ -973,6 +973,9 @@ command! -nargs=+ FindTags let keys = split("<args>", " ")<BAR>
 " ---------- Run {{{3
 command! Run call Run()
 
+" command! Cw exe ":belowright cw"
+command! Cw exe ":botright cw"
+
 " ========================= file type ================================== {{{2
 autocmd BufNewFile,BufRead *.alipaylog setf alipaylog
 autocmd BufNewFile,BufRead *.md setlocal foldexpr=MarkdownFoldExpr(v:lnum) fdm=expr
@@ -980,7 +983,7 @@ autocmd BufNewFile,BufRead BCLOUD setf python
 " autocmd BufEnter * set et
 autocmd BufEnter,BufRead,WinEnter *.txt,*.md setl noet
 " quickfix key map, p: preview
-autocmd WinEnter * if &ft=="qf" | nmap <buffer> p <CR>gbw | endif
+autocmd WinEnter * if &ft == "qf" | nmap <buffer> p <CR>gbw | endif
 " if the error to open is not in some window of current tab, open a newtab
 set switchbuf=usetab,newtab
 
