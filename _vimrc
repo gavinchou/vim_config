@@ -483,7 +483,11 @@ function! Run()
     endif
   endfor
   if (&ft == 'sh')
-    exe "!source %;"
+    exe "!sh %;"
+    return "sh"
+  endif
+  if (&ft == 'bash')
+    exe "!bash %;"
     return "bash"
   endif
   if (&ft == 'markdown') " view in markdown previewer
