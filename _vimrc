@@ -369,7 +369,7 @@ function! Comment(mode)
   " comment string is #
   for tmp in ["python","sed","apache","bash","conf", "sh", "make", "cfg",
       \ "gitignore", "zsh", "config", "jproperties", "properties", "yaml",
-      \ "cmake", "crontab"]
+      \ "cmake", "crontab", "awk"]
     if &ft == tmp
       call CommentImpl("#", a:mode)
       return tmp
@@ -562,6 +562,16 @@ function! Run()
     endif
   endif
 
+  if &ft == "awk"
+    if !executable("awk")
+      echohl Error
+      echo "No executable awk found"
+      echohl None
+    endif
+    exe '!awk -f ' . expand("%p")
+    return 'awk'
+  endif
+
   if has("win32")
     exe '!start cmd /c start "vim run" nppCompileAndRun.lnk "%:p"'
   elseif has("unix")
@@ -569,6 +579,9 @@ function! Run()
   elseif has("mac")
     " do nothing
   endif
+  echohl Error
+  echo "Run() does not support " . &ft
+  echohl None
   return ""
 endfunction
 
@@ -830,6 +843,7 @@ command! Time echo strftime("%Y-%m-%d-%a %H:%M:%S")<BAR>
 " normal mode insert current time, and enter insert mode
 nnoremap time "=strftime("%Y-%m-%d-%a %H:%M:%S")<CR>pa
 nnoremap timelog "="\n## " . strftime("%Y-%m-%d-%a %H:%M:%S") . "\ntag: \n"<CR>PjjA
+nnoremap todo gg"="\n## [ ] \ncreate: " . strftime("%Y-%m-%d-%a %H:%M:%S") . "\nstart: \nend: \ndesc: \n"<CR>PjA
 
 " ---------- grep current keyword, the silver searcher
 " The Silver Searcher
@@ -889,7 +903,7 @@ command! -count=1 W <count> winc w
 
 " ---------- set vim format footer fo baidu cpp {{{3
 command! Baiducpp echo "add baidu cpp file vim mode lines"<BAR>
-  \silent call append('$',  '// vim: et tw=100 ts=4 sw=4 cc=100:')
+  \silent call append('$',  '// vim: et tw=80 ts=4 sw=4 cc=80:')
 command! Googlecpp echo "add google cpp file vim mode lines"<BAR>
   \silent call append('$',  '// vim: et tw=80 ts=2 sw=2 cc=80:')
 
@@ -977,8 +991,8 @@ command! -nargs=+ FindTags let keys = split("<args>", " ")<BAR>
 " ---------- Run {{{3
 command! Run call Run()
 
-" command! Cw exe ":belowright cw"
-command! Cw exe ":botright cw"
+command! Cw exe ":belowright cw"
+" command! Cw exe ":botright cw"
 
 " ========================= file type ================================== {{{2
 autocmd BufNewFile,BufRead *.alipaylog setf alipaylog
