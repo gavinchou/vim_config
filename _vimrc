@@ -530,8 +530,8 @@ function! Run()
   endfor
   if &ft == "haskell"
     if executable('ghc') || has('linux') || has('unix')
-      exe 'silent !clear; rm /tmp/vim.out 2>/dev/null;'
-      exe '!ghc -o /tmp/vim.out -odir /tmp/ -hidir /tmp/ "%:p" && /tmp/vim.out;'
+      exe 'silent !clear; rm /tmp/haskell.out /tmp/Main.o 2>/dev/null;'
+      exe '!ghc -o /tmp/haskell.out -odir /tmp/ -hidir /tmp/ "%:p" && /tmp/haskell.out;'
     endif
     return &ft
   endif
@@ -892,7 +892,7 @@ command! Spell silent echo "toggle spell"<BAR>
     \setlocal nospell<BAR>
     \echo "spell check disabled"<BAR>
   \else<BAR>
-    \setlocal spell<BAR>
+    \setlocal spelllang=en spell<BAR>
     \echo "spell check enabled"<BAR>
   \endif
 
@@ -998,6 +998,7 @@ command! Cw exe ":belowright cw"
 autocmd BufNewFile,BufRead *.alipaylog setf alipaylog
 autocmd BufNewFile,BufRead *.md setlocal foldexpr=MarkdownFoldExpr(v:lnum) fdm=expr
 autocmd BufNewFile,BufRead BCLOUD setf python
+autocmd BufNewFile,BufRead *.git/COMMIT_EDITMSG setl spelllang=en spell
 " autocmd BufEnter * set et
 autocmd BufEnter,BufRead,WinEnter *.txt,*.md setl noet
 " quickfix key map, p: preview
