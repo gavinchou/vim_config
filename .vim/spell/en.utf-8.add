@@ -56,3 +56,4 @@ enum
 namespace
 struct
 rebase
+inline
