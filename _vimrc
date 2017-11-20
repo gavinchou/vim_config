@@ -369,7 +369,7 @@ function! Comment(mode)
   " comment string is #
   for tmp in ["python","sed","apache","bash","conf", "sh", "make", "cfg",
       \ "gitignore", "zsh", "config", "jproperties", "properties", "yaml",
-      \ "cmake", "crontab", "awk"]
+      \ "cmake", "crontab", "awk", "expect"]
     if &ft == tmp
       call CommentImpl("#", a:mode)
       return tmp
@@ -502,9 +502,9 @@ function! Run()
   endif
   if (&ft == 'go')
     if has('mac') || has('unix')
-      exe 'silent !clear; rm ~/tmp/go.out 2>/dev/null;'
+      exe 'silent !clear; rm /tmp/go.out 2>/dev/null;'
       exe '!export GOPATH=$GOPATH:`pwd`:`pwd`/..;' .
-            \ '(go build -o ~/tmp/go.out "%:p"  && ~/tmp/go.out) || (clear; go test "%:p");'
+            \ '(go build -o /tmp/go.out "%:p"  && /tmp/go.out) || (clear; go test "%:p");'
     elseif has("win32")
       exe '!cls & del e:/temp/go.out 2>nul & ' .
             \'go build -o e:/temp/go.out ' . expand("%:p") . ' && ' .
