@@ -355,7 +355,7 @@ endfunction
 function! Comment(mode)
   " comment string is //
   for tmp in ["cpp", "c", "java", "php", "javascript", "go", "scss", "proto",
-        \ "thrift"]
+        \ "thrift", "yacc"]
     if &ft == tmp
       call CommentImpl("//", a:mode)
       return "//"
@@ -489,6 +489,10 @@ function! Run()
   if (&ft == 'bash')
     exe "!bash %;"
     return "bash"
+  endif
+  if (&ft == 'expect')
+    exe "!expect %;"
+    return "expect"
   endif
   if (&ft == 'markdown') " view in markdown previewer
     if has('mac')
