@@ -1036,6 +1036,12 @@ command! -range=% MakeToc echo "make table of content for markdown" |
   \  exe '<line1>,<line2>s/^\(#\+ *\)\[\(.*\)\](id:.*)/\1\2/gc' |
   \endif
 
+" -------- convert under_score to camel
+command! -range ToUpperCamel s#\<\(_*\)\([a-zA-Z]\)\|_\+\([0-9A-Za-z]\)#\1\u\2\u\3#g
+command! -range ToLowerCamel s#\<\(_*\)\([a-zA-Z]\)\|_\+\([0-9A-Za-z]\)#\1\l\2\u\3#g
+command! -range ToLowerUnderscore s#\<\@<!\([A-Z]\)#_\l\1#g
+command! -range ToUpperUnderscore s#\<\@<!\([A-Z]\)#_\u\1#g
+
 " ========================= autocmd ================================== {{{2
 " this command has bug when create new window, say tagbar
 augroup netrw " ---------- {{{3
