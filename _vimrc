@@ -472,12 +472,17 @@ function! Run()
         exe '!start cmd /c start "vim run cpp" g++.lnk "%:p"'
       elseif has("unix") || has('linux') && executable('g++')
         exe 'silent !clear; rm ~/tmp/vim.out 2>/dev/null;'
-        exe '!g++ -g -ggdb -Wall -pthread -std=c++11 "%:p" -o ~/tmp/vim.out;' .
+        let cmd = '!g++ -g -ggdb -Wall -pthread -std=c++11 "%:p" -o ~/tmp/vim.out;' .
            \ 'if [ $? -eq 0 ]; then ' .
            \ 'isGdb="n";read -n1 -t 3 -p "use gdb[yn]?" isGdb; echo "";' .
-           \ 'if [ "x$isGdb" = "xy" ]; then ' .
-           \ 'gdb --args ~/tmp/vim.out ' . argv . ';' .
-           \ 'else ~/tmp/vim.out ' . argv . ';fi;fi;'
+           \ 'if [ "x$isGdb" = "xy" ]; then '
+        if has("unix")
+          let cmd = cmd . 'lldb -- ~/tmp/vim.out ' . argv . ';'
+        else
+          let cmd = cmd . 'gdb --args ~/tmp/vim.out ' . argv . ';'
+        endif
+        let cmd = cmd . 'else ~/tmp/vim.out ' . argv . ';fi;fi;'
+        exe cmd
       endif
       return &ft
     endif
