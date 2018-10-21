@@ -912,9 +912,13 @@ command! -count=1 W <count> winc w
 
 " ---------- set vim format footer fo baidu cpp {{{3
 command! Baiducpp echo "add baidu cpp file vim mode lines"<BAR>
-  \silent call append('$',  '// vim: et tw=80 ts=4 sw=4 cc=80:')
+  \silent call append('$',  '// vim: et tw=80 ts=4 sw=4 cc=80:')<BAR>
+  \exe ":w"<BAR>
+  \exe ":e"
 command! Googlecpp echo "add google cpp file vim mode lines"<BAR>
-  \silent call append('$',  '// vim: et tw=80 ts=2 sw=2 cc=80:')
+  \silent call append('$',  '// vim: et tw=80 ts=2 sw=2 cc=80:')<BAR>
+  \exe ":w"<BAR>
+  \exe ":e"
 
 " ---------- Sum the selected text {{{3
 " sum the numbers selected block, result will be stored in default register
