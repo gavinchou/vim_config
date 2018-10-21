@@ -81,10 +81,17 @@ flags = [
 # './tests/gmock',
 # '-isystem',
 # './tests/gmock/include',
+
+# '-isystem',
+# '/usr/include/c++/4.2.1/bits/',
+# '-isystem',
+# '/usr/include/c++/4.2.1',
 '-isystem',
-'/usr/include/c++/4.2.1/bits/'
+'/Library/Developer/CommandLineTools/usr/include/c++/v1',
 '-isystem',
-'/usr/include/c++/4.2.1'
+'/Library/Developer/CommandLineTools/usr/include/c++/v1/experimental',
+'-isystem',
+'/Library/Developer/CommandLineTools/usr/include/c++/v1/ext',
 ]
 
 
