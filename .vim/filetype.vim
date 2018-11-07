@@ -2461,36 +2461,42 @@ au BufNewFile,BufRead XF86Config*
 	\|call s:StarSetf('xf86conf')
 
 " X11 xmodmap
-au BufNewFile,BufRead *xmodmap*			call s:StarSetf('xmodmap')
+au BufNewFile,BufRead *xmodmap* call s:StarSetf('xmodmap')
 
 " Xinetd conf
-au BufNewFile,BufRead /etc/xinetd.d/*		call s:StarSetf('xinetd')
+au BufNewFile,BufRead /etc/xinetd.d/* call s:StarSetf('xinetd')
 
 " Z-Shell script
-au BufNewFile,BufRead zsh*,zlog*		call s:StarSetf('zsh')
+au BufNewFile,BufRead zsh*,zlog* call s:StarSetf('zsh')
 
 " config
-au BufNewFile,BufRead *.conf		call s:StarSetf('config')
+au BufNewFile,BufRead *.conf call s:StarSetf('config')
 
 " toml
-au BufNewFile,BufRead *.toml		call s:StarSetf('config')
+au BufNewFile,BufRead *.toml call s:StarSetf('config')
 
 " protobuf file
-au BufNewFile,BufRead *.proto		call s:StarSetf('proto')
+au BufNewFile,BufRead *.proto call s:StarSetf('proto')
 
 " json file
-au BufNewFile,BufRead *.json		call s:StarSetf('json')
+au BufNewFile,BufRead *.json call s:StarSetf('json')
 
 " thrift idl file
-au BufNewFile,BufRead *.thrift		call s:StarSetf('thrift')
+au BufNewFile,BufRead *.thrift call s:StarSetf('thrift')
 
 " gitignore
-au BufNewFile,BufRead *.gitignore		call s:StarSetf('gitignore')
+au BufNewFile,BufRead *.gitignore call s:StarSetf('gitignore')
 
-" Use the filetype detect plugins.  They may overrule any of the previously
+" flex
+au BufNewFile,BufRead *.flex call s:StarSetf('flex')
+
+" add more filetype here
+
+
+" Use the filetype detect plugins. They may overrule any of the previously
 " detected filetypes.
 runtime! ftdetect/*.vim
-
+" ==============================================================================
 
 " Generic configuration file (check this last, it's just guessing!)
 au BufNewFile,BufRead,StdinReadPost *
