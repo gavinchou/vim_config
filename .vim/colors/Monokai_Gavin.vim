@@ -1,5 +1,6 @@
-" Vim color file, Gavin modified
+" Vim color file, modified by Gavin <gavineaglechou@gmail.com>
 " Converted from Textmate theme Monokai using Coloration v0.3.2 (http://github.com/sickill/coloration)
+" Syntax pattern variable is case-insensitive
 
 set background=dark
 highlight clear
@@ -169,8 +170,10 @@ hi Url ctermfg=27 ctermbg=NONE cterm=underline guifg=#409fff guibg=NONE gui=unde
 hi def link UrlLink Url
 hi def link HttpLink UrlLink
 
-hi Bold ctermfg=15 ctermbg=232 cterm=bold guifg=#f8f8f2 guibg=#272822 gui=Bold
-hi Italic ctermfg=15 ctermbg=232 cterm=bold guifg=#f8f8f2 guibg=#272822 gui=italic
+hi Bold cterm=bold gui=Bold
+hi Italic cterm=bold gui=italic
+hi BoldItalic cterm=bold,italic gui=bold,italic
+hi Reverse cterm=bold,reverse gui=bold,reverse
 
 endif " 256 colors 
 
