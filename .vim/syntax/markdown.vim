@@ -136,7 +136,11 @@ let b:markdown_syntax_url =
   \ .   '[-A-Z0-9+&@#/%=~_|$]\+'
   \ . '\)'
   \ . '>\?'
-execute 'syn match markdownUrlLinkInText /' . b:markdown_syntax_url . '/ contains=@NoSpell display'
+" this match may hurt performance
+" execute 'syn match markdownUrlLinkInText /' . b:markdown_syntax_url . '/ contains=@NoSpell display'
+" syn match markdownUrlLinkInText '<.\+>'
+" syn region markdownUrlLinkInText start=+<+ end=+>+ keepend display
+syn region markdownUrlLinkInText start=+<+ end=+>+ oneline keepend skipwhite display contains=@NoSpell
 
 syn match markdownPullRequestLinkInText /\%(\w\)\@<!#\d\+/ display
 syn match markdownUserLinkInText /\%(\w\)\@<!@[[:alnum:]._\/-]\+/ contains=@NoSpell display
@@ -329,7 +333,10 @@ syn match markdownBlockquoteDelimiter /^\s*\%(>\s\?\)\+/ contained
 syn region markdownFencedCodeBlock matchgroup=markdownCodeDelimiter start=/^\s\{,3}```\%(`*\).*$/ end=/^\s\{,3}```\%(`*\)\s*$/ contains=@NoSpell
 syn region markdownFencedCodeBlock matchgroup=markdownCodeDelimiter start=/^\s\{,3}\~\~\~\%(\~*\).*$/ end=/^\s\{,3}\~\~\~\%(\~*\)\s*$/ contains=@NoSpell
 
-syn match markdownCodeBlock /\%(^\n\)\@<=\%(\%(\s\{4,}\|\t\+\).*\n\)\+$/ contains=@NoSpell
+" syn match markdownCodeBlock /\%(^\n\)\@<=\%(\%( \{4}\|\t\+\).*\n\)\+$/ contains=@NoSpell
+" the following may cost much less than the last match with spaces and tabs, use
+" tab only instead of spaces for code block to save energy
+syn match markdownCodeBlock /\%(^\n\)\@<=\%(\%(\t\+\).*\n\)\+$/ contains=@NoSpell
 
 let s:markdown_table_header_rows_separator = ''
   \ . '\%('
