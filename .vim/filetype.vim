@@ -785,7 +785,7 @@ au BufNewFile,BufRead *.ht			setf haste
 au BufNewFile,BufRead *.htpp			setf hastepreproc
 
 " Hercules
-au BufNewFile,BufRead *.vc,*.ev,*.rs,*.sum,*.errsum	setf hercules
+au BufNewFile,BufRead *.vc,*.ev,*.sum,*.errsum	setf hercules
 
 " HEX (Intel)
 au BufNewFile,BufRead *.hex,*.h32		setf hex
@@ -2489,6 +2489,9 @@ au BufNewFile,BufRead *.gitignore call s:StarSetf('gitignore')
 
 " flex
 au BufNewFile,BufRead *.flex call s:StarSetf('flex')
+
+" rust
+au BufNewFile,BufRead *.rs,*.rust call s:StarSetf('rust')
 
 " add more filetype here
 
