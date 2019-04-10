@@ -345,8 +345,7 @@ function! CommentImpl(commentStr, mode)
   elseif a:mode == g:COMMENT_2
     " comment description, add commentStr before the first word
     exe 's/\(^\s*\)\(.*\)/\1' . l:cs . ' \2' . l:cse . '/e'
-  " uncomment
-  elseif a:mode == g:UNCOMMENT
+  elseif a:mode == g:UNCOMMENT " uncomment
     exe 's/^\(\s*\)' . l:cs . ' \{0,1\}\(.*\)' . l:cse . '/\1\2/e'
   endif
   exe 'noh'
@@ -355,7 +354,7 @@ endfunction
 function! Comment(mode)
   " comment string is //
   for tmp in ["cpp", "c", "java", "php", "javascript", "go", "scss", "proto",
-        \ "thrift", "yacc"]
+        \ "thrift", "yacc", "dot", "rust"]
     if &ft == tmp
       call CommentImpl("//", a:mode)
       return "//"
@@ -369,7 +368,7 @@ function! Comment(mode)
   " comment string is #
   for tmp in ["python","sed","apache","bash","conf", "sh", "make", "cfg",
       \ "gitignore", "zsh", "config", "jproperties", "properties", "yaml",
-      \ "cmake", "crontab", "awk", "expect"]
+      \ "cmake", "crontab", "awk", "expect", "gitconfig"]
     if &ft == tmp
       call CommentImpl("#", a:mode)
       return tmp
@@ -416,7 +415,7 @@ function! Comment(mode)
   endfor
 
   " comment string is %
-  if &ft == "matlab"
+  if &ft == "matlab" || &ft == "tex"
     call CommentImpl("%", a:mode)
     return "matlab"
   endif
@@ -472,7 +471,8 @@ function! Run()
         exe '!start cmd /c start "vim run cpp" g++.lnk "%:p"'
       elseif has("unix") || has('linux') && executable('g++')
         exe 'silent !clear; rm ~/tmp/vim.out 2>/dev/null;'
-        let cmd = '!g++ -g -ggdb -Wall -pthread -std=c++11 "%:p" -o ~/tmp/vim.out;' .
+"         let cmd = '!g++ -g -ggdb3 -Wall -pthread -std=c++11 "%:p" -o ~/tmp/vim.out;' .
+        let cmd = '!g++ -std=c++17 -g -ggdb3 -Wall -pthread -lstdc++fs -static-libstdc++ -static-libgcc "%:p" -o ~/tmp/vim.out;' .
            \ 'if [ $? -eq 0 ]; then ' .
            \ 'isGdb="n";read -n1 -t 3 -p "use gdb[yn]?" isGdb; echo "";' .
            \ 'if [ "x$isGdb" = "xy" ]; then '
@@ -577,8 +577,23 @@ function! Run()
       echo "No executable awk found"
       echohl None
     endif
-    exe '!awk -f ' . expand("%p")
+    exe '!awk -f ' . expand("%:p")
     return 'awk'
+  endif
+
+  if &ft == "dot"
+    call ProbeExecutable("dot")
+    let cmd='!dot -o ~/tmp/tmp.svg -Tsvg ' . expand("%:p") . ' && chrome ~/tmp/tmp.svg'
+    call RunWithPlat(cmd, '', '')
+    return 'dot'
+  endif
+
+  if &ft == "tex"
+    call ProbeExecutable('xelatex')
+    let cmd = '!xelatex ' . expand("%:p") . " -output-directory ~/tmp/" .
+      \ ' && mv ' . expand('%:r') . '.pdf tmp.pdf && open ~/tmp/tmp.pdf'
+    call RunWithPlat(cmd, '', '')
+    return &ft
   endif
 
   if has("win32")
@@ -592,6 +607,28 @@ function! Run()
   echo "Run() does not support " . &ft
   echohl None
   return ""
+endfunction
+
+function! ProbeExecutable(cmd)
+  if !executable(a:cmd)
+    echohl Error
+    echo "No executable " . a:cmd . " found"
+    echohl None
+  endif
+endfunction
+
+function! RunWithPlat(mac, linux, win)
+  if has("mac")
+    exe a:mac
+  elseif has("unix") && has("linux")
+    exe a:linux
+  elseif has("win32")
+    exe a:win
+  else
+    echohl Error
+    echo "This plat is not supported by Run(), command not run"
+    echohl None
+  endif
 endfunction
 
 map <F5> :call Run()<CR>
@@ -783,8 +820,8 @@ set showmatch
 " ---------- enter normal mode delay
 set timeoutlen=1000 ttimeoutlen=5
 
-" ---------- config spell su
-set spellsuggest=file:~/.vim/misc/spellsuggest.txt,best
+" ---------- config spell
+set spellsuggest=file:~/.vim/spell/spellsuggest.txt,best
 set spelllang+=cjk
 
 " ================================ commands ============================ {{{2
@@ -1045,11 +1082,11 @@ command! -range=% MakeToc echo "make table of content for markdown" |
   \  exe '<line1>,<line2>s/^\(#\+ *\)\[\(.*\)\](id:.*)/\1\2/gc' |
   \endif
 
-" -------- convert under_score to camel
-command! -range ToUpperCamel s#\<\(_*\)\([a-zA-Z]\)\|_\+\([0-9A-Za-z]\)#\1\u\2\u\3#g
-command! -range ToLowerCamel s#\<\(_*\)\([a-zA-Z]\)\|_\+\([0-9A-Za-z]\)#\1\l\2\u\3#g
-command! -range ToLowerUnderscore s#\<\@<!\([A-Z]\)#_\l\1#g
-command! -range ToUpperUnderscore s#\<\@<!\([A-Z]\)#_\u\1#g
+" -------- inter-convert under_score to/from camel
+command! -range ToUpperCamel s#\<\(_*\)\([a-zA-Z]\)\|_\+\([0-9A-Za-z]\)#\1\u\2\u\3#g | noh
+command! -range ToLowerCamel s#\<\(_*\)\([a-zA-Z]\)\|_\+\([0-9A-Za-z]\)#\1\l\2\u\3#g | noh
+command! -range ToLowerUnderscore s#\<\@<!\([A-Z]\)#_\l\1#g | noh
+command! -range ToUpperUnderscore s#\<\@<!\([A-Z]\)#_\u\1#g | noh
 
 " ========================= autocmd ================================== {{{2
 " this command has bug when create new window, say tagbar
@@ -1229,10 +1266,10 @@ function! MakeSurround(mode, ...)
 endfunc
 
 " ---------- GetSelection() {{{3
-function! GetSelection()
+function! GetSelection() range
   " Why is this not a built-in Vim script function?!
   let l:isVisual = 0
-  if mode() == 'v'
+  if mode() == 'v' || mode() == 'V' || mode() == "CTRL-V"
     let l:isVisual = 1
     norm! "<esc>"
   endif
@@ -1242,7 +1279,7 @@ function! GetSelection()
   let lines[-1] = lines[-1][: col2 - (&selection == 'inclusive' ? 1 : 2)]
   let lines[0] = lines[0][col1 - 1:]
   let l:res =  join(lines, "\n")
-  echo l:res
+  " echo l:res
   if l:isVisual
     norm! "gv"
   endif
@@ -1272,7 +1309,22 @@ endfunction
 function! MarkdownFoldExpr(lnum)
   let headingLvl = strlen(substitute(getline(a:lnum), '^\(#*\).*', '\1', ''))
   if headingLvl < 1
-    " return foldlevel(v:lnum - 1)
+    return '='
+  else
+    return '>'.headingLvl
+endfunction
+
+" ---------- PrintableThriftFoldExpr() {{{3
+function! PrintableThriftFoldExpr(lnum)
+  let line = getline(a:lnum)
+  let headingLvl = strlen(substitute(line, '^\( \+\).*\s*$', '\1', ''))
+  if match(line, '^\( \+\)},\s*$', 0) >= 0
+    let headingLvl += 2
+  elseif headingLvl == strlen(line)
+    let headingLvl = 0
+  endif
+  let headingLvl = headingLvl / 2
+  if headingLvl < 1
     return '='
   else
     return '>'.headingLvl
