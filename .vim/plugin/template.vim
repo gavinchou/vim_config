@@ -13,7 +13,7 @@ function! template#FileHeader(...)
     let author = g:file_template_header_author
     let email = g:file_template_header_email
   endif
-  for each in ["cpp", "java", "c", "go"]
+  for each in ["cpp", "java", "c", "go", "dot"]
     if &ft == each
       silent call append(template#IncLine(), "/**")
       " silent call append(template#IncLine(), " * @file " . expand("%"))
@@ -38,7 +38,7 @@ function! template#FileHeader(...)
     return
   endif
 
-  for each in ["sh", "bash", "python", "conf"]
+  for each in ["sh", "bash", "python", "conf", "awk", "sed"]
     if &ft == each
       silent call append(template#IncLine(), "#!/bin/bash")
       " silent call append(template#IncLine(), "  * @file " . expand("%"))
