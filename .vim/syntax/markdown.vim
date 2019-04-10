@@ -278,7 +278,7 @@ execute 'syn region markdownLinkTitleDoubleQuoted start=/\s*"/ skip=/\\"/ end=/"
   \ . b:markdown_conceal
 
 syn match markdownXmlComment /\c<\!--\_.\{-}-->/ contains=@NoSpell
-syn match markdownXmlElement /\c<\([-A-Z0-9_$?!:,.]\+\)[^>]\{-}>\_.\{-}<\/\1>/ contains=@NoSpell
+" syn match markdownXmlElement /\c<\([-A-Z0-9_$?!:,.]\+\)[^>]\{-}>\_.\{-}<\/\1>/ contains=@NoSpell
 syn match markdownXmlEmptyElement /\c<\([-A-Z0-9_$?!:,.]\+\)\%(\s\+[^>]\{-}\/>\|\s*\/>\)/ contains=@NoSpell
 syn match markdownXmlEntities /&#\?[0-9A-Za-z]\{1,8};/ contains=@NoSpell
 
@@ -338,32 +338,32 @@ syn region markdownFencedCodeBlock matchgroup=markdownCodeDelimiter start=/^\s\{
 " tab only instead of spaces for code block to save energy
 syn match markdownCodeBlock /\%(^\n\)\@<=\%(\%(\t\+\).*\n\)\+$/ contains=@NoSpell
 
-let s:markdown_table_header_rows_separator = ''
-  \ . '\%('
-  \ .   '\s*|\?\%(\s*[-:]-\{1,}[-:]\s*|\)\+\s*[-:]-\{1,}[-:]\s*|\?\s*'
-  \ .   '\|'
-  \ .   '\s*|\s*[-:]-\{1,}[-:]\s*|\s*'
-  \ .   '\|'
-  \ .   '\s*|\s*[-:]-\{1,}[-:]\s*'
-  \ .   '\|'
-  \ .   '\s*[-:]-\{1,}[-:]\s*|\s*'
-  \ . '\)'
-execute 'syn match markdownTable '
-  \ . 'transparent contains=markdownTableHeader,markdownTableDelimiter,@markdownInline '
-  \ . '/'
-  \ .   '^\s*\n'
-  \ .   '\s*|\?\%([^|]\+|\)*[^|]\+|\?\s*\n'
-  \ .   s:markdown_table_header_rows_separator . '\n'
-  \ .   '\%('
-  \ .     '\s*|\?\%([^|]\+|\)*[^|]\+|\?\s*\n'
-  \ .   '\)*'
-  \ .   '$'
-  \ . '/'
-syn match markdownTableDelimiter /|/ contained
-execute 'syn match markdownTableDelimiter contained '
-  \ . '/' . s:markdown_table_header_rows_separator . '/'
-execute 'syn match markdownTableHeader contained contains=@markdownInline '
-  \ . '/\%(|\?\s*\)\@<=[^|]\+\%(.*\n' . s:markdown_table_header_rows_separator . '\)\@=/'
+" let s:markdown_table_header_rows_separator = ''
+"   \ . '\%('
+"   \ .   '\s*|\?\%(\s*[-:]-\{1,}[-:]\s*|\)\+\s*[-:]-\{1,}[-:]\s*|\?\s*'
+"   \ .   '\|'
+"   \ .   '\s*|\s*[-:]-\{1,}[-:]\s*|\s*'
+"   \ .   '\|'
+"   \ .   '\s*|\s*[-:]-\{1,}[-:]\s*'
+"   \ .   '\|'
+"   \ .   '\s*[-:]-\{1,}[-:]\s*|\s*'
+"   \ . '\)'
+" execute 'syn match markdownTable '
+"   \ . 'transparent contains=markdownTableHeader,markdownTableDelimiter,@markdownInline '
+"   \ . '/'
+"   \ .   '^\s*\n'
+"   \ .   '\s*|\?\%([^|]\+|\)*[^|]\+|\?\s*\n'
+"   \ .   s:markdown_table_header_rows_separator . '\n'
+"   \ .   '\%('
+"   \ .     '\s*|\?\%([^|]\+|\)*[^|]\+|\?\s*\n'
+"   \ .   '\)*'
+"   \ .   '$'
+"   \ . '/'
+" syn match markdownTableDelimiter /|/ contained
+" execute 'syn match markdownTableDelimiter contained '
+"   \ . '/' . s:markdown_table_header_rows_separator . '/'
+" execute 'syn match markdownTableHeader contained contains=@markdownInline '
+"   \ . '/\%(|\?\s*\)\@<=[^|]\+\%(.*\n' . s:markdown_table_header_rows_separator . '\)\@=/'
 
 " }}}
 
@@ -514,17 +514,17 @@ for s:level in range(1, 16)
   " " the only constraint here is that the table begins at least at the same
   " " level as the list item's content, se we could reuse the previous syntactic
   " " elements, we could do that because tables could have arbitrary indentation
-  execute 'syn match markdownTableInListItemAtLevel' . (s:level) . ' '
-    \ . 'transparent contained contains=markdownTableHeader,markdownTableDelimiter,@markdownInline '
-    \ . '/'
-    \ .   '^\s*\n'
-    \ .   (s:indented_as_content) . '\s*|\?\%([^|]\+|\)*[^|]\+|\?\s*\n'
-    \ .   s:markdown_table_header_rows_separator . '\n'
-    \ .   '\%('
-    \ .     '\s*|\?\%([^|]\+|\)*[^|]\+|\?\s*\n'
-    \ .   '\)*'
-    \ .   '$'
-    \ . '/'
+"   execute 'syn match markdownTableInListItemAtLevel' . (s:level) . ' '
+"     \ . 'transparent contained contains=markdownTableHeader,markdownTableDelimiter,@markdownInline '
+"     \ . '/'
+"     \ .   '^\s*\n'
+"     \ .   (s:indented_as_content) . '\s*|\?\%([^|]\+|\)*[^|]\+|\?\s*\n'
+"     \ .   s:markdown_table_header_rows_separator . '\n'
+"     \ .   '\%('
+"     \ .     '\s*|\?\%([^|]\+|\)*[^|]\+|\?\s*\n'
+"     \ .   '\)*'
+"     \ .   '$'
+"     \ . '/'
 endfor
 hi def link markdownItemDelimiter Red
 hi def link markdownFencedCodeBlockInItemDelimiter Special
@@ -911,8 +911,8 @@ hi def link markdownInlineCode              Green
 hi def link markdownFencedCodeBlock         Green
 hi def link markdownCodeBlock               Green
 
-hi def link markdownTableDelimiter          Delimiter
-hi def link markdownTableHeader             Purple
+" hi def link markdownTableDelimiter          Delimiter
+" hi def link markdownTableHeader             Purple
 
 hi def link markdownStrike                  NonText
 hi def link markdownStrikeDelimiter         Delimiter
