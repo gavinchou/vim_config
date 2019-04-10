@@ -8,6 +8,7 @@
 "   0.1 - initial version.
 "   0.2 - C++14
 "   0.3 - Incorporate lastest changes from Mizuchi/STL-Syntax
+"   0.4 - partial C++17, by Gavin Chou
 "
 " Additional Vim syntax highlighting for C++ (including C++11)
 "
@@ -135,7 +136,7 @@ syntax keyword cppSTLfunctional not_equal_to
 syntax keyword cppSTLfunctional plus
 syntax keyword cppSTLfunctional unary_function
 syntax keyword cppSTLfunctional unary_negate
-"syntax keyword cppSTLfunction any
+" syntax keyword cppSTLfunction any
 syntax keyword cppSTLfunction append
 syntax keyword cppSTLfunction arg
 syntax keyword cppSTLfunction asctime
@@ -545,7 +546,9 @@ syntax keyword cppSTLiterator_tag output_iterator_tag
 syntax keyword cppSTLiterator_tag random_access_iterator_tag
 syntax keyword cppSTLnamespace rel_ops
 syntax keyword cppSTLnamespace std
+
 syntax keyword cppSTLtype allocator
+syntax keyword cppSTLtype any
 syntax keyword cppSTLtype auto_ptr
 syntax keyword cppSTLtype basic_filebuf
 syntax keyword cppSTLtype basic_fstream
@@ -572,11 +575,13 @@ syntax keyword cppSTLtype const_mem_fun_ref_t
 syntax keyword cppSTLtype const_mem_fun_t
 syntax keyword cppSTLtype const_pointer
 syntax keyword cppSTLtype const_reference
+syntax keyword cppSTLtype copy_options
 syntax keyword cppSTLtype deque
 syntax keyword cppSTLtype difference_type
 syntax keyword cppSTLtype div_t
 syntax keyword cppSTLtype double_t
 syntax keyword cppSTLtype filebuf
+syntax keyword cppSTLtype filesystem
 syntax keyword cppSTLtype first_type
 syntax keyword cppSTLtype float_denorm_style
 syntax keyword cppSTLtype float_round_style
@@ -631,6 +636,7 @@ syntax keyword cppSTLtype stack
 syntax keyword cppSTLtype stream
 syntax keyword cppSTLtype streambuf
 syntax keyword cppSTLtype string
+syntax keyword cppSTLtype string_view
 syntax keyword cppSTLtype stringbuf
 syntax keyword cppSTLtype stringstream
 syntax keyword cppSTLtype strstream
@@ -640,14 +646,18 @@ syntax keyword cppSTLtype test_type
 syntax keyword cppSTLtype time_t
 syntax keyword cppSTLtype tm
 syntax keyword cppSTLtype traits_type
+syntax keyword cppSTLtype tring_view
 syntax keyword cppSTLtype type_info
 syntax keyword cppSTLtype u16string
+syntax keyword cppSTLtype u16string_view
 syntax keyword cppSTLtype u32string
+syntax keyword cppSTLtype u32string_view
 syntax keyword cppSTLtype unary_compose
 syntax keyword cppSTLtype unary_negate
 syntax keyword cppSTLtype valarray
 syntax keyword cppSTLtype value_compare
 syntax keyword cppSTLtype value_type
+syntax keyword cppSTLtype variant
 syntax keyword cppSTLtype vector
 syntax keyword cppSTLtype wfilebuf
 syntax keyword cppSTLtype wfstream
@@ -660,6 +670,7 @@ syntax keyword cppSTLtype wostream
 syntax keyword cppSTLtype wostringstream
 syntax keyword cppSTLtype wstreambuf
 syntax keyword cppSTLtype wstring
+syntax keyword cppSTLtype wstring_view
 syntax keyword cppSTLtype wstringbuf
 syntax keyword cppSTLtype wstringstream
 
