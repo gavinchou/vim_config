@@ -138,9 +138,8 @@ let b:markdown_syntax_url =
   \ . '>\?'
 " this match may hurt performance
 " execute 'syn match markdownUrlLinkInText /' . b:markdown_syntax_url . '/ contains=@NoSpell display'
-" syn match markdownUrlLinkInText '<.\+>'
-" syn region markdownUrlLinkInText start=+<+ end=+>+ keepend display
-syn region markdownUrlLinkInText start=+<+ end=+>+ oneline keepend skipwhite display contains=@NoSpell
+" the following is enough for allmost ll the cases of markdownUrlLinkInText
+syn match markdownUrlLinkInText /<.\{-}\..\{-}>/ display contains=@NoSpell
 
 syn match markdownPullRequestLinkInText /\%(\w\)\@<!#\d\+/ display
 syn match markdownUserLinkInText /\%(\w\)\@<!@[[:alnum:]._\/-]\+/ contains=@NoSpell display
@@ -212,62 +211,70 @@ let b:markdown_syntax_round_brackets_block = ''
   \ .   '\)*'
   \ . ')'
 
-execute 'syn match markdownLinkContainer '
-  \ . 'contains=markdownLinkTextContainer,markdownLinkUrlContainer transparent '
-  \ . '/'
-  \ . '!\?'
-  \ . b:markdown_syntax_square_brackets_block
-  \ . '\%(\s*\|\n\%\(\n\)\@!\)'
-  \ . '\%('
-  \ .   b:markdown_syntax_round_brackets_block
-  \ .   '\|'
-  \ .   b:markdown_syntax_square_brackets_block
-  \ . '\)'
-  \ . '/'
+" this may hurt performance badly
+" execute 'syn match markdownLinkContainer '
+"   \ . 'contains=markdownLinkTextContainer,markdownLinkUrlContainer transparent '
+"   \ . '/'
+"   \ . '!\?'
+"   \ . b:markdown_syntax_square_brackets_block
+"   \ . '\%(\s*\|\n\%\(\n\)\@!\)'
+"   \ . '\%('
+"   \ .   b:markdown_syntax_round_brackets_block
+"   \ .   '\|'
+"   \ .   b:markdown_syntax_square_brackets_block
+"   \ . '\)'
+"   \ . '/'
+syn match markdownLinkContainer /\[.\{-}\](.\{-})/ contains=markdownLinkTextContainer,markdownLinkUrlContainer transparent
 
-execute 'syn match markdownLinkTextContainer contained '
-  \ . 'contains=markdownLinkText '
-  \ . '/'
-  \ . '!\?'
-  \ . b:markdown_syntax_square_brackets_block
-  \ . '/'
+" execute 'syn match markdownLinkTextContainer contained '
+"   \ . 'contains=markdownLinkText '
+"   \ . '/'
+"   \ . '!\?'
+"   \ . b:markdown_syntax_square_brackets_block
+"   \ . '/'
+syn region markdownLinkTextContainer start=/\[/ end=/\]/ oneline contained contains=markdownLinkText
 
-execute 'syn match markdownLinkText contained '
-  \ . 'contains=@markdownInline,@NoSpell '
-  \ . '/'
-  \ . '!\?'
-  \ . b:markdown_syntax_square_brackets_block
-  \ . '/'
-  \ . 'hs=s+1,he=e-1'
+" execute 'syn match markdownLinkText contained '
+"   \ . 'contains=@markdownInline,@NoSpell '
+"   \ . '/'
+"   \ . '!\?'
+"   \ . b:markdown_syntax_square_brackets_block
+"   \ . '/'
+"   \ . 'hs=s+1,he=e-1'
+syn match markdownLinkText /\[\zs.\{-}\ze\]/ contained contains=@markdownInline,@NoSpell
 
-execute 'syn match markdownLinkUrlContainer contained '
-  \ . 'contains=markdownLinkUrl,markdownLinkTitleSingleQuoted,markdownLinkTitleDoubleQuoted '
-  \ . '/'
-  \ . b:markdown_syntax_round_brackets_block
-  \ . '/ '
-  \ . b:markdown_conceal
+" execute 'syn match markdownLinkUrlContainer contained '
+"   \ . 'contains=markdownLinkUrl,markdownLinkTitleSingleQuoted,markdownLinkTitleDoubleQuoted '
+"   \ . '/'
+"   \ . b:markdown_syntax_round_brackets_block
+"   \ . '/ '
+"   \ . b:markdown_conceal
+syn region markdownLinkUrlContainer start="(" end=")" oneline contained contains=markdownLinkUrl,markdownLinkTitleSingleQuoted,markdownLinkTitleDoubleQuoted
 
-execute 'syn match markdownLinkUrl contained '
-  \ . 'contains=@NoSpell '
-  \ . '/'
-  \ . '\%((\)\@<='
-  \ . '\%('
-  \ .   '&#\?[0-9A-Za-z]\{1,8};'
-  \ .   '\|'
-  \ .   '\\'
-  \ .   '\|'
-  \ .   '([-A-Z0-9+&@#/%=~_|$?!:,.]*\\\?)'
-  \ .   '\|'
-  \ .   '\[[-A-Z0-9+&@#/%=~_|$?!:,.]*\\\?\]'
-  \ .   '\|'
-  \ .   '{[-A-Z0-9+&@#/%=~_|$?!:,.]*\\\?}'
-  \ .   '\|'
-  \ .   '[-A-Z0-9+&@#/%=~_|$?!:,.]'
-  \ .   '\|'
-  \ .   '\s'
-  \ . '\)\+'
-  \ . '\%(\s\+["'']\|)\|\n\)\@='
-  \ . '/'
+" this may hurt performance badly
+" execute 'syn match markdownLinkUrl contained '
+"   \ . 'contains=@NoSpell '
+"   \ . '/'
+"   \ . '\%((\)\@<='
+"   \ . '\%('
+"   \ .   '&#\?[0-9A-Za-z]\{1,8};'
+"   \ .   '\|'
+"   \ .   '\\'
+"   \ .   '\|'
+"   \ .   '([-A-Z0-9+&@#/%=~_|$?!:,.]*\\\?)'
+"   \ .   '\|'
+"   \ .   '\[[-A-Z0-9+&@#/%=~_|$?!:,.]*\\\?\]'
+"   \ .   '\|'
+"   \ .   '{[-A-Z0-9+&@#/%=~_|$?!:,.]*\\\?}'
+"   \ .   '\|'
+"   \ .   '[-A-Z0-9+&@#/%=~_|$?!:,.]'
+"   \ .   '\|'
+"   \ .   '\s'
+"   \ . '\)\+'
+"   \ . '\%(\s\+["'']\|)\|\n\)\@='
+"   \ . '/'
+" use the following instead
+syn match markdownLinkUrl contained contains=@NoSpell /(\zs.\{-}\ze)/
 
 execute 'syn region markdownLinkTitleSingleQuoted start=/\s*''/ skip=/\\''/ end=/''\_s*/ display '
   \ . 'keepend contained contains=@markdownInline '
