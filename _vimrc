@@ -27,6 +27,7 @@ set fencs=utf8,gbk,gb2312,cp936,gb18030
 
 " scrolling {{{3
 set scrolloff=3 "margin of moving to top or bot of current screen
+set sidescroll=1 " horizontal scroll step, continous scroll
 
 " ---------- folding option {{{3
 " marker manual indent
@@ -471,8 +472,8 @@ function! Run()
         exe '!start cmd /c start "vim run cpp" g++.lnk "%:p"'
       elseif has("unix") || has('linux') && executable('g++')
         exe 'silent !clear; rm ~/tmp/vim.out 2>/dev/null;'
-"         let cmd = '!g++ -g -ggdb3 -Wall -pthread -std=c++11 "%:p" -o ~/tmp/vim.out;' .
-        let cmd = '!g++ -std=c++17 -g -ggdb3 -Wall -pthread -lstdc++fs -static-libstdc++ -static-libgcc "%:p" -o ~/tmp/vim.out;' .
+        " let cmd = '!g++ -std=c++17 -g -ggdb3 -Wall -pthread -lstdc++fs -static-libstdc++ -static-libgcc "%:p" -o ~/tmp/vim.out;' .
+        let cmd = '!g++ -g -ggdb3 -Wall -pthread -std=c++17 "%:p" -o ~/tmp/vim.out;' .
            \ 'if [ $? -eq 0 ]; then ' .
            \ 'isGdb="n";read -n1 -t 3 -p "use gdb[yn]?" isGdb; echo "";' .
            \ 'if [ "x$isGdb" = "xy" ]; then '
@@ -868,8 +869,8 @@ command! -nargs=? -bang Mks silent echo "try to make session"<BAR>
     \mks<bang> <args><BAR>
     \echo "made session at: <args>"<BAR>
   \else<BAR>
-    \mks<bang> /tmp/tmp.ses<BAR>
-    \echo "made session at: /tmp/tmp.ses"<BAR>
+    \mks<bang> ~/tmp/tmp.ses<BAR>
+    \echo "made session at: ~/tmp/tmp.ses"<BAR>
   \endif
 " command! -nargs=? -bang Loadsession so $ses <args>
 command! -nargs=? -bang Loadsession silent echo "try to load session"<BAR>
@@ -877,8 +878,8 @@ command! -nargs=? -bang Loadsession silent echo "try to load session"<BAR>
     \so <args><BAR>
     \echo "loaded session from: <args>"<BAR>
   \else<BAR>
-    \so /tmp/tmp.ses<BAR>
-    \echo "loaded session from: /tmp/tmp.ses"<BAR>
+    \so ~/tmp/tmp.ses<BAR>
+    \echo "loaded session from: ~/tmp/tmp.ses"<BAR>
   \endif<BAR>
 
 " ---------- insert current time in the current position, after the cursor box {{{3
