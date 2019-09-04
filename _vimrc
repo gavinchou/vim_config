@@ -584,7 +584,8 @@ function! Run()
 
   if &ft == "dot"
     call ProbeExecutable("dot")
-    let cmd='!dot -o ~/tmp/tmp.svg -Tsvg ' . expand("%:p") . ' && chrome ~/tmp/tmp.svg'
+    " let cmd='!dot -o ~/tmp/tmp.svg -Tsvg ' . expand("%:p") . ' && chrome ~/tmp/tmp.svg'
+    let cmd='!callgraph ' . expand("%:p") . ' ~/tmp/tmp.svg && chrome ~/tmp/tmp.svg'
     call RunWithPlat(cmd, '', '')
     return 'dot'
   endif
@@ -1050,11 +1051,12 @@ autocmd BufNewFile,BufRead *.alipaylog setf alipaylog
 autocmd BufNewFile,BufRead *.md setlocal foldexpr=MarkdownFoldExpr(v:lnum) fdm=expr
 autocmd BufNewFile,BufRead BCLOUD setf python
 autocmd BufNewFile,BufRead *.git/COMMIT_EDITMSG setl spelllang=en spell
+autocmd BufNewFile,BufRead *.dot,*.gv setl makeprg=dot\ -Tsvg\ -oa.svg\ %
 " autocmd BufEnter * set et
 autocmd BufEnter,BufRead,WinEnter *.txt,*.md setl noet
 " quickfix key map, p: preview
 autocmd WinEnter * if &ft == "qf" | nmap <buffer> p <CR>gbw | endif
-" if the error to open is not in some window of current tab, open a newtab
+" if the error to open is not in the same window of current tab, open a newtab
 set switchbuf=usetab,newtab
 
 " ---------  Unique, unique all lines {{{3
@@ -1068,18 +1070,18 @@ command! -range=% Halfwidth echo "" |
   \endfor
 
 " -------- make/remove anchor for markdown
-command! -range=% AddAnchor echo "add anchor for markdown" |
+command! -range=% MarkdownAddAnchor echo "add anchor for markdown" |
   \if &ft == "markdown" |
   \  exe '<line1>,<line2>s/^\(#\+ *\)\(.*\)/\1[\2](id:\2)/gc' |
   \endif
-command! -range=% RemoveAnchor echo "remove anchor for markdown" |
+command! -range=% MarkdownRemoveAnchor echo "remove anchor for markdown" |
   \if &ft == "markdown" |
   \  exe '<line1>,<line2>s/^\(#\+ *\)\[\(.*\)\](id:.*)/\1\2/gc' |
   \endif
-command! -range=% MakeToc echo "make table of content for markdown" |
+command! -range=% MarkdownMakeToc echo "make table of content for markdown" |
   \if &ft == "markdown" |
-  \  exe 'RemoveAnchor' |
-  \  exe 'AddAnchor' |
+  \  exe 'MarkdownRemoveAnchor' |
+  \  exe 'MarkdownAddAnchor' |
   \  exe '<line1>,<line2>s/^\(#\+ *\)\[\(.*\)\](id:.*)/\1\2/gc' |
   \endif
 
@@ -1351,6 +1353,64 @@ endfunc
 function! ChangeLastWinNum()
   let t:last_win_num = tabpagewinnr(tabpagenr())
 endfunc
+
+" ---------- Generate header number for markdown
+" parsing section numbers is a procedure of stacking and popping heading levels
+" TODO: add param to specify whether this call is to generate or
+"       to update section numbers
+function! GenMarkdownSectionNum()
+  let len = line('$')
+  let lvl = []
+  let sect = []
+  let out = ""
+  for i in range(1, len, 1)
+    let line = getline(i)
+    let heading_lvl = strlen(substitute(line, '^\(#*\).*', '\1', ''))
+    if heading_lvl < 2
+      continue
+    endif
+    " there should be only 1 H1, topmost, on a conventional web page
+    " we should generate section numbers begin with the first heading level 2
+    if len(lvl) == 0
+      if heading_lvl != 2 " count from level 2
+        echohl Error
+        echo "subsection must have parent section, skip illegal heading line at line " . i
+        echohl None
+        continue
+      endif
+      call add(sect, 1)
+      for j in range(3, heading_lvl, 1) 
+        call add(sect, 1)
+      endfor
+      call add(lvl, heading_lvl)
+    else
+      if lvl[-1] == heading_lvl || lvl[-1] == 0
+        let sect[-1] = sect[-1] + 1
+      elseif lvl[-1] > heading_lvl " pop all lvl less than heading_lvl from tail
+        while len(lvl) != 0 && lvl[-1] > heading_lvl
+          call remove(lvl, -1)
+          call remove(sect, -1)
+        endwhile
+        let sect[-1] = sect[-1] + 1
+      elseif lvl[-1] < heading_lvl 
+        call add(sect, 1)
+        call add(lvl, heading_lvl)
+      endif
+    endif
+
+    let cur_sect = ""
+    for j in sect
+      let cur_sect = cur_sect . "." . j
+    endfor
+    let cur_sect = cur_sect[1:]
+    let out = out . " " . cur_sect
+    call setline(i, substitute(line, '^\(#\+\) \?\([0-9.]\+ \)\? *\(.*\)', '\1 ' . cur_sect . ' \3', line))
+  endfor
+  " echo lvl sect out
+  echo out
+endfunc
+
+command! MarkdownAddSection call GenMarkdownSectionNum()
 
 " ---------- GetMaxWindowSize() {{{3
 "Returns a list contains [max_height, max_width, ...]
