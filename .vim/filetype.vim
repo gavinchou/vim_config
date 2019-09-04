@@ -2493,6 +2493,9 @@ au BufNewFile,BufRead *.flex call s:StarSetf('flex')
 " rust
 au BufNewFile,BufRead *.rs,*.rust call s:StarSetf('rust')
 
+" tla, tla+
+au BufNewFile,BufRead *.tla,*.tla+ call s:StarSetf('tla')
+
 " add more filetype here
 
 
