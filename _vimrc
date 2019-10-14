@@ -635,8 +635,11 @@ endfunction
 
 map <F5> :call Run()<CR>
 
+let g:default_surround_mark='`'
 nmap <F4> :call MakeSurround("normal")<CR>
 vmap <F4> <ESC>:call MakeSurround("visual")<CR>
+nmap <F8> :call MakeSurround("normal", g:default_surround_mark)<CR>
+vmap <F8> <ESC>:call MakeSurround("visual", g:default_surround_mark)<CR>
 
 " taglist, make tag file {{{3
 function! MakeTags()
@@ -1217,13 +1220,15 @@ function! MakeSurround(mode, ...)
 
   let l:old = getreg('s')
 
-  if a:0 < 2
+  " a:0 is the number of EXTRA arguments
+  if a:0 < 1
     let l:delim = input("surround with:")
   else
     let l:delim = a:1
   endif
   if l:delim == ''
-    return
+    let l:delim=g:default_surround_mark
+    echo l:delim
   endif
   let l:ldelim = l:delim
   let l:delimDict = {"[":"]", "(":")", "/*":"*/", "{":"}", "<":">"}
@@ -1359,11 +1364,17 @@ endfunc
 " TODO: add param to specify whether this call is to generate or
 "       to update section numbers
 function! GenMarkdownSectionNum()
-  let len = line('$')
+  if &ft != "markdown"
+    echohl Error
+    echo "filetype is not markdown"
+    echohl None
+    return
+  endif
+
   let lvl = []
   let sect = []
   let out = ""
-  for i in range(1, len, 1)
+  for i in range(1, line('$'), 1)
     let line = getline(i)
     let heading_lvl = strlen(substitute(line, '^\(#*\).*', '\1', ''))
     if heading_lvl < 2
@@ -1374,17 +1385,14 @@ function! GenMarkdownSectionNum()
     if len(lvl) == 0
       if heading_lvl != 2 " count from level 2
         echohl Error
-        echo "subsection must have parent section, skip illegal heading line at line " . i
+        echo "subsection must have parent section, ignore illegal heading line at line " . i
         echohl None
         continue
       endif
       call add(sect, 1)
-      for j in range(3, heading_lvl, 1) 
-        call add(sect, 1)
-      endfor
       call add(lvl, heading_lvl)
     else
-      if lvl[-1] == heading_lvl || lvl[-1] == 0
+      if lvl[-1] == heading_lvl
         let sect[-1] = sect[-1] + 1
       elseif lvl[-1] > heading_lvl " pop all lvl less than heading_lvl from tail
         while len(lvl) != 0 && lvl[-1] > heading_lvl
@@ -1392,7 +1400,13 @@ function! GenMarkdownSectionNum()
           call remove(sect, -1)
         endwhile
         let sect[-1] = sect[-1] + 1
-      elseif lvl[-1] < heading_lvl 
+      elseif lvl[-1] < heading_lvl
+        if heading_lvl - lvl[-1] != 1
+          echohl Error
+          echo "subsection must have parent section, ignore illegal heading line at line " . i
+          echohl None
+          continue
+        endif
         call add(sect, 1)
         call add(lvl, heading_lvl)
       endif
