@@ -13,7 +13,7 @@ function! template#FileHeader(...)
     let author = g:file_template_header_author
     let email = g:file_template_header_email
   endif
-  for each in ["cpp", "java", "c", "go", "dot"]
+  for each in ["cpp", "java", "c", "go", "dot", "proto", "javascript"]
     if &ft == each
       silent call append(template#IncLine(), "/**")
       " silent call append(template#IncLine(), " * @file " . expand("%"))
@@ -38,9 +38,11 @@ function! template#FileHeader(...)
     return
   endif
 
-  for each in ["sh", "bash", "python", "conf", "awk", "sed"]
+  for each in ["sh", "bash", "python", "conf", "awk", "sed", "cmake"]
     if &ft == each
-      silent call append(template#IncLine(), "#!/bin/bash")
+      if &ft == "sh" || &ft == "bash"
+        silent call append(template#IncLine(), "#!/bin/bash")
+      endif
       " silent call append(template#IncLine(), "  * @file " . expand("%"))
       silent call append(template#IncLine(), "## @brief  ")
       silent call append(template#IncLine(), "## @author " . author)
@@ -72,3 +74,5 @@ function! template#IncLine()
   let s:file_template_line_num += 1
   return lineNum
 endfunction
+
+" vim: et tw=80 ts=2 sw=2 cc=80:
