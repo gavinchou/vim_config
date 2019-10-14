@@ -91,6 +91,8 @@ syn match markdownStrikeDelimiter /\~\~/ contained
 "       ```
 execute 'syn region markdownInlineCode matchgroup=markdownCodeDelimiter start=/\%(`\)\@<!`/ end=/`/ keepend contains=@NoSpell ' . b:markdown_concealends
 execute 'syn region markdownInlineCode matchgroup=markdownCodeDelimiter start=/\%(`\)\@<!`\z(`\+\)/ end=/`\z1/ keepend contains=@NoSpell ' . b:markdown_concealends
+execute 'syn region markdownInlineCode matchgroup=markdownCodeDelimiter start=/\%(\$\)\@<!\$/ end=/\$/ keepend contains=@NoSpell ' . b:markdown_concealends
+execute 'syn region markdownInlineCode matchgroup=markdownCodeDelimiter start=/\%(\$\)\@<!\$\z(\$\+\)/ end=/\$\z1/ keepend contains=@NoSpell ' . b:markdown_concealends
 
 " case insensitive
 " preceded by something that is not a word
@@ -339,6 +341,7 @@ syn match markdownBlockquoteDelimiter /^\s*\%(>\s\?\)\+/ contained
 
 syn region markdownFencedCodeBlock matchgroup=markdownCodeDelimiter start=/^\s\{,3}```\%(`*\).*$/ end=/^\s\{,3}```\%(`*\)\s*$/ contains=@NoSpell
 syn region markdownFencedCodeBlock matchgroup=markdownCodeDelimiter start=/^\s\{,3}\~\~\~\%(\~*\).*$/ end=/^\s\{,3}\~\~\~\%(\~*\)\s*$/ contains=@NoSpell
+syn region markdownFencedCodeBlock matchgroup=markdownCodeDelimiter start=/^\s\{,3}\$\$\%(\$*\).*$/ end=/^\s\{,3}\$\$\%(\$*\)\s*$/ contains=@NoSpell
 
 " syn match markdownCodeBlock /\%(^\n\)\@<=\%(\%( \{4}\|\t\+\).*\n\)\+$/ contains=@NoSpell
 " the following may cost much less than the last match with spaces and tabs, use
