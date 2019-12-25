@@ -355,7 +355,7 @@ endfunction
 function! Comment(mode)
   " comment string is //
   for tmp in ["cpp", "c", "java", "php", "javascript", "go", "scss", "proto",
-        \ "thrift", "yacc", "dot", "rust"]
+        \ "thrift", "yacc", "dot", "gv", "rust", "lex", "flex"]
     if &ft == tmp
       call CommentImpl("//", a:mode)
       return "//"
@@ -582,7 +582,7 @@ function! Run()
     return 'awk'
   endif
 
-  if &ft == "dot"
+  if &ft == "dot" || &ft == "gv"
     call ProbeExecutable("dot")
     " let cmd='!dot -o ~/tmp/tmp.svg -Tsvg ' . expand("%:p") . ' && chrome ~/tmp/tmp.svg'
     let cmd='!callgraph ' . expand("%:p") . ' ~/tmp/tmp.svg && chrome ~/tmp/tmp.svg'
@@ -832,18 +832,23 @@ set spelllang+=cjk
 " ================================ commands ============================ {{{2
 " ---------- trim the heading/trailing whitespaces {{{3
 function! RemoveTrailingWhitespace()
-  for lineNo in range(a:firstline, a:lastline)
-    let line = getline(lineNo)
-    let cleanLine = substitute(line, '\s\+$', '', 'e')
-    call setline(lineNo, cleanLine)
-  endfor
+  let lineNo = line(".")
+  let oldLine = getline(lineNo)
+  let newLine = substitute(oldLine, '\s\+$', '', 'e')
+  if strlen(oldLine) == strlen(newLine)
+    return
+  endif
+  call setline(lineNo, newLine)
 endfunction
+
 function! RemoveBeginningWhitespace()
-  for lineNo in range(a:firstline, a:lastline)
-    let line = getline(lineNo)
-    let cleanLine = substitute(line, '^\s\+', '', 'e')
-    call setline(lineNo, cleanLine)
-  endfor
+  let lineNo = line(".")
+  let oldLine = getline(lineNo)
+  let newLine = substitute(oldLine, '^\s\+', '', 'e')
+  if strlen(oldLine) == strlen(newLine)
+    return
+  endif
+  call setline(lineNo, newLine)
 endfunction
 command! -range Trim <line1>,<line2>call RemoveTrailingWhitespace()
 command! -range T <line1>,<line2>call RemoveTrailingWhitespace()
@@ -1056,7 +1061,7 @@ autocmd BufNewFile,BufRead BCLOUD setf python
 autocmd BufNewFile,BufRead *.git/COMMIT_EDITMSG setl spelllang=en spell
 autocmd BufNewFile,BufRead *.dot,*.gv setl makeprg=dot\ -Tsvg\ -oa.svg\ %
 " autocmd BufEnter * set et
-autocmd BufEnter,BufRead,WinEnter *.txt,*.md setl noet
+autocmd BufEnter,BufRead,WinEnter *.md setl noet
 " quickfix key map, p: preview
 autocmd WinEnter * if &ft == "qf" | nmap <buffer> p <CR>gbw | endif
 " if the error to open is not in the same window of current tab, open a newtab
