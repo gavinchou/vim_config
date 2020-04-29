@@ -1,7 +1,7 @@
 command! -nargs=* FileHeader call template#FileHeader(<f-args>)
 command! FuncHeader call template#FunctionHeader()
 let g:file_template_header_author="zhoufei"
-let g:file_template_header_email="zhoufei05@baidu.com"
+let g:file_template_header_email="gavineaglechou@gmail.com"
 " for line number auto increament
 let s:file_template_line_num=0
 function! template#FileHeader(...)
@@ -50,6 +50,18 @@ function! template#FileHeader(...)
       silent call append(template#IncLine(), "## @date   " . strftime("%Y-%m-%d-%a"))
       silent call append(template#IncLine(), "")
       silent call setpos('.', [0, 1, 11, 0])
+      return
+    endif
+  endfor
+
+  for each in ["md", "markdown"]
+    if &ft == each
+      " silent call append(template#IncLine(), "  * @file " . expand("%"))
+      silent call append(template#IncLine(), 'date           | action | author  | note')
+      silent call append(template#IncLine(), '-----          | -----  | -----   | -----')
+      silent call append(template#IncLine(), strftime("%Y-%m-%d-%a") . ' |        | ' . author . ' | ')
+      silent call setpos('.', [0, 3, 17, 0])
+      " exe 'norm! a' " this does not take effect
       return
     endif
   endfor
