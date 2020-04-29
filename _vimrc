@@ -369,7 +369,7 @@ function! Comment(mode)
   " comment string is #
   for tmp in ["python","sed","apache","bash","conf", "sh", "make", "cfg",
       \ "gitignore", "zsh", "config", "jproperties", "properties", "yaml",
-      \ "cmake", "crontab", "awk", "expect", "gitconfig"]
+      \ "cmake", "crontab", "awk", "expect", "gitconfig", "applescript", "perl"]
     if &ft == tmp
       call CommentImpl("#", a:mode)
       return tmp
@@ -926,6 +926,9 @@ function! ChangeIme(autoChangeIme)
     exe 'echo "back to normal mode by calling changeVimIme2En.lnk"'
   elseif has('mac') && a:autoChangeIme
     silent exe '!xkbswitch -se US'
+    " let cmd="!osascript -e 'tell application @System Events@' -e 'keystroke @ @ using {command down}' -e 'end tell'"
+    " let cmd=substitute(cmd, '@', '"', 'g')
+    " silent exe cmd " not working
   endif
 endfunc
 command! AutoIme silent echo "toggle auto ime"<BAR>
