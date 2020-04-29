@@ -2496,6 +2496,9 @@ au BufNewFile,BufRead *.rs,*.rust call s:StarSetf('rust')
 " tla, tla+
 au BufNewFile,BufRead *.tla,*.tla+ call s:StarSetf('tla')
 
+" dot language, graphviz
+au BufNewFile,BufRead *.gv call s:StarSetf('dot')
+
 " add more filetype here
 
 
