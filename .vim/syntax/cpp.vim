@@ -8,7 +8,7 @@
 "   0.1 - initial version.
 "   0.2 - C++14
 "   0.3 - Incorporate lastest changes from Mizuchi/STL-Syntax
-"   0.4 - partial C++17, by Gavin Chou
+"   0.4 - partial C++17, by Gavin Chou, gavineaglechou@gmail.com
 "
 " Additional Vim syntax highlighting for C++ (including C++11)
 "
@@ -753,6 +753,9 @@ syntax keyword cppSTLconstant WCHAR_MIN
 syntax keyword cppSTLconstant WCHAR_MAX
 
 if !exists("cpp_no_cpp11")
+
+  syntax keyword cppKeyword auto
+
     syntax keyword cppSTLtype nullptr_t max_align_t
     syntax keyword cppSTLtype type_index
 
@@ -1319,6 +1322,21 @@ if !exists("cpp_no_cpp14")
     syntax keyword cppSTLfunction make_unique
 endif " C++14
 
+if !exists("cpp_no_cpp17")
+  syntax keyword cppSTLtype nullopt
+endif " C++17
+
+if !exists("cpp_no_cpp20")
+  syntax keyword cppStorageClass consteval constinit
+  " syntax keyword cppSpecifier const
+  " syntax keyword cppQualifier const
+  " syntax keyword cppModifier const
+  syntax keyword cppKeyword co_await co_yield co_return
+  syntax keyword cppType char8_t
+  syntax keyword cppKeyword concept requires
+  syntax keyword cppSTLtype strong_ordering weak_ordering partial_ordering equal equivalent unordered
+endif " C++20
+
 if !exists("cpp_no_boost")
     "optional is not a part of C++14 anymore
     syntax keyword cppSTLtype optional
@@ -1349,5 +1367,10 @@ if version >= 508 || !exists("did_cpp_syntax_inits")
   HiLink cppSTLenum         Typedef
   HiLink cppSTLios          Function
   HiLink cppSTLcast         Statement " be consistent with official syntax
+  HiLink cppStorageClass    StorageClass
+  HiLink cppKeyword         Keyword
+  HiLink cppType            Type
   delcommand HiLink
 endif
+
+" vim: et ts=2 sw=2:
