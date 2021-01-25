@@ -464,6 +464,8 @@ function! Run()
   else
     let argv = ''
   endif
+
+  let cmd = ""
   if &ft == "vim"
     exe 'source %'
     return "vim"
@@ -586,7 +588,7 @@ function! Run()
   endif
 
   if &ft == "dot" || &ft == "gv"
-    if !ProbeExecutable("dot")
+    if !HasRequiredCmd("dot")
       return &ft
     endif
     " let cmd='!dot -o ~/tmp/tmp.svg -Tsvg ' . expand("%:p") . ' && chrome ~/tmp/tmp.svg'
@@ -596,7 +598,7 @@ function! Run()
   endif
 
   if &ft == "tex"
-    if !ProbeExecutable('xelatex')
+    if !HasRequiredCmd('xelatex')
       return &ft
     endif
     let cmd = '!xelatex ' . expand("%:p") . " -output-directory ~/tmp/" .
@@ -606,21 +608,16 @@ function! Run()
   endif
 
   if &ft == "gnuplot"
-    if !ProbeExecutable("gnuplot")
+    if !HasRequiredCmd("gnuplot")
       return &ft
     endif
     " the output tmp path is set in gnuplot scirpt file, that's a contract
     " between vim script and gnuplot script
     let cmd='!gnuplot -c ' . expand("%:p") . ' && chrome ~/tmp/tmp.svg'
+    call RunWithPlat(cmd, '', '')
+    return &ft
   endif
 
-  if has("win32")
-    exe '!start cmd /c start "vim run" nppCompileAndRun.lnk "%:p"'
-  elseif has("unix")
-"     exe '!g++ -Wall "%:p"'
-  elseif has("mac")
-    " do nothing
-  endif
   echohl Error
   echo "Run() does not support " . &ft
   echohl None
@@ -628,14 +625,14 @@ function! Run()
 endfunction
 
 " TODO: cmd is a list of commands
-function! ProbeExecutable(cmd)
-  if !executable(a:cmd)
-    echohl Error
-    echo "No executable " . a:cmd . " found"
-    echohl None
-    return 0
+function! HasRequiredCmd(cmd)
+  if executable(a:cmd)
+    return 1
   endif
-  return 1
+  echohl Error
+  echo "No executable " . a:cmd . " found"
+  echohl None
+  return 0
 endfunction
 
 function! RunWithPlat(mac, linux, win)

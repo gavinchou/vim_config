@@ -52,7 +52,7 @@ execute 'syn region markdownItalic matchgroup=markdownInlineDelimiter '
   \ . b:markdown_concealends
 
 execute 'syn region markdownBold matchgroup=markdownInlineDelimiter '
-  \ . 'start="\%(\s\|__\|^\)\@<=\*\*\%(\s\|\*\|$\)\@!" end="\%(\s\|\*\*\)\@<!\*\*" '
+  \ . 'start="\%(\s*\|__\|^\)\@<=\*\*\%(\s\|\*\|$\)\@!" end="\%(\s\|\*\*\)\@<!\*\*" '
   \ . 'contains=@markdownInline '
   \ . b:markdown_concealends
 execute 'syn region markdownBold matchgroup=markdownInlineDelimiter '

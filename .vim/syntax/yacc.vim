@@ -25,6 +25,7 @@ endif
 " ---------------------------------------------------------------------
 " Read the C syntax to start with {{{1
 " Read the C/C++ syntax to start with
+let g:yacc_uses_cpp = 1
 let s:Cpath= fnameescape(expand("<sfile>:p:h").(exists("g:yacc_uses_cpp")? "/cpp.vim" : "/c.vim"))
 if !filereadable(s:Cpath)
  for s:Cpath in split(globpath(&rtp,(exists("g:yacc_uses_cpp")? "syntax/cpp.vim" : "syntax/c.vim")),"\n")
