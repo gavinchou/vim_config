@@ -355,7 +355,8 @@ endfunction
 function! Comment(mode)
   " comment string is //
   for tmp in ["cpp", "c", "java", "php", "javascript", "go", "scss", "proto",
-        \ "thrift", "yacc", "dot", "gv", "rust", "lex", "flex"]
+        \ "thrift", "yacc", "dot", "gv", "rust", "lex", "flex", "verilog",
+        \ "typescript"]
     if &ft == tmp
       call CommentImpl("//", a:mode)
       return "//"
@@ -369,7 +370,8 @@ function! Comment(mode)
   " comment string is #
   for tmp in ["python","sed","apache","bash","conf", "sh", "make", "cfg",
       \ "gitignore", "zsh", "config", "jproperties", "properties", "yaml",
-      \ "cmake", "crontab", "awk", "expect", "gitconfig", "applescript", "perl"]
+      \ "cmake", "crontab", "awk", "expect", "gitconfig", "applescript", "perl",
+      \ "gnuplot"]
     if &ft == tmp
       call CommentImpl("#", a:mode)
       return tmp
@@ -408,7 +410,7 @@ function! Comment(mode)
   endif
   
   " comment string is <!--  -->
-  for tmp in ["html", "xml", "axml", "htm", "xhtml", "ant"]
+  for tmp in ["html", "xml", "axml", "htm", "xhtml", "ant", "svg"]
     if &ft == tmp
       call CommentImpl("xml", a:mode)
       return "xml"
@@ -473,7 +475,7 @@ function! Run()
       elseif has("unix") || has('linux') && executable('g++')
         exe 'silent !clear; rm ~/tmp/vim.out 2>/dev/null;'
         " let cmd = '!g++ -std=c++17 -g -ggdb3 -Wall -pthread -lstdc++fs -static-libstdc++ -static-libgcc "%:p" -o ~/tmp/vim.out;' .
-        let cmd = '!g++ -g -ggdb3 -Wall -pthread -std=c++17 "%:p" -o ~/tmp/vim.out;' .
+        let cmd = '!g++1000 -g -ggdb3 -Wall -latomic -pthread -std=c++17 "%:p" -o ~/tmp/vim.out;' .
            \ 'if [ $? -eq 0 ]; then ' .
            \ 'isGdb="n";read -n1 -t 3 -p "use gdb[yn]?" isGdb; echo "";' .
            \ 'if [ "x$isGdb" = "xy" ]; then '
@@ -528,7 +530,7 @@ function! Run()
     endif
     return &ft
   endif
-  for tmp in ["html", "xml", "axml", "htm", "xhtml", "js", "javascript"]
+  for tmp in ["html", "xml", "axml", "htm", "xhtml", "js", "javascript", "svg"]
     if (&ft == tmp)
       if has('unix')
         exe '!chrome "file://%:p";'
@@ -563,8 +565,9 @@ function! Run()
             \ ' -encoding UTF8 ' .
             \ ' && echo "Build successfully: ' . classfile . '"'
             \ ' && cd ' . outdir .
-            \ ' && java ' . mainclass .
-            \ ' -classpath ' . classpath
+            \ ' && java -classpath ' . classpath .
+            \ ' ' . mainclass .
+            \ ' ' . g:argv
     else
       echohl Error
       echo "Support linux/unix env with binary javac and java only!"
@@ -583,7 +586,9 @@ function! Run()
   endif
 
   if &ft == "dot" || &ft == "gv"
-    call ProbeExecutable("dot")
+    if !ProbeExecutable("dot")
+      return &ft
+    endif
     " let cmd='!dot -o ~/tmp/tmp.svg -Tsvg ' . expand("%:p") . ' && chrome ~/tmp/tmp.svg'
     let cmd='!callgraph ' . expand("%:p") . ' ~/tmp/tmp.svg && chrome ~/tmp/tmp.svg'
     call RunWithPlat(cmd, '', '')
@@ -591,11 +596,22 @@ function! Run()
   endif
 
   if &ft == "tex"
-    call ProbeExecutable('xelatex')
+    if !ProbeExecutable('xelatex')
+      return &ft
+    endif
     let cmd = '!xelatex ' . expand("%:p") . " -output-directory ~/tmp/" .
-      \ ' && mv ' . expand('%:r') . '.pdf tmp.pdf && open ~/tmp/tmp.pdf'
+      \ ' && mv ' . expand('%:r') . '.pdf ~/tmp/tmp.pdf && open ~/tmp/tmp.pdf'
     call RunWithPlat(cmd, '', '')
     return &ft
+  endif
+
+  if &ft == "gnuplot"
+    if !ProbeExecutable("gnuplot")
+      return &ft
+    endif
+    " the output tmp path is set in gnuplot scirpt file, that's a contract
+    " between vim script and gnuplot script
+    let cmd='!gnuplot -c ' . expand("%:p") . ' && chrome ~/tmp/tmp.svg'
   endif
 
   if has("win32")
@@ -611,12 +627,15 @@ function! Run()
   return ""
 endfunction
 
+" TODO: cmd is a list of commands
 function! ProbeExecutable(cmd)
   if !executable(a:cmd)
     echohl Error
     echo "No executable " . a:cmd . " found"
     echohl None
+    return 0
   endif
+  return 1
 endfunction
 
 function! RunWithPlat(mac, linux, win)
@@ -829,6 +848,9 @@ set timeoutlen=1000 ttimeoutlen=5
 set spellsuggest=file:~/.vim/spell/spellsuggest.txt,best
 set spelllang+=cjk
 
+" ---------- vim 8.0+ may miss the helptags
+helptags $VIMRUNTIME/doc
+
 " ================================ commands ============================ {{{2
 " ---------- trim the heading/trailing whitespaces {{{3
 function! RemoveTrailingWhitespace()
@@ -918,7 +940,7 @@ vmap K :grep! "<C-R><C-W>"<CR>:rightbelow cw<CR>
 
 " ---------- auto change IME to en {{{3
 " for some type of files auto ime is needed
-autocmd! InsertLeave *.txt,*.md call ChangeIme(g:autoChangeIme)
+autocmd! InsertLeave *.txt,*.md,*.tex call ChangeIme(g:autoChangeIme)
 let g:autoChangeIme = 1
 function! ChangeIme(autoChangeIme)
   if has('win32') && a:autoChangeIme
@@ -1114,6 +1136,9 @@ augroup netrw " ---------- {{{3
       \  exe curWinnr . "wincmd w" |
       \endif
 augroup end
+
+" netrw bug: No write since last change for buffer
+autocmd FileType netrw setl bufhidden=delete
 
 " ========================== functions ================================= {{{2
 " ---------- judge if current char is the last char {{{3

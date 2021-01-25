@@ -741,7 +741,7 @@ autocmd BufNewFile,BufRead *.git/**
 au BufNewFile,BufRead gkrellmrc,gkrellmrc_?	setf gkrellmrc
 
 " GP scripts (2.0 and onward)
-au BufNewFile,BufRead *.gp,.gprc		setf gp
+" au BufNewFile,BufRead *.gp,.gprc		setf gp
 
 " GPG
 au BufNewFile,BufRead */.gnupg/options		setf gpg
@@ -749,7 +749,7 @@ au BufNewFile,BufRead */.gnupg/gpg.conf		setf gpg
 au BufNewFile,BufRead /usr/**/gnupg/options.skel setf gpg
 
 " Gnuplot scripts
-au BufNewFile,BufRead *.gpi			setf gnuplot
+au BufNewFile,BufRead *.gp,*.gpi,*.plt			setf gnuplot
 
 " GrADS scripts
 au BufNewFile,BufRead *.gs			setf grads
@@ -2258,7 +2258,8 @@ au BufNewFile,BufRead *.xmi			setf xml
 au BufNewFile,BufRead *.csproj,*.csproj.user	setf xml
 
 " Qt Linguist translation source and Qt User Interface Files are XML
-au BufNewFile,BufRead *.ts,*.ui			setf xml
+" au BufNewFile,BufRead *.ts,*.ui			setf xml
+au BufNewFile,BufRead *.ui			setf xml
 
 " TPM's are RDF-based descriptions of TeX packages (Nikolai Weibull)
 au BufNewFile,BufRead *.tpm			setf xml
@@ -2498,6 +2499,9 @@ au BufNewFile,BufRead *.tla,*.tla+ call s:StarSetf('tla')
 
 " dot language, graphviz
 au BufNewFile,BufRead *.gv call s:StarSetf('dot')
+
+" typescript
+au BufNewFile,BufRead *.ts call s:StarSetf('typescript')
 
 " add more filetype here
 
