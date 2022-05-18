@@ -16,6 +16,7 @@ set sw=2 " shift width, indent width
 set tabstop=2 " ts, tabstop width
 set tw=80
 " set et " extendtab by default
+set modelines=5
 
 " --------- display as more lines as possible, do not use @@ {{{3
 set display=lastline " dy=lastline
@@ -356,7 +357,7 @@ function! Comment(mode)
   " comment string is //
   for tmp in ["cpp", "c", "java", "php", "javascript", "go", "scss", "proto",
         \ "thrift", "yacc", "dot", "gv", "rust", "lex", "flex", "verilog",
-        \ "typescript"]
+        \ "typescript", "groovy"]
     if &ft == tmp
       call CommentImpl("//", a:mode)
       return "//"
@@ -424,7 +425,7 @@ function! Comment(mode)
   endif
 
   " comment string is --
-  if &ft == "lua" || &ft == "haskell"
+  if &ft == "lua" || &ft == "haskell" || &ft == "sql"
     call CommentImpl("--", a:mode)
     return &ft
   endif
@@ -476,11 +477,13 @@ function! Run()
         exe '!start cmd /c start "vim run cpp" g++.lnk "%:p"'
       elseif has("unix") || has('linux') && executable('g++')
         exe 'silent !clear; rm ~/tmp/vim.out 2>/dev/null;'
-        " let cmd = '!g++ -std=c++17 -g -ggdb3 -Wall -pthread -lstdc++fs -static-libstdc++ -static-libgcc "%:p" -o ~/tmp/vim.out;' .
-        let cmd = '!g++1000 -g -ggdb3 -Wall -latomic -pthread -std=c++17 "%:p" -o ~/tmp/vim.out;' .
+           " 'isGdb="n";read -n 1 -t 3 -p "use gdb[yn]?" isGdb; echo "";' .
+        " let cmd = '!g++1000 -g -ggdb3 -Wall -latomic -pthread -std=c++2a "%:p" -o ~/tmp/vim.out;' .
+        let cmd = '!g++ -g -ggdb3 -Wall -pthread -std=c++2a "%:p" -o ~/tmp/vim.out;' .
            \ 'if [ $? -eq 0 ]; then ' .
-           \ 'isGdb="n";read -n1 -t 3 -p "use gdb[yn]?" isGdb; echo "";' .
+           \ 'isGdb="n";read -t 3 "isGdb?use GDB?[y/n]? "; echo "";' .
            \ 'if [ "x$isGdb" = "xy" ]; then '
+        " let cmd = '!g++ -std=c++17 -g -ggdb3 -Wall -pthread -lstdc++fs -static-libstdc++ -static-libgcc "%:p" -o ~/tmp/vim.out;' .
         if has("unix")
           let cmd = cmd . 'lldb -- ~/tmp/vim.out ' . argv . ';'
         else
@@ -591,8 +594,11 @@ function! Run()
     if !HasRequiredCmd("dot")
       return &ft
     endif
-    " let cmd='!dot -o ~/tmp/tmp.svg -Tsvg ' . expand("%:p") . ' && chrome ~/tmp/tmp.svg'
-    let cmd='!callgraph ' . expand("%:p") . ' ~/tmp/tmp.svg && chrome ~/tmp/tmp.svg'
+    if g:argv == "0"
+      let cmd='!dot -o ~/tmp/tmp.svg -Tsvg ' . expand("%:p") . ' && chrome ~/tmp/tmp.svg'
+    else
+      let cmd='!callgraph ' . expand("%:p") . ' ~/tmp/tmp.svg && chrome ~/tmp/tmp.svg'
+    endif
     call RunWithPlat(cmd, '', '')
     return 'dot'
   endif
@@ -784,19 +790,16 @@ endif
 
 " ---------- tags, taglist, file explorer {{{3
 set tags=tags,./tags,../tags,../../tags,../../../tags
-set tags+=E:/Material/C++/SOURCE/cygwin_gcc_c++_tags
-set tags+=E:/Material/C++/SOURCE/linux_systags
 set tags+=~/cpp_stdlib.tags
-set tags+=~/dev/baidu-root/bd_tags
 set autochdir
 let Tlist_Show_One_File = 1
 let Tlist_Exit_OnlyWindow = 1
 let Tlist_Use_Right_Window = 1
 let Tlist_Enable_Fold_Column = 0
 
-" php dictionary
-autocmd filetype php set dictionary-=E:/Material/Linux/Vim/config/php_function_list.txt
-autocmd filetype php set dictionary+=E:/Material/Linux/Vim/config/php_function_list.txt
+" php dictionary, not used anymore
+" autocmd filetype php set dictionary-=E:/Material/Linux/Vim/config/php_function_list.txt
+" autocmd filetype php set dictionary+=E:/Material/Linux/Vim/config/php_function_list.txt
 
 "let g:winManagerWindowLayout='FileExplorer|TagList'
 "nmap wm :WMToggle<cr>
@@ -846,7 +849,7 @@ set spellsuggest=file:~/.vim/spell/spellsuggest.txt,best
 set spelllang+=cjk
 
 " ---------- vim 8.0+ may miss the helptags
-helptags $VIMRUNTIME/doc
+" helptags $VIMRUNTIME/doc
 
 " ================================ commands ============================ {{{2
 " ---------- trim the heading/trailing whitespaces {{{3
@@ -944,7 +947,7 @@ function! ChangeIme(autoChangeIme)
     exe '!start /MIN cmd /c start "change ime" /MIN changeVimIme2En.lnk'
     exe 'echo "back to normal mode by calling changeVimIme2En.lnk"'
   elseif has('mac') && a:autoChangeIme
-    silent exe '!xkbswitch -se US'
+    silent exe '!xkbswitch -se ABC'
     " let cmd="!osascript -e 'tell application @System Events@' -e 'keystroke @ @ using {command down}' -e 'end tell'"
     " let cmd=substitute(cmd, '@', '"', 'g')
     " silent exe cmd " not working
