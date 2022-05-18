@@ -40,7 +40,7 @@ syn cluster markdownInline contains=
   \ markdownItalic,markdownBold,markdownBoldItalic,markdownStrike,markdownInlineCode,
   \ markdownPullRequestLinkInText,markdownUrlLinkInText,markdownUserLinkInText,
   \ markdownEmailLinkInText,markdownLinkContainer,markdownXmlComment,
-  \ markdownXmlElement,markdownXmlEmptyElement,markdownXmlEntities
+ \ markdownXmlElement,markdownXmlEmptyElement,markdownXmlEntities
 
 execute 'syn region markdownItalic matchgroup=markdownInlineDelimiter '
   \ . 'start="\%(\s\|_\|^\)\@<=\*\%(\s\|\*\|$\)\@!" end="\%(\s\|\*\)\@<!\*" '
@@ -287,9 +287,10 @@ execute 'syn region markdownLinkTitleDoubleQuoted start=/\s*"/ skip=/\\"/ end=/"
   \ . b:markdown_conceal
 
 syn match markdownXmlComment /\c<\!--\_.\{-}-->/ contains=@NoSpell
+" xml/html tags also hurts performance
 " syn match markdownXmlElement /\c<\([-A-Z0-9_$?!:,.]\+\)[^>]\{-}>\_.\{-}<\/\1>/ contains=@NoSpell
-syn match markdownXmlEmptyElement /\c<\([-A-Z0-9_$?!:,.]\+\)\%(\s\+[^>]\{-}\/>\|\s*\/>\)/ contains=@NoSpell
-syn match markdownXmlEntities /&#\?[0-9A-Za-z]\{1,8};/ contains=@NoSpell
+" syn match markdownXmlEmptyElement /\c<\([-A-Z0-9_$?!:,.]\+\)\%(\s\+[^>]\{-}\/>\|\s*\/>\)/ contains=@NoSpell
+" syn match markdownXmlEntities /&#\?[0-9A-Za-z]\{1,8};/ contains=@NoSpell
 
 " }}}
 
