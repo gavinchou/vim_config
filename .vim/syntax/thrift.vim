@@ -78,7 +78,7 @@ if version >= 508 || !exists("did_thrift_syn_inits")
   endif
 
   HiLink   thriftComment      Comment
-  HiLink   thriftKeyword      Special
+  HiLink   thriftKeyword      Keyword
   HiLink   thriftBasicTypes   Type
   HiLink   thriftType         Type
   HiLink   thriftStructure    StorageClass
@@ -90,7 +90,6 @@ if version >= 508 || !exists("did_thrift_syn_inits")
   HiLink   thriftStatement    Statement
   HiLink   thriftInclude      Include
   HiLink   thriftClass        Type
-  HiLink   thriftString       String
 
   delcommand HiLink
 endif

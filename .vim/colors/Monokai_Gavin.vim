@@ -49,7 +49,7 @@ hi Directory ctermfg=141 ctermbg=NONE cterm=NONE guifg=#ae81ff guibg=NONE gui=NO
 hi Folded ctermfg=242 ctermbg=232 cterm=NONE guifg=#75715e guibg=#272822 gui=NONE
 hi FoldColumn ctermfg=102 ctermbg=237 cterm=NONE guifg=#90908a guibg=#3c3d37 gui=NONE
 
-hi Normal ctermfg=15 ctermbg=234 cterm=NONE guifg=#ffffff guibg=#434343 gui=NONE
+hi Normal ctermfg=15 ctermbg=234 cterm=NONE guifg=#ffffff guibg=#2b2b2b gui=NONE
 hi Boolean ctermfg=141 ctermbg=NONE cterm=NONE guifg=#ae81ff guibg=NONE gui=NONE
 hi Character ctermfg=141 ctermbg=NONE cterm=NONE guifg=#ae81ff guibg=NONE gui=NONE
 " hi Comment ctermfg=242 ctermbg=NONE cterm=NONE guifg=#75715e guibg=NONE gui=NONE
