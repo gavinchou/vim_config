@@ -2488,8 +2488,8 @@ au BufNewFile,BufRead *.thrift call s:StarSetf('thrift')
 " gitignore
 au BufNewFile,BufRead *.gitignore call s:StarSetf('gitignore')
 
-" flex
-au BufNewFile,BufRead *.flex call s:StarSetf('flex')
+" flex, java jflex files use this extension, traditional lexer files use .lex
+au BufNewFile,BufRead *.flex call s:StarSetf('jflex')
 
 " rust
 au BufNewFile,BufRead *.rs,*.rust call s:StarSetf('rust')
