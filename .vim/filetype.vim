@@ -2503,6 +2503,12 @@ au BufNewFile,BufRead *.gv call s:StarSetf('dot')
 " typescript
 au BufNewFile,BufRead *.ts call s:StarSetf('typescript')
 
+" antlr4
+au BufRead,BufNewFile *.g4 call s:StarSetf('antlr4')
+
+" cup, CUP parser generator, an LALR parser generator for JAVA
+au BufRead,BufNewFile *.cup call s:StarSetf('cup')
+
 " add more filetype here
 
 
