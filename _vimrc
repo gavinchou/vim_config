@@ -1081,10 +1081,12 @@ command! Cw exe ":belowright cw"
 
 " ---------- Blame, git blame  {{{3
 " Toggle git blame for the current file
-function! Blame()
-  let path = expand('%:p')
-  let scroll_off_bak = &scrolloff
-  let cur_pos = getcurpos()[1:2]
+function! BlameImpl()
+  let path = expand('%:p') " Get path of current file immediately
+  " Backup source window status
+  if !exists('b:scb_bak') | let b:scb_bak = &scb | endif
+  if !exists('b:crb_bak') | let b:crb_bak = &crb | endif
+  let cur_pos = getcurpos()[1:2] " We need line and column only
   if exists('t:blame_bufnr')
     let cur_win_buf = bufnr() " Backup current window nr
     " Go to blame window of current tab
@@ -1092,7 +1094,13 @@ function! Blame()
     if (bufnr() == t:blame_bufnr) " Double check
       silent! exe ":q!"
       unlet t:blame_bufnr
+      " Go back to window which calls this function
       exe ":" . bufwinnr(cur_win_buf) . "wincmd w"
+      " Restore status
+      if b:scb_bak | set scb | else | set noscb | endif
+      if b:crb_bak | set crb | else | set nocrb | endif
+      unlet b:scb_bak 
+      unlet b:crb_bak 
     endif
     return
   endif
@@ -1108,15 +1116,24 @@ function! Blame()
   " silent! exe ":%!git blame " . path . " | cut -b1-40"
   silent! exe ":%!git blame " . path . " | sed -r '" . 's/^(\S+) [^(]* ?\(([^(]+  *[0-9]{4}-[0-9]{2}-[0-9]{2}).*\) .*/\2 \1/'. "'"
   exe ":0"
-  setl scrolloff=0
   setl scb cursorbind
   setl readonly
+  " Active source code window
   wincmd l
-  setl scrolloff=0
   setl scb cursorbind
   call cursor(cur_pos)
 endfunc
-command! Blame call Blame()
+" Toggle or reload
+function! Blame(reload)
+  if !exists('t:blame_bufnr') || !a:reload " Hack in to impl, t:blame_bufnr
+    call BlameImpl()
+    return
+  endif
+  " if a:reload, the only situation left
+  call BlameImpl()
+  call BlameImpl()
+endfunc
+command! -bang Blame if "<bang>" == "" <BAR> call Blame(0) <BAR> else <BAR> call Blame(1) <BAR> endif
 
 " ========================= file type ================================== {{{2
 autocmd BufNewFile,BufRead *.alipaylog setf alipaylog
