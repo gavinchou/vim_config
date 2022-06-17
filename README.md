@@ -1,4 +1,7 @@
 ## gvim and vim configs/plugins
+
+[TOC]
+
 ### overview
 this config suite gets you the best experience with minimum plugins
 
@@ -126,6 +129,14 @@ or, in visual mode, some chars are selected, say `abc def`, press `F4`, and
 input the marks for surrounding, say `***`, `abc def` will be changed to
 `***abc def***`
 
+#### git blame
+
+In a window of the file under git version control,
+* `:Blame` to toggle the blame info window
+* `:Blame!` to refresh the blame info window
+
+![git blame screen shot](./README_img/git_blame.png)
+
 ### netrw
 file path: `autoload/netrw.vim`, some modifications/bug-fixes have been done to it
 
@@ -191,8 +202,10 @@ file path: `plugin/statusline.vim`
 		note: this plugin has capability with '\|', skips escaped '|'
 
 ### code/text format
+file path: `.vim/plugin/align.vim`
 * as [previous](#markdownTable), align with given character is supported with
 	ranged command `Align`
+* `:Table` is actually alias of `:Align`
 	
 	example:
 
@@ -222,8 +235,10 @@ file path: `plugin/statusline.vim`
 
 	**note: this function is very insteresting, use your imagination!!!**
 
-	take a look at `.vim/plugin/align.vim`
 
 ### misc
-#### file headers
-* insert file header with command `:FileHeader`
+#### file headers/templates, `plugin/template.vim`
+* insert file header with command `:FileHeader`, supported filetype:
+	* "cpp", "java", "c", "go", "dot", "proto", "javascript"
+	* "sh", "bash", "python", "conf", "awk", "sed", "cmake"
+	* "md", "markdown"
