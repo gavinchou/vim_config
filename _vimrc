@@ -1079,6 +1079,45 @@ command! Run call Run()
 command! Cw exe ":belowright cw"
 " command! Cw exe ":botright cw"
 
+" ---------- Blame, git blame  {{{3
+" Toggle git blame for the current file
+function! Blame()
+  let path = expand('%:p')
+  let scroll_off_bak = &scrolloff
+  let cur_pos = getcurpos()[1:2]
+  if exists('t:blame_bufnr')
+    let cur_win_buf = bufnr() " Backup current window nr
+    " Go to blame window of current tab
+    exe ":" . bufwinnr(t:blame_bufnr) . "wincmd w"
+    if (bufnr() == t:blame_bufnr) " Double check
+      silent! exe ":q!"
+      unlet t:blame_bufnr
+      exe ":" . bufwinnr(cur_win_buf) . "wincmd w"
+    endif
+    return
+  endif
+  " We must set the cursor of src file to :0 before vsplit and scroll binding,
+  " otherwise the cursor may be out of sync even 'scb' and 'crb' are set
+  exe ":0"
+  exe ":40vsp __git_blame__"
+  let t:blame_bufnr = bufnr()
+  setl winfixwidth
+  setl nonu nocursorcolumn nowrap
+  setl stl=%=B%nW%{winnr()}
+  " exe ":%!git blame " . path . " | awk '" . '{print $3" "$4" "$1" "$2}' . "'"
+  " silent! exe ":%!git blame " . path . " | cut -b1-40"
+  silent! exe ":%!git blame " . path . " | sed -r '" . 's/^(\S+) [^(]* ?\(([^(]+  *[0-9]{4}-[0-9]{2}-[0-9]{2}).*\) .*/\2 \1/'. "'"
+  exe ":0"
+  setl scrolloff=0
+  setl scb cursorbind
+  setl readonly
+  wincmd l
+  setl scrolloff=0
+  setl scb cursorbind
+  call cursor(cur_pos)
+endfunc
+command! Blame call Blame()
+
 " ========================= file type ================================== {{{2
 autocmd BufNewFile,BufRead *.alipaylog setf alipaylog
 autocmd BufNewFile,BufRead *.md setlocal foldexpr=MarkdownFoldExpr(v:lnum) fdm=expr
