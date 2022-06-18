@@ -137,6 +137,29 @@ In a window of the file under git version control,
 
 ![git blame screen shot](./README_img/git_blame.png)
 
+#### git diff
+
+In a window of the file under git version control,
+* `:Diff` to toggle the diff session for current file
+* `:Diff!` to toggle the diff session for current directory, which is `:pwd`,
+	this command may create multiple diff sessions, you need to quit all the
+	sessions one by one with `:Diff`, `:Diff!` or `:qa`
+
+Note that, for convenience, you can force edit and save the source files of
+current version in diff sessions.
+
+To navigate in vim diff mode, use `]c` and `[c`,
+check `:h diff` for more info about vim diff mode.
+
+![git diff screen shot](./README_img/git_diff.png)
+
+#### Trim
+* In normal mode, type `T` to trim white spaces on the right of current line
+* In visual mode, type `:T`/`:Trim` to trim white spaces on the right of
+	selected lines
+* In visual mode, to trim white spaces on the left, use `:Tl`/`:TrimLeft`
+	instead of `:T`/`:Trim`
+
 ### netrw
 file path: `autoload/netrw.vim`, some modifications/bug-fixes have been done to it
 

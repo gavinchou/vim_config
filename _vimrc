@@ -723,10 +723,6 @@ nmap <M--> :vertical resize -1<CR>
 " maximize window
 nmap <F11> :simalt ~x<CR>
 
-" ---------- append ";" at the end of line, for cpp,php,js {{{3
-" imap ;; <ESC>A;
-" nmap ;; <ESC>A;<ESC>
-
 " ---------- auto complete key map {{{3
 autocmd BufRead,BufEnter * call AutoCompletionKeyMap()
 function! AutoCompletionKeyMap()
@@ -1135,6 +1131,35 @@ function! Blame(reload)
 endfunc
 command! -bang Blame if "<bang>" == "" <BAR> call Blame(0) <BAR> else <BAR> call Blame(1) <BAR> endif
 
+" ---------- Diff, git diff  {{{3
+" Call `git difftool` for current file or directory
+function! Diff(isdir)
+  " ATTN: we are intent to skip checking &readonly property in case the source
+  "       file may be edited in diff session
+  let num_buf = len(filter(range(1, bufnr('$')), 'buflisted(v:val)'))
+  if num_buf == 2 && &diff " This is a diff sesstion, quit
+    exe ":qa"
+    return
+  elseif &diff
+    echohl Error
+    echo "In a diff session that may be not initiated by ':Diff', please exit this session manually."
+    echohl None
+    return
+  endif
+  if !HasRequiredCmd('vimdiff') || !HasRequiredCmd('git')
+    return
+  endif
+  " Launch a separate session showing diff content
+  if a:isdir
+    silent! exe "!git difftool --tool=vimdiff -y"
+  else
+    silent! exe "!git difftool --tool=vimdiff -y %"
+  endif
+  edit! " Reload current buffer, because it may be edited in diff session
+  redraw! " We need to redraw due to silient running external command
+endfunction
+command! -bang Diff if "<bang>" == "" <BAR> call Diff(0) <BAR> else <BAR> call Diff(1) <BAR> endif
+
 " ========================= file type ================================== {{{2
 autocmd BufNewFile,BufRead *.alipaylog setf alipaylog
 autocmd BufNewFile,BufRead *.md setlocal foldexpr=MarkdownFoldExpr(v:lnum) fdm=expr
@@ -1384,6 +1409,7 @@ function! GetSelection() range
 endfunction
 
 " ---------- RefreshCurrentTab() {{{3
+" DEPRECATED, and will be remove some day, `:redraw!` can do the job
 function! RefreshCurrentTab()
   " refresh the current tab
   " tabnew and tabc will make the next tab active if there are more than 1 tabs
