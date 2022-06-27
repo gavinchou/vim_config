@@ -38,6 +38,7 @@ set fdl=3
 " foldlevel
 
 " --------- status line, command line {{{3
+" ATTN: statusline configuration is overriden by plugin statusline.vim
 set statusline=%<%F\ %y\ %m%r%=0x%B\ %l/%L,%c%V\ [b%nw%{winnr()}]
 " always display status line, 0 never, 1 more than 2 windows, 2 always
 set laststatus=2

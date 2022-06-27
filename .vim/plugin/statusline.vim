@@ -8,8 +8,10 @@
 "   Vim plugin by Luke Maciak (c) 2012
 "
 " Loosely based on a script by Tomas Restrepo (winterdom.com)
-" " Original available here:
+" Original available here:
 " http://winterdom.com/2007/06/vimstatusline
+" Modified by Gavin:
+" <https://github.com/gavinchou/vim_config>
 
 " finish
 
@@ -171,8 +173,8 @@ if has('statusline')
         " byte value
         let stl.="0x%-2.B "
         " line number (pink) / total lines, col virtual col
-        let stl.="%5* %7*%l%5*/%L\ "
-        let stl.="%c%V %0*"
+        let stl.="%5* %7*L%l%5*/%L\ "
+        let stl.="%7*C%c%5*%V/%{strwidth(getline('.'))} %0*"
         " buffer number, winnr
         let stl.=" B%nW%{winnr()} "
 
