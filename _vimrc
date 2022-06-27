@@ -816,9 +816,30 @@ let g:OmniCpp_SelectFirstItem = 2 " select first popup item (without inserting i
 set completeopt=menuone,menu
 au BufNewFile,BufRead,BufEnter *.cpp,*.hpp,*.h,*.cc set omnifunc=omni#cpp#complete#Main
 
-" ---------- YouCompleteMe
+" ---------- YouCompleteMe {{{3
 let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
 let g:ycm_confirm_extra_conf = 0
+" generate and use .cache folder in the working directory
+let g:ycm_clangd_uses_ycmd_caching = 0
+let g:ycm_clangd_args = ['-j=8']
+" mapping should be put to 'after' folder and check if exists('g:loaded_youcompleteme')
+command! YcmOn let g:ycm_show_diagnostics_ui=1 <BAR>
+  \let g:ycm_auto_trigger = 1 <BAR>
+  \let g:ycm_auto_hover = 1 <BAR>
+  \let g:ycm_enable_diagnostic_signs = 1 <BAR>
+  \let g:ycm_enable_diagnostic_highlighting = 1 <BAR>
+  \set signcolumn=auto <BAR>
+  \exe 'nmap <c-]> :YcmCompleter GoTo<CR>'<BAR>
+  \exe 'YcmRestartServer' <BAR>
+  \exe 'YcmForceCompileAndDiagnostics'
+command! YcmOff let g:ycm_show_diagnostics_ui = 0 <BAR>
+  \set signcolumn=no <BAR>
+  \let g:ycm_auto_trigger = 0 <BAR>
+  \let g:ycm_auto_hover = 0 <BAR>
+  \let g:ycm_enable_diagnostic_signs = 0 <BAR>
+  \let g:ycm_enable_diagnostic_highlighting = 0 <BAR>
+  \exe 'nunmap <c-]>' <BAR>
+  \exe 'YcmRestartServer'
 
 " ---------- virtual edit {{{3
 set virtualedit=block
@@ -845,7 +866,14 @@ set spellsuggest=file:~/.vim/spell/spellsuggest.txt,best
 set spelllang+=cjk
 
 " ---------- vim 8.0+ may miss the helptags
-" helptags $VIMRUNTIME/doc
+" Built-in doc
+if isdirectory($VIMRUNTIME . '/doc')
+  helptags $VIMRUNTIME/doc
+endif
+" User defined help doc
+if isdirectory($HOME . '/doc')
+  helptags $HOME/.vim/doc
+endif
 
 " ================================ commands ============================ {{{2
 " ---------- trim the heading/trailing whitespaces {{{3
@@ -936,7 +964,7 @@ vmap K :grep! "<C-R><C-W>"<CR>:rightbelow cw<CR>
 
 " ---------- auto change IME to en {{{3
 " for some type of files auto ime is needed
-autocmd! InsertLeave *.txt,*.md,*.tex call ChangeIme(g:autoChangeIme)
+autocmd! InsertLeave *.txt,*.md,*.tex,*.log call ChangeIme(g:autoChangeIme)
 let g:autoChangeIme = 1
 function! ChangeIme(autoChangeIme)
   if has('win32') && a:autoChangeIme
