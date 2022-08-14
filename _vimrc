@@ -822,25 +822,33 @@ let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
 let g:ycm_confirm_extra_conf = 0
 " generate and use .cache folder in the working directory
 let g:ycm_clangd_uses_ycmd_caching = 0
-let g:ycm_clangd_args = ['-j=8']
+" steals from VS Code
+" --background-index --clang-tidy --compile-commands-dir=/mnt/disk2/ftw/projects/incubator-doris/be/build_Release/ --completion-style=detailed -j=5 --all-scopes-completion --pch-storage=memory --pretty -log=verbose --query-driver=/mnt/disk2/ftw/tools/ldb_toolchain/bin/*
+let g:ycm_clangd_args = ['-j=8', '--clang-tidy', '--completion-style=detailed', '--pch-storage=memory', '--pretty']
+let g:ycm_max_num_candidates = 30
 " mapping should be put to 'after' folder and check if exists('g:loaded_youcompleteme')
-command! YcmOn let g:ycm_show_diagnostics_ui=1 <BAR>
+command! YcmOn if exists('g:loaded_youcompleteme') <BAR>
+  \let g:ycm_show_diagnostics_ui=1 <BAR>
   \let g:ycm_auto_trigger = 1 <BAR>
   \let g:ycm_auto_hover = 1 <BAR>
   \let g:ycm_enable_diagnostic_signs = 1 <BAR>
   \let g:ycm_enable_diagnostic_highlighting = 1 <BAR>
   \set signcolumn=auto <BAR>
+  \let g:ycm_gavin_enable = 1 <BAR>
   \exe 'nmap <c-]> :YcmCompleter GoTo<CR>'<BAR>
   \exe 'YcmRestartServer' <BAR>
-  \exe 'YcmForceCompileAndDiagnostics'
-command! YcmOff let g:ycm_show_diagnostics_ui = 0 <BAR>
+  \endif
+command! YcmOff if exists('g:loaded_youcompleteme') <BAR>
+  \let g:ycm_show_diagnostics_ui = 0 <BAR>
   \set signcolumn=no <BAR>
   \let g:ycm_auto_trigger = 0 <BAR>
   \let g:ycm_auto_hover = 0 <BAR>
   \let g:ycm_enable_diagnostic_signs = 0 <BAR>
   \let g:ycm_enable_diagnostic_highlighting = 0 <BAR>
+  \let g:ycm_gavin_enable = 0 <BAR>
   \exe 'nunmap <c-]>' <BAR>
-  \exe 'YcmRestartServer'
+  \exe 'YcmRestartServer' <BAR>
+  \endif
 
 " ---------- virtual edit {{{3
 set virtualedit=block
@@ -872,7 +880,7 @@ if isdirectory($VIMRUNTIME . '/doc')
   helptags $VIMRUNTIME/doc
 endif
 " User defined help doc
-if isdirectory($HOME . '/doc')
+if isdirectory($HOME . '.vim/doc')
   helptags $HOME/.vim/doc
 endif
 
@@ -1016,6 +1024,10 @@ command! Googlecpp echo "add google cpp file vim mode lines"<BAR>
   \silent call append('$',  '// vim: et tw=80 ts=2 sw=2 cc=80:')<BAR>
   \exe ":w"<BAR>
   \exe ":e"
+command! Doriscpp echo "add baidu cpp file vim mode lines"<BAR>
+  \silent call append('$',  '// vim: et tw=100 ts=4 sw=4 cc=80:')<BAR>
+  \exe ":w"<BAR>
+  \exe ":e"
 
 " ---------- Sum the selected text {{{3
 " sum the numbers selected block, result will be stored in default register
@@ -1108,6 +1120,7 @@ command! Cw exe ":belowright cw"
 " Toggle git blame for the current file
 function! BlameImpl()
   let path = expand('%:p') " Get path of current file immediately
+  let cwd = getcwd()
   " Backup source window status
   if !exists('b:scb_bak') | let b:scb_bak = &scb | endif
   if !exists('b:crb_bak') | let b:crb_bak = &crb | endif
@@ -1132,16 +1145,27 @@ function! BlameImpl()
   " We must set the cursor of src file to :0 before vsplit and scroll binding,
   " otherwise the cursor may be out of sync even 'scb' and 'crb' are set
   exe ":0"
-  exe ":40vsp __git_blame__"
+  " exe ":40vsp /tmp/__git_blame__" . strftime('%Y%m%d%H%M%S')
+  let tmp_file = "/tmp/__git_blame__"
+  let x = 0
+  while filereadable(tmp_file)
+    let tmp_file = printf("/tmp/__git_blame__%d", x)
+    let x = x + 1
+  endwhile
+  exe ":40vsp " . tmp_file
+  " No swapfile for tmp file
+  set noswapfile
   let t:blame_bufnr = bufnr()
   setl winfixwidth
   setl nonu nocursorcolumn nowrap
   setl stl=%=B%nW%{winnr()}
+  exe ":cd " . cwd
   " exe ":%!git blame " . path . " | awk '" . '{print $3" "$4" "$1" "$2}' . "'"
   " silent! exe ":%!git blame " . path . " | cut -b1-40"
   silent! exe ":%!git blame " . path . " | sed -r '" . 's/^(\S+) [^(]* ?\(([^(]+  *[0-9]{4}-[0-9]{2}-[0-9]{2}).*\) .*/\2 \1/'. "'"
   exe ":0"
   setl scb cursorbind
+  exe ":sil! w!"
   setl readonly
   " Active source code window
   wincmd l
