@@ -1126,10 +1126,10 @@ function! BlameImpl()
   if !exists('b:crb_bak') | let b:crb_bak = &crb | endif
   let cur_pos = getcurpos()[1:2] " We need line and column only
   if exists('t:blame_bufnr')
-    let cur_win_buf = bufnr() " Backup current window nr
+    let cur_win_buf = bufnr('%') " Backup current window nr
     " Go to blame window of current tab
     exe ":" . bufwinnr(t:blame_bufnr) . "wincmd w"
-    if (bufnr() == t:blame_bufnr) " Double check
+    if (bufnr('%') == t:blame_bufnr) " Double check
       silent! exe ":q!"
       unlet t:blame_bufnr
       " Go back to window which calls this function
@@ -1155,7 +1155,7 @@ function! BlameImpl()
   exe ":40vsp " . tmp_file
   " No swapfile for tmp file
   set noswapfile
-  let t:blame_bufnr = bufnr()
+  let t:blame_bufnr = bufnr('%')
   setl winfixwidth
   setl nonu nocursorcolumn nowrap
   setl stl=%=B%nW%{winnr()}
@@ -1225,7 +1225,7 @@ function! Show()
   let f = expand('%')
   exe ':vsp ' . rev . '.' . f
   set noswapfile
-  exe ':%!git show ' . rev . ':$(git ls-files --full-name ' . f . ')'
+  exe ':%!git show ' . rev . ':$(git ls-files --full-name ' . f . ' | head -n1)'
   set ro
 endfunc
 command! Show call Show()
