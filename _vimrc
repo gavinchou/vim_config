@@ -34,7 +34,7 @@ set sidescroll=1 " horizontal scroll step, continous scroll
 " marker manual indent
 set foldmethod=marker
 set foldenable
-set fdl=3
+set fdl=8
 " foldlevel
 
 " --------- status line, command line {{{3
@@ -1162,6 +1162,7 @@ function! BlameImpl()
   exe ":cd " . cwd
   " exe ":%!git blame " . path . " | awk '" . '{print $3" "$4" "$1" "$2}' . "'"
   " silent! exe ":%!git blame " . path . " | cut -b1-40"
+  " gnu sed is needed
   silent! exe ":%!git blame " . path . " | sed -r '" . 's/^(\S+) [^(]* ?\(([^(]+  *[0-9]{4}-[0-9]{2}-[0-9]{2}).*\) .*/\2 \1/'. "'"
   exe ":0"
   setl scb cursorbind
@@ -1212,6 +1213,22 @@ function! Diff(isdir)
   redraw! " We need to redraw due to silient running external command
 endfunction
 command! -bang Diff if "<bang>" == "" <BAR> call Diff(0) <BAR> else <BAR> call Diff(1) <BAR> endif
+
+" ---------- Show, git show <rev>:<path>  {{{3
+" Call `git show <rev>:<path> ` for current file
+function! Show()
+  let z = getreg('z')
+  exe 'norm! "zyiw'
+  let rev = getreg('z')
+  call setreg('z', z)
+  exe ':wincmd l'
+  let f = expand('%')
+  exe ':vsp ' . rev . '.' . f
+  set noswapfile
+  exe ':%!git show ' . rev . ':$(git ls-files --full-name ' . f . ')'
+  set ro
+endfunc
+command! Show call Show()
 
 " ========================= file type ================================== {{{2
 autocmd BufNewFile,BufRead *.alipaylog setf alipaylog
