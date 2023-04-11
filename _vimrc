@@ -373,7 +373,7 @@ function! Comment(mode)
   for tmp in ["python","sed","apache","bash","conf", "sh", "make", "cfg",
       \ "gitignore", "zsh", "config", "jproperties", "properties", "yaml",
       \ "cmake", "crontab", "awk", "expect", "gitconfig", "applescript", "perl",
-      \ "gnuplot"]
+      \ "gnuplot", "terraform", "hcl"]
     if &ft == tmp
       call CommentImpl("#", a:mode)
       return tmp
@@ -512,7 +512,7 @@ function! Run()
     if has('mac')
 "       exe '!killall Mou; mou %:p'
 "       exe '!killall MacDown; MacDown %:p'
-      exe '!killall Typora; typora %:p'
+      exe '!killall Typora; sleep 0.3 && typora %:p'
     elseif has('win32')
       exe 'silent !start cmd /c start "markdown" markdown.lnk "%:p"'
     endif
@@ -973,13 +973,21 @@ vmap K :grep! "<C-R><C-W>"<CR>:rightbelow cw<CR>
 
 " ---------- auto change IME to en {{{3
 " for some type of files auto ime is needed
-autocmd! InsertLeave *.txt,*.md,*.tex,*.log call ChangeIme(g:autoChangeIme)
+" autocmd! InsertLeave *.txt,*.md,*.tex,*.log call ChangeIme(g:autoChangeIme)
+autocmd! InsertLeave *.txt,*.md,*.tex,*.log,* call ChangeIme(g:autoChangeIme)
 let g:autoChangeIme = 1
 function! ChangeIme(autoChangeIme)
-  if has('win32') && a:autoChangeIme
+  let found = 0
+  for tmp in ["markdown", "md", "txt", "log", "tex", "plaintex", "latex"]
+    if &ft == tmp
+      let found = 1
+      break
+    endif
+  endfor
+  if has('win32') && a:autoChangeIme && found
     exe '!start /MIN cmd /c start "change ime" /MIN changeVimIme2En.lnk'
     exe 'echo "back to normal mode by calling changeVimIme2En.lnk"'
-  elseif has('mac') && a:autoChangeIme
+  elseif has('mac') && a:autoChangeIme && found
     silent exe '!xkbswitch -se ABC'
     " let cmd="!osascript -e 'tell application @System Events@' -e 'keystroke @ @ using {command down}' -e 'end tell'"
     " let cmd=substitute(cmd, '@', '"', 'g')

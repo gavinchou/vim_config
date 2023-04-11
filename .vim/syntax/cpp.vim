@@ -1311,6 +1311,9 @@ if !exists("cpp_no_cpp11")
 endif " C++11
 
 if !exists("cpp_no_cpp14")
+
+    syntax keyword cppSTLtype decay_t
+
     "dynarray
     syntax keyword cppSTLtype dynarray
 
@@ -1335,6 +1338,8 @@ if !exists("cpp_no_cpp20")
   syntax keyword cppType char8_t
   syntax keyword cppKeyword concept requires
   syntax keyword cppSTLtype strong_ordering weak_ordering partial_ordering equal equivalent unordered
+  syntax keyword cppSTLtype remove_cvref
+  syntax keyword cppSTLtype remove_cvref_t
 endif " C++20
 
 if !exists("cpp_no_boost")
