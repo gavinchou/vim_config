@@ -822,7 +822,7 @@ let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
 let g:ycm_confirm_extra_conf = 0
 " generate and use .cache folder in the working directory
 let g:ycm_clangd_uses_ycmd_caching = 0
-" steals from VS Code
+" steal from VS Code
 " --background-index --clang-tidy --compile-commands-dir=/mnt/disk2/ftw/projects/incubator-doris/be/build_Release/ --completion-style=detailed -j=5 --all-scopes-completion --pch-storage=memory --pretty -log=verbose --query-driver=/mnt/disk2/ftw/tools/ldb_toolchain/bin/*
 let g:ycm_clangd_args = ['-j=8', '--clang-tidy', '--completion-style=detailed', '--pch-storage=memory', '--pretty']
 let g:ycm_max_num_candidates = 30
@@ -849,6 +849,7 @@ command! YcmOff if exists('g:loaded_youcompleteme') <BAR>
   \exe 'nunmap <c-]>' <BAR>
   \exe 'YcmRestartServer' <BAR>
   \endif
+command! YcmHover call youcompleteme#ToggleHover()
 
 " ---------- virtual edit {{{3
 set virtualedit=block
@@ -1123,6 +1124,20 @@ command! Run call Run()
 
 command! Cw exe ":belowright cw"
 " command! Cw exe ":botright cw"
+
+" ---------- Close tabs to the right/left {{{3
+command! -bang -nargs=? TabcR let n = str2nr("<args>") <BAR>
+  \if n == 0 <BAR> let n = 100 <BAR> endif <BAR>
+  \for i in range(n) <BAR>
+  \  if tabpagenr('$') == tabpagenr() <BAR> break <BAR> endif <BAR>
+  \  exe 'tabc'. "<bang>" . string(tabpagenr()+1) <BAR>
+  \endfor
+command! -bang -nargs=? TabcL let n = str2nr("<args>") <BAR>
+  \if n == 0 <BAR> let n = 100 <BAR> endif <BAR>
+  \for i in range(n) <BAR>
+  \  if 1 == tabpagenr() <BAR> break <BAR> endif <BAR>
+  \  exe 'tabc'. "<bang>" . string(tabpagenr()-1) <BAR>
+  \endfor
 
 " ---------- Blame, git blame  {{{3
 " Toggle git blame for the current file
