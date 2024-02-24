@@ -878,11 +878,11 @@ set spelllang+=cjk
 " ---------- vim 8.0+ may miss the helptags
 " Built-in doc
 if isdirectory($VIMRUNTIME . '/doc')
-  helptags $VIMRUNTIME/doc
+  sil! helptags $VIMRUNTIME/doc
 endif
 " User defined help doc
 if isdirectory($HOME . '.vim/doc')
-  helptags $HOME/.vim/doc
+  sil! helptags $HOME/.vim/doc
 endif
 
 " ================================ commands ============================ {{{2
