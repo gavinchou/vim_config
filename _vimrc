@@ -788,7 +788,7 @@ endif
 " ---------- tags, taglist, file explorer {{{3
 set tags=tags,./tags,../tags,../../tags,../../../tags
 set tags+=~/cpp_stdlib.tags
-set autochdir
+" set autochdir
 let Tlist_Show_One_File = 1
 let Tlist_Exit_OnlyWindow = 1
 let Tlist_Use_Right_Window = 1
@@ -1252,6 +1252,64 @@ function! Show()
   set ro
 endfunc
 command! Show call Show()
+
+" ---------- Keep, choose ours theirs both of the git conflict{{{3
+" Resolve the conflict section produced by git merge
+function! Keep(mode)
+  norm! "<ESC>"
+  " set the cursor backwards 1 line to process the current line is the beginning
+  " of the conflict, otherwise it will lead to in correct search range
+  let l:pos = getpos('.')
+  call cursor(l:pos[1] - 1, l:pos[2])
+  " search from current line and dont move the cursor
+  let l:beg = search('^<<<<<<<', 'nzc')
+  let l:mid = search('^=======', 'nzc')
+  let l:end = search('^>>>>>>>', 'nzc')
+  " restore the cursor position
+  call cursor(l:pos[1], l:pos[2])
+
+  " check the range valid
+  if l:beg <= 0 || l:mid <= 0 || l:end <= 0
+    echohl Error
+    echo "No conflict found, range found: " . l:beg . " " . l:mid . " " . l:end
+    echohl None
+    return
+  elseif l:beg > l:mid || l:mid > l:end || l:beg > l:end
+    echohl Error
+    echo "Invalid search range:" . l:beg . " " . l:mid . " " . l:end . ". Cursor maybe in a middle of a confict, move the cursor to beginning of a conflict and try again"
+    echohl None
+    return
+  endif
+
+  " delete the conflict markers from behind with line numbers
+  if a:mode == "1" || a:mode == "ours"
+    exe l:mid . "," . l:end . "d"
+    exe l:beg . "d"
+  elseif a:mode == "2" || a:mode == "theirs"
+    exe l:end . "d"
+    exe l:beg . "," . l:mid . "d"
+  elseif a:mode == "3" || a:mode == "both"
+    exe l:end . "d"
+    exe l:mid . "d"
+    exe l:beg . "d"
+  else
+    echohl Error
+    echo "Invalid merge methods: " . a:mode ". Supported modes: 1 ours 2 theirs 3 both"
+    echohl None
+  endif
+  " echo l:beg . " " .l:mid . " " .l:end
+endfunc
+command! -range -nargs=1 Keep call Keep("<args>")
+command! Keep1 call Keep("ours")
+command! Keep2 call Keep("theirs")
+command! Keep3 call Keep("both")
+
+" ---------- create tmpfile  {{{3
+" Create a tmp file at /tmp/ with given extension, default txt
+command! -nargs=? Mktmp let ext="<args>" <BAR>
+  \if ext == "" <BAR> let ext = "txt" <BAR> endif <BAR>
+  \let p = "~/tmp/vim_tmp_" . strftime("%Y%m%d%H%M%S") . "_" . ext <BAR>
+  \exe ":tabnew " . p
 
 " ========================= file type ================================== {{{2
 autocmd BufNewFile,BufRead *.alipaylog setf alipaylog
