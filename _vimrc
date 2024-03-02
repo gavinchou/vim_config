@@ -45,6 +45,7 @@ set laststatus=2
 " ruler, command line appearance, if laststatus == 2, ruler is useless
 set noruler " ru
 set rulerformat =%30(%<%y\ %m%r%=0x%B\ %l,%c%V\ [%n]\ %P%)
+set showcmd " show command
 
 " ---------- using system clipboard {{{3
 set clipboard+=unnamed
@@ -788,7 +789,6 @@ endif
 " ---------- tags, taglist, file explorer {{{3
 set tags=tags,./tags,../tags,../../tags,../../../tags
 set tags+=~/cpp_stdlib.tags
-" set autochdir
 let Tlist_Show_One_File = 1
 let Tlist_Exit_OnlyWindow = 1
 let Tlist_Use_Right_Window = 1
@@ -884,6 +884,16 @@ endif
 if isdirectory($HOME . '.vim/doc')
   sil! helptags $HOME/.vim/doc
 endif
+
+" ---------- path and find
+set noautochdir " donot change dir
+" with ** in path, we dont need to `:find **` manually for multi-level folder,
+" or it may have performance defeacts
+set path+=** 
+set wildmenu
+set wildignorecase
+set wildmode=longest:full,full
+set wildoptions=fuzzy,pum
 
 " ================================ commands ============================ {{{2
 " ---------- trim the heading/trailing whitespaces {{{3
