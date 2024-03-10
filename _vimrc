@@ -889,11 +889,12 @@ endif
 set noautochdir " donot change dir
 " with ** in path, we dont need to `:find **` manually for multi-level folder,
 " or it may have performance defeacts
-set path+=** 
+set path+=**
 set wildmenu
 set wildignorecase
 set wildmode=longest:full,full
-set wildoptions=fuzzy,pum
+" fuzzy may mess-up matching calling command `:!`
+set wildoptions=pum
 
 " ================================ commands ============================ {{{2
 " ---------- trim the heading/trailing whitespaces {{{3
