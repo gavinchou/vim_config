@@ -1269,8 +1269,9 @@ command! Show call Show()
 function! Keep(mode)
   norm! "<ESC>"
   let l:beg = -1 | let l:mid = -1 | let l:end = -1
+  call cursor(getpos('.')[1], 1) " move cursor to column 1
   " search from current line and dont move the cursor
-  let l:state = ''
+  let l:state = 'invalid'
   for i in [1] " ONLY consider the conflic block after or contains the cursor
     let l:end = search('^>>>>>>>', 'nzc')
     if l:end <= 0 " there is no conflict block at all
@@ -1293,7 +1294,11 @@ function! Keep(mode)
     if (l:beg <= 0 || l:beg > l:end) && (l:mid > 0 && l:mid < l:end)
       let l:beg = search('^<<<<<<<', 'bnzc') " search back to get ours
       if (l:beg > 0 && l:beg < l:mid) && (l:mid > 0 && l:mid < l:end)
-        let l:state = 'cursor in ours'
+        let l:end1 = search('^>>>>>>>', 'bnzc') " search back to check
+        let l:mid1 = search('^=======', 'bnzc') " search back to check
+        " ensure beg is not in the previous block
+          let l:state = l:beg > l:end1 && l:beg > l:mid1 ? 'cursor in ours'
+                        \ : 'invalid conflict found, missing <<<<<<<'
         break
       endif
     endif
@@ -1308,11 +1313,18 @@ function! Keep(mode)
       endif
     endif
   endfor
+  " echo "conflict range found: " . l:beg . " " . l:mid . " " . l:end . ' state: ' . l:state
 
   " check the range valid
   if l:beg <= 0 || l:mid <= 0 || l:end <= 0
     echohl Error
     echo "No conflict found, range found: " . l:beg . " " . l:mid . " " . l:end . ' state: ' . l:state
+    echohl None
+    return
+  elseif !((l:beg > 0 && l:beg < l:mid) && (l:mid > 0 && l:mid < l:end)) 
+      \|| (l:state != 'cursor in ours' && l:state != 'cursor in theirs' && l:state != 'block after cursor')
+    echohl Error
+    echo "Invalid conflict range found:" . l:beg . " " . l:mid . " " . l:end . ' state: ' . l:state
     echohl None
     return
   endif
