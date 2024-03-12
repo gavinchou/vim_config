@@ -1268,31 +1268,56 @@ command! Show call Show()
 " Resolve the conflict section produced by git merge
 function! Keep(mode)
   norm! "<ESC>"
-  " set the cursor backwards 1 line to process the current line is the beginning
-  " of the conflict, otherwise it will lead to in correct search range
-  let l:pos = getpos('.')
-  call cursor(l:pos[1] - 1, l:pos[2])
+  let l:beg = -1 | let l:mid = -1 | let l:end = -1
   " search from current line and dont move the cursor
-  let l:beg = search('^<<<<<<<', 'nzc')
-  let l:mid = search('^=======', 'nzc')
-  let l:end = search('^>>>>>>>', 'nzc')
-  " restore the cursor position
-  call cursor(l:pos[1], l:pos[2])
+  let l:state = ''
+  for i in [1] " ONLY consider the conflic block after or contains the cursor
+    let l:end = search('^>>>>>>>', 'nzc')
+    if l:end <= 0 " there is no conflict block at all
+      break
+    endif
+
+    " ===== case 1: conflict block is after the cursor
+    " search forward for ours
+    let l:beg = search('^<<<<<<<', 'nzc')
+    " search forward for delimiter
+    let l:mid = search('^=======', 'nzc')
+
+    " pretend to be 'in ours'
+    if (l:beg > 0 && l:beg < l:mid) && (l:mid > 0 && l:mid < l:end)
+      let l:state = 'block after cursor'
+      break
+    endif
+
+    " ===== case 2: cursor in 'ours' section
+    if (l:beg <= 0 || l:beg > l:end) && (l:mid > 0 && l:mid < l:end)
+      let l:beg = search('^<<<<<<<', 'bnzc') " search back to get ours
+      if (l:beg > 0 && l:beg < l:mid) && (l:mid > 0 && l:mid < l:end)
+        let l:state = 'cursor in ours'
+        break
+      endif
+    endif
+
+    " ===== case 3: cursor in 'theirs' section
+    if (l:beg <= 0 || l:beg > l:end) && (l:mid <= 0 || l:mid > l:end)
+      let l:beg = search('^<<<<<<<', 'bnzc') " search back to get ours
+      let l:mid = search('^=======', 'bnzc') " search back to get theirs
+      if (l:beg > 0 && l:beg < l:mid) && (l:mid > 0 && l:mid < l:end)
+        let l:state = 'cursor in theirs'
+        break
+      endif
+    endif
+  endfor
 
   " check the range valid
   if l:beg <= 0 || l:mid <= 0 || l:end <= 0
     echohl Error
-    echo "No conflict found, range found: " . l:beg . " " . l:mid . " " . l:end
-    echohl None
-    return
-  elseif l:beg > l:mid || l:mid > l:end || l:beg > l:end
-    echohl Error
-    echo "Invalid search range:" . l:beg . " " . l:mid . " " . l:end . ". Cursor maybe in a middle of a confict, move the cursor to beginning of a conflict and try again"
+    echo "No conflict found, range found: " . l:beg . " " . l:mid . " " . l:end . ' state: ' . l:state
     echohl None
     return
   endif
 
-  " delete the conflict markers from behind with line numbers
+  " delete the conflict markers from end to begin with line numbers
   if a:mode == "1" || a:mode == "ours"
     exe l:mid . "," . l:end . "d"
     exe l:beg . "d"
@@ -1311,9 +1336,9 @@ function! Keep(mode)
   " echo l:beg . " " .l:mid . " " .l:end
 endfunc
 command! -range -nargs=1 Keep call Keep("<args>")
-command! Keep1 call Keep("ours")
-command! Keep2 call Keep("theirs")
-command! Keep3 call Keep("both")
+command! KeepOurs call Keep("ours")
+command! KeepTheirs call Keep("theirs")
+command! KeepBoth call Keep("both")
 
 " ---------- create tmpfile  {{{3
 " Create a tmp file at /tmp/ with given extension, default txt
